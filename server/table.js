@@ -5,8 +5,8 @@ import AWS from 'aws-sdk'
 dotenv.config({ path: '../.env' })
 AWS.config.update({
   region: 'eu-west-1',
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  accessKeyId: process.env.AWS_ID,
+  secretAccessKey: process.env.AWS_KEY
 })
 
 const DocumentClient = new AWS.DynamoDB.DocumentClient()
