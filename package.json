@@ -1,0 +1,62 @@
+{
+  "name": "attest",
+  "version": "0.0.1",
+  "description": "Contract management",
+  "main": "index.js",
+  "dependencies": {
+    "@apollo/client": "^3.3.4",
+    "apollo-boost": "^0.4.9",
+    "apollo-link-context": "^1.0.20",
+    "apollo-link-error": "^1.1.13",
+    "apollo-server-micro": "^2.19.0",
+    "autoprefixer": "^10.0.4",
+    "aws-sdk": "^2.807.0",
+    "dotenv": "^8.2.0",
+    "dynamodb-toolbox": "^0.2.0-beta.1",
+    "formik": "^2.2.5",
+    "fuse.js": "^3.6.1",
+    "graphql": "^14.7.0",
+    "graphql-tag": "^2.11.0",
+    "graphql-tools": "^4.0.6",
+    "isomorphic-fetch": "^3.0.0",
+    "ksuid": "^2.0.0",
+    "lodash": "^4.17.20",
+    "next": "^10.0.3",
+    "next-apollo": "^5.0.4",
+    "postcss": "^8.2.1",
+    "postcss-preset-env": "^6.7.0",
+    "react": "^16.14.0",
+    "react-apollo": "^3.1.5",
+    "react-dom": "^16.14.0",
+    "react-helmet": "^6.1.0",
+    "react-icons": "^3.11.0",
+    "react-modal": "^3.11.2",
+    "react-svg-spinner": "^1.0.4",
+    "recompose": "^0.30.0",
+    "tailwindcss": "^2.0.1",
+    "uuid": "^8.3.2",
+    "yup": "^0.32.6"
+  },
+  "standard": {
+    "globals": [
+      "react"
+    ]
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "NODE_ENV=production next build",
+    "start-next": "NODE_ENV=production forever start index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grabbeh/attest.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/grabbeh/attest/issues"
+  },
+  "homepage": "https://github.com/grabbeh/attest#readme",
+  "devDependencies": {
+    "@tailwindcss/custom-forms": "^0.2.1"
+  }
+}
