@@ -5,7 +5,7 @@ const typeDefs = `
 
   type Mutation {
     addToDo(todo: ToDoInput): ToDo
-    completeToDo(todo: ToDoInput): ToDo
+    updateToDo(todo: ToDoInput): ToDo
   }
 
   input ToDoInput {

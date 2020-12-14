@@ -3,12 +3,14 @@ import { useState } from 'react'
 import { Container, Input } from '../components/index'
 import TODOS_QUERY from '../queries/ToDosQuery'
 import ADD_TODO from '../queries/AddToDoMutation'
+import UPDATE_TODO from '../queries/UpdateToDoMutation'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import NoSSR from 'react-no-ssr'
+import { v4 as uuidv4 } from 'uuid'
 
 const ToDoDataFetcher = () => {
   const { loading, error, data } = useQuery(TODOS_QUERY)
@@ -21,70 +23,8 @@ const ToDoPage = ({ unsortedTodos }) => {
   const client = useApolloClient()
   console.log(client)
   let todos = sortToDos(unsortedTodos)
-  const [addToDo] = useMutation(ADD_TODO, {
-    update (cache, { data: { addToDo } }) {
-      cache.modify({
-        fields: {
-          todos (todos = []) {
-            const newTodoRef = cache.writeFragment({
-              data: addToDo,
-              fragment: gql`
-                fragment NewTodo on ToDo {
-                  id
-                  text
-                  completed
-                  deleted
-                  user
-                  position
-                }
-              `
-            })
-            return [...todos, addToDo]
-          }
-        }
-      })
-    }
-  })
 
-  const [updateToDo] = useMutation(ADD_TODO)
-
-  const [updateCompleted] = useMutation(ADD_TODO, {
-    update (cache, { data: { addToDo } }) {
-      cache.modify({
-        fields: {
-          todos (todos = []) {
-            cache.writeFragment({
-              id: `ToDo:${addToDo.id}`,
-              fragment: gql`
-                fragment CompleteTodo on ToDo {
-                  completed
-                }
-              `,
-              data: {
-                completed: addToDo.completed
-              }
-            })
-          }
-        }
-      })
-    }
-  })
-
-  const [deleteToDo] = useMutation(ADD_TODO, {
-    update (cache, { data: { addToDo } }) {
-      cache.modify({
-        fields: {
-          todos (existingTodoRefs = [], { readField }) {
-            let updated = existingTodoRefs.filter(ref => {
-              let existingId = readField('id', ref)
-              return existingId !== addToDo.id
-            })
-            return [...updated]
-          }
-        }
-      })
-    }
-  })
+  const [updateToDo] = useMutation(UPDATE_TODO)
 
   const onDragEnd = result => {
     if (!result.destination) {
@@ -160,9 +100,6 @@ const ToDoPage = ({ unsortedTodos }) => {
                             snapshot.isDragging,
                             provided.draggableProps.style
                           )}
-                          addToDo={addToDo}
-                          deleteToDo={deleteToDo}
-                          updateCompleted={updateCompleted}
                           updateToDo={updateToDo}
                           todo={todo}
                         />
@@ -170,7 +107,7 @@ const ToDoPage = ({ unsortedTodos }) => {
                     </Draggable>
                   ))}
                   <li>
-                    <TextInput position={todos.length} addToDo={addToDo} />
+                    <TextInput position={todos.length} />
                   </li>
                   {provided.placeholder}
                 </ul>
@@ -184,15 +121,46 @@ const ToDoPage = ({ unsortedTodos }) => {
 }
 
 const ToDo = props => {
-  let {
-    todo,
-    addToDo,
-    deleteToDo,
-    updateToDo,
-    updateCompleted,
-    innerRef,
-    ...rest
-  } = props
+  let { todo, updateToDo, innerRef, ...rest } = props
+
+  const [updateCompleted] = useMutation(UPDATE_TODO, {
+    update (cache, { data: { updateToDo } }) {
+      cache.modify({
+        fields: {
+          todos (todos = []) {
+            cache.writeFragment({
+              id: `ToDo:${updateToDo.id}`,
+              fragment: gql`
+                fragment CompleteTodo on ToDo {
+                  completed
+                }
+              `,
+              data: {
+                completed: updateToDo.completed
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+
+  const [deleteToDo] = useMutation(ADD_TODO, {
+    update (cache, { data: { addToDo } }) {
+      cache.modify({
+        fields: {
+          todos (existingTodoRefs = [], { readField }) {
+            let updated = existingTodoRefs.filter(ref => {
+              let existingId = readField('id', ref)
+              return existingId !== addToDo.id
+            })
+            return [...updated]
+          }
+        }
+      })
+    }
+  })
+
   let [completed, setCompleted] = useState(todo.completed)
   let [editable, setEditable] = useState(false)
   let handleChange = () => {
@@ -324,7 +292,34 @@ const EditTextInput = ({ updateToDo, setEditable, todo }) => (
   </Formik>
 )
 
-const TextInput = ({ addToDo, position = 0 }) => {
+const TextInput = ({ position = 0 }) => {
+  const client = useApolloClient()
+  const uuid = uuidv4()
+  const [addToDo] = useMutation(ADD_TODO, {
+    update (cache, { data: { addToDo } }) {
+      cache.modify({
+        fields: {
+          todos (todos = []) {
+            const newTodoRef = cache.writeFragment({
+              data: addToDo,
+              fragment: gql`
+                fragment NewTodo on ToDo {
+                  id
+                  text
+                  completed
+                  deleted
+                  user
+                  position
+                }
+              `
+            })
+            return [...todos, addToDo]
+          }
+        }
+      })
+    }
+  })
+
   return (
     <Formik
       initialValues={{
@@ -339,7 +334,29 @@ const TextInput = ({ addToDo, position = 0 }) => {
           text: false
         })
         let { text } = values
-        addToDo({ variables: { todo: { text, position } } })
+        const id = uuidv4()
+        //addToDo({ variables: { todo: { text, position, id } } })
+
+        const data = client.readQuery({ query: TODOS_QUERY })
+
+        // Create a new to-do item
+        const myNewTodo = {
+          id: '6',
+          text: text,
+          completed: false,
+          deleted: false,
+          position: 2,
+          user: 'mbg@outlook.com',
+          __typename: 'ToDo'
+        }
+
+        // Write back to the to-do list, appending the new item
+        client.writeQuery({
+          query: TODOS_QUERY,
+          data: {
+            todos: [...data.todos, myNewTodo]
+          }
+        })
         resetForm()
       }}
     >

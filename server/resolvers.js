@@ -1,7 +1,6 @@
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 import { ToDo } from './table.js'
-import { v4 as uuidv4 } from 'uuid'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -30,22 +29,25 @@ const resolvers = {
   },
   Mutation: {
     addToDo: async (p, a, c) => {
-      let todo
-      if (a.todo.id) {
-        todo = a.todo
-      } else {
-        const uuid = uuidv4()
-        todo = {
-          text: a.todo.text,
-          position: a.todo.position,
-          user: 'mbg@outlook.com',
-          id: uuid,
-          completed: false,
-          deleted: false
-        }
+      let {
+        todo: { text, position, id, user }
+      } = a
+
+      let todo = {
+        text,
+        position,
+        user,
+        id,
+        completed: false,
+        deleted: false
       }
 
-      let result = await ToDo.put({ ...todo })
+      await ToDo.put({ ...todo })
+      return todo
+    },
+    updateToDo: async (p, a, c) => {
+      let { todo } = a
+      await ToDo.put({ ...todo })
       return todo
     }
   }

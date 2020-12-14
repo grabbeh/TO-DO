@@ -22,7 +22,7 @@ const ToDoTable = new Table({
 const ToDo = new Entity({
   name: 'ToDo',
   attributes: {
-    user: { partitionKey: true, prefix: 'USER#' },
+    user: { partitionKey: true, prefix: 'USER#', default: 'mbg@outlook.com' },
     id: { sortKey: true, prefix: 'TODO#' },
     text: { type: 'string' },
     completed: { type: 'boolean', default: false },
