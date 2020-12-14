@@ -56,7 +56,7 @@ const ToDoPage = ({ unsortedTodos }) => {
             cache.writeFragment({
               id: addToDo.id,
               fragment: gql`
-                fragment MyTodo on ToDo {
+                fragment CompleteTodo on ToDo {
                   completed
                 }
               `,
@@ -105,7 +105,7 @@ const ToDoPage = ({ unsortedTodos }) => {
       client.writeFragment({
         id: todo.id,
         fragment: gql`
-          fragment MyTodo on ToDo {
+          fragment PositionTodo on ToDo {
             position
           }
         `,
