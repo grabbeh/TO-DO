@@ -14,6 +14,7 @@ const typeDefs = `
     id: ID
     completed: Boolean
     deleted: Boolean
+    position: Int
   }
 
   scalar Date
@@ -28,6 +29,7 @@ const typeDefs = `
     text: String!
     completed: Boolean!
     deleted: Boolean!
+    position: Int!
   }
 
   schema {

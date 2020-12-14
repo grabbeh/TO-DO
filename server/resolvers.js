@@ -21,7 +21,7 @@ const resolvers = {
     }
   }),
   Query: {
-    todos: async (__, ___, context) => {
+    todos: async (p, a, c) => {
       let todos = await ToDo.query('USER#mbg@outlook.com', {
         beginsWith: 'TODO#'
       })
@@ -37,6 +37,7 @@ const resolvers = {
         const uuid = uuidv4()
         todo = {
           text: a.todo.text,
+          position: a.todo.position,
           user: 'mbg@outlook.com',
           id: uuid,
           completed: false,

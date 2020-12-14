@@ -13,7 +13,7 @@ const Input = props => {
   } = props
 
   return (
-    <div>
+    <div className='w-full'>
       {label && (
         <div className='mb-2'>
           <div className='text-bold text-xl'>

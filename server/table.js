@@ -26,7 +26,8 @@ const ToDo = new Entity({
     id: { sortKey: true, prefix: 'TODO#' },
     text: { type: 'string' },
     completed: { type: 'boolean', default: false },
-    deleted: { type: 'boolean', default: false }
+    deleted: { type: 'boolean', default: false },
+    position: { type: 'number' }
   },
   table: ToDoTable
 })

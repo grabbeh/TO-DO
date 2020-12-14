@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@apollo/client'
+import { useQuery, useMutation, useApolloClient } from '@apollo/client'
 import { useState } from 'react'
 import { Container, Input, Header } from '../components/index'
 import TODOS_QUERY from '../queries/ToDosQuery'
@@ -7,18 +7,26 @@ import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import NoSSR from 'react-no-ssr'
 
-const ToDoPage = () => {
+const ToDoDataFetcher = () => {
   const { loading, error, data } = useQuery(TODOS_QUERY)
   if (loading) return 'Loading'
   if (error) return 'Error'
+  return <ToDoPage unsortedTodos={data.todos} />
+}
+
+const ToDoPage = ({ unsortedTodos }) => {
+  const client = useApolloClient()
+  let todos = sortToDos(unsortedTodos)
   const [addToDo] = useMutation(ADD_TODO, {
     update (cache, { data: { addToDo } }) {
       cache.modify({
         fields: {
           todos (todos = []) {
+            // benefit of values vs ref not understood
             const newTodoRef = cache.writeFragment({
-              id: `ToDo:${addToDo.id}`,
               data: addToDo,
               fragment: gql`
                 fragment NewTodo on ToDo {
@@ -27,54 +35,157 @@ const ToDoPage = () => {
                   completed
                   deleted
                   user
+                  position
                 }
               `
             })
-            return [...todos, newTodoRef]
+            return [...todos, addToDo]
           }
         }
       })
     }
   })
+
+  const [updateToDo] = useMutation(ADD_TODO)
+
+  const [updateCompleted] = useMutation(ADD_TODO, {
+    update (cache, { data: { addToDo } }) {
+      cache.modify({
+        fields: {
+          todos (todos = []) {
+            cache.writeFragment({
+              id: addToDo.id,
+              fragment: gql`
+                fragment MyTodo on ToDo {
+                  completed
+                }
+              `,
+              data: {
+                completed: addToDo.completed
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+
+  const [deleteToDo] = useMutation(ADD_TODO, {
+    update (cache, { data: { addToDo } }) {
+      cache.modify({
+        fields: {
+          todos (todos = []) {
+            let updated = todos.filter(todo => {
+              return todo.id !== addToDo.id
+            })
+            return [...updated]
+          }
+        }
+      })
+    }
+  })
+
+  const onDragEnd = result => {
+    if (!result.destination) {
+      return
+    }
+
+    const { todos } = client.readQuery({
+      query: TODOS_QUERY
+    })
+    const items = reorder(todos, result.source.index, result.destination.index)
+
+    items.forEach((todo, index) => {
+      updateToDo({
+        variables: {
+          todo: { ...todo, position: index }
+        }
+      })
+
+      client.writeFragment({
+        id: todo.id,
+        fragment: gql`
+          fragment MyTodo on ToDo {
+            position
+          }
+        `,
+        data: {
+          position: index
+        }
+      })
+    })
+
+    client.writeQuery({
+      query: TODOS_QUERY,
+      data: {
+        todos: [...items]
+      }
+    })
+  }
   return (
     <Container>
-      <h1 className='font-bold text-4xl'>To-dos</h1>
-      <div>
-        <ul>
-          {data &&
-            data.todos &&
-            data.todos.map(todo => (
-              <ToDo key={todo.id} addToDo={addToDo} todo={todo} />
-            ))}
-          <li>
-            <TextInput addToDo={addToDo} />
-          </li>
-        </ul>
-      </div>
+      <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
+      <NoSSR>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId='droppable'>
+            {provided => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                <ul>
+                  {todos.map((todo, index) => (
+                    <Draggable
+                      key={todo.id}
+                      draggableId={todo.id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <ToDo
+                          innerRef={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+                          addToDo={addToDo}
+                          deleteToDo={deleteToDo}
+                          updateCompleted={updateCompleted}
+                          todo={todo}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                  <li>
+                    <TextInput position={todos.length} addToDo={addToDo} />
+                  </li>
+                  {provided.placeholder}
+                </ul>
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </NoSSR>
     </Container>
   )
 }
 
-export default withApollo({ ssr: true })(ToDoPage)
-
 const ToDo = props => {
-  let { todo, addToDo } = props
+  let { todo, addToDo, deleteToDo, updateCompleted, innerRef, ...rest } = props
   let [completed, setCompleted] = useState(todo.completed)
   let [editable, setEditable] = useState(false)
   let handleChange = () => {
     setCompleted(!completed)
-    addToDo({
+    updateCompleted({
       variables: {
         todo: { ...todo, completed: !completed }
       }
     })
   }
   return (
-    <li className='my-3' key={todo.id}>
+    <li {...rest} ref={innerRef} key={todo.id}>
       {!todo.deleted && (
-        <div className='flex justify-between'>
-          <div className='flex'>
-            <label className='flex items-center space-x-3'>
+        <div className='pb-2 flex justify-between'>
+          <div className='flex flex-grow'>
+            <label className='flex items-center'>
               <input
                 type='checkbox'
                 checked={completed}
@@ -115,7 +226,7 @@ const ToDo = props => {
               <div
                 className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
                 onClick={() => {
-                  addToDo({
+                  deleteToDo({
                     variables: {
                       todo: { ...todo, deleted: true }
                     }
@@ -181,7 +292,7 @@ const EditTextInput = ({ addToDo, setEditable, todo }) => (
   </Formik>
 )
 
-const TextInput = ({ addToDo }) => {
+const TextInput = ({ addToDo, position = 0 }) => {
   return (
     <Formik
       initialValues={{
@@ -196,7 +307,7 @@ const TextInput = ({ addToDo }) => {
           text: false
         })
         let { text } = values
-        addToDo({ variables: { todo: { text } } })
+        addToDo({ variables: { todo: { text, position } } })
         resetForm()
       }}
     >
@@ -247,3 +358,24 @@ const Edit = () => (
     <path d='M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z' />
   </svg>
 )
+
+const sortToDos = arr => {
+  return arr.slice().sort((a, b) => {
+    return a.position - b.position
+  })
+}
+
+const reorder = (list, sourceIndex, destinationIndex) => {
+  const result = Array.from(list)
+  const [removed] = result.splice(sourceIndex, 1)
+  result.splice(destinationIndex, 0, removed)
+  return result
+}
+
+const getItemStyle = (isDragging, draggableStyle) => ({
+  userSelect: 'none',
+  borderBottom: isDragging && '3px solid gray',
+  ...draggableStyle
+})
+
+export default withApollo({ ssr: true })(ToDoDataFetcher)
