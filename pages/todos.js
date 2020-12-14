@@ -99,7 +99,16 @@ const ToDoPage = ({ unsortedTodos }) => {
       updateToDo({
         variables: {
           todo: { ...todo, position: index }
-        }
+        },
+        optimisticResponse: {
+            __typename: "Mutation",
+            updateToDo: {
+              id: todo.id,
+              __typename: "ToDo",
+              ...todo,
+              position: index
+            }
+          }
       })
 
       client.writeFragment({
@@ -272,7 +281,17 @@ const EditTextInput = ({ updateToDo, setEditable, todo }) => (
             ...todo,
             text
           }
-        }
+        },
+        optimisticResponse: {
+            __typename: "Mutation",
+            updateToDo: {
+              id: todo.id,
+              __typename: "ToDo",
+              ...todo,
+              text
+            }
+          }
+
       })
       resetForm()
       setEditable(false)
