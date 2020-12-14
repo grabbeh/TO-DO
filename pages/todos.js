@@ -149,6 +149,7 @@ const ToDoPage = ({ unsortedTodos }) => {
                           addToDo={addToDo}
                           deleteToDo={deleteToDo}
                           updateCompleted={updateCompleted}
+                          updateToDo={updateToDo}
                           todo={todo}
                         />
                       )}
@@ -169,7 +170,15 @@ const ToDoPage = ({ unsortedTodos }) => {
 }
 
 const ToDo = props => {
-  let { todo, addToDo, deleteToDo, updateCompleted, innerRef, ...rest } = props
+  let {
+    todo,
+    addToDo,
+    deleteToDo,
+    updateToDo,
+    updateCompleted,
+    innerRef,
+    ...rest
+  } = props
   let [completed, setCompleted] = useState(todo.completed)
   let [editable, setEditable] = useState(false)
   let handleChange = () => {
@@ -195,7 +204,7 @@ const ToDo = props => {
             </label>
             {editable ? (
               <EditTextInput
-                addToDo={addToDo}
+                updateToDo={updateToDo}
                 todo={todo}
                 setEditable={setEditable}
               />
@@ -243,7 +252,7 @@ const ToDo = props => {
   )
 }
 
-const EditTextInput = ({ addToDo, setEditable, todo }) => (
+const EditTextInput = ({ updateToDo, setEditable, todo }) => (
   <Formik
     initialValues={{
       text: todo.text
@@ -257,7 +266,7 @@ const EditTextInput = ({ addToDo, setEditable, todo }) => (
         text: false
       })
       let { text } = values
-      addToDo({
+      updateToDo({
         variables: {
           todo: {
             ...todo,
