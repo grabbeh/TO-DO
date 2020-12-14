@@ -19,6 +19,7 @@ const ToDoDataFetcher = () => {
 
 const ToDoPage = ({ unsortedTodos }) => {
   const client = useApolloClient()
+  console.log(client)
   let todos = sortToDos(unsortedTodos)
   const [addToDo] = useMutation(ADD_TODO, {
     update (cache, { data: { addToDo } }) {
