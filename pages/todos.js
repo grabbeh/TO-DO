@@ -114,13 +114,13 @@ const ToDoPage = ({ unsortedTodos }) => {
         }
       })
     })
-
+    /*
     client.writeQuery({
       query: TODOS_QUERY,
       data: {
         todos: [...items]
       }
-    })
+    })*/
   }
   return (
     <Container>
