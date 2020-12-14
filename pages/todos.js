@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useApolloClient } from '@apollo/client'
 import { useState } from 'react'
-import { Container, Input, Header } from '../components/index'
+import { Container, Input } from '../components/index'
 import TODOS_QUERY from '../queries/ToDosQuery'
 import ADD_TODO from '../queries/AddToDoMutation'
 import { Formik, Form } from 'formik'
@@ -25,7 +25,6 @@ const ToDoPage = ({ unsortedTodos }) => {
       cache.modify({
         fields: {
           todos (todos = []) {
-            // benefit of values vs ref not understood
             const newTodoRef = cache.writeFragment({
               data: addToDo,
               fragment: gql`
@@ -54,7 +53,7 @@ const ToDoPage = ({ unsortedTodos }) => {
         fields: {
           todos (todos = []) {
             cache.writeFragment({
-              id: addToDo.id,
+              id: `ToDo:${addToDo.id}`,
               fragment: gql`
                 fragment CompleteTodo on ToDo {
                   completed
@@ -74,9 +73,10 @@ const ToDoPage = ({ unsortedTodos }) => {
     update (cache, { data: { addToDo } }) {
       cache.modify({
         fields: {
-          todos (todos = []) {
-            let updated = todos.filter(todo => {
-              return todo.id !== addToDo.id
+          todos (existingTodoRefs = [], { readField }) {
+            let updated = existingTodoRefs.filter(ref => {
+              let existingId = readField('id', ref)
+              return existingId !== addToDo.id
             })
             return [...updated]
           }
@@ -94,25 +94,24 @@ const ToDoPage = ({ unsortedTodos }) => {
       query: TODOS_QUERY
     })
     const items = reorder(todos, result.source.index, result.destination.index)
-
     items.forEach((todo, index) => {
       updateToDo({
         variables: {
           todo: { ...todo, position: index }
         },
         optimisticResponse: {
-            __typename: "Mutation",
-            updateToDo: {
-              id: todo.id,
-              __typename: "ToDo",
-              ...todo,
-              position: index
-            }
+          __typename: 'Mutation',
+          updateToDo: {
+            id: `ToDo${todo.id}`,
+            __typename: 'ToDo',
+            ...todo,
+            position: index
           }
+        }
       })
 
       client.writeFragment({
-        id: todo.id,
+        id: `ToDo:${todo.id}`,
         fragment: gql`
           fragment PositionTodo on ToDo {
             position
@@ -124,6 +123,11 @@ const ToDoPage = ({ unsortedTodos }) => {
       })
     })
     /*
+
+        /*
+    stackoverflow.com/questions/52360171/optimistic-react-apollo-ui-lag-with-react-beautiful-drag-and-drop
+    Effect of supplying variables to writeQuery?
+
     client.writeQuery({
       query: TODOS_QUERY,
       data: {
@@ -283,15 +287,14 @@ const EditTextInput = ({ updateToDo, setEditable, todo }) => (
           }
         },
         optimisticResponse: {
-            __typename: "Mutation",
-            updateToDo: {
-              id: todo.id,
-              __typename: "ToDo",
-              ...todo,
-              text
-            }
+          __typename: 'Mutation',
+          updateToDo: {
+            id: `ToDo:${todo.id}`,
+            __typename: 'ToDo',
+            ...todo,
+            text
           }
-
+        }
       })
       resetForm()
       setEditable(false)
