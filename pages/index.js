@@ -76,7 +76,6 @@ const ToDoPage = ({ unsortedTodos }) => {
   return (
     <Container>
       <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
-
       <ul>
         {todos.map((todo, index) => (
           <ToDo key={todo.id} updateToDo={updateToDo} todo={todo} />
@@ -114,14 +113,14 @@ const ToDo = props => {
     }
   })
 
-  const [deleteToDo] = useMutation(ADD_TODO, {
-    update (cache, { data: { addToDo } }) {
+  const [deleteToDo] = useMutation(UPDATE_TODO, {
+    update (cache, { data: updateToDo }) {
       cache.modify({
         fields: {
           todos (existingTodoRefs = [], { readField }) {
             let updated = existingTodoRefs.filter(ref => {
               let existingId = readField('id', ref)
-              return existingId !== addToDo.id
+              return existingId !== updateToDo.id
             })
             return [...updated]
           }
@@ -189,6 +188,15 @@ const ToDo = props => {
                   deleteToDo({
                     variables: {
                       todo: { ...todo, deleted: true }
+                    },
+                    optimisticResponse: {
+                      __typename: 'Mutation',
+                      updateToDo: {
+                        id: `ToDo:${todo.id}`,
+                        __typename: 'ToDo',
+                        ...todo,
+                        deleted: true
+                      }
                     }
                   })
                 }}
