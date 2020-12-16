@@ -216,7 +216,6 @@ const EditTextInput = ({ updateToDo, todo }) => (
           updateToDo: {
             id: `ToDo:${todo.id}`,
             __typename: 'ToDo',
-            ...todo,
             text
           }
         }
