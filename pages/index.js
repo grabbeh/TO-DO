@@ -130,7 +130,7 @@ const ToDo = props => {
   })
 
   let [completed, setCompleted] = useState(todo.completed)
-  let [editable, setEditable] = useState(false)
+  
   let handleChange = () => {
     setCompleted(!completed)
     updateCompleted({
@@ -152,23 +152,11 @@ const ToDo = props => {
                 className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
               />
             </label>
-            {editable ? (
-              <EditTextInput
+            <EditTextInput
                 updateToDo={updateToDo}
                 todo={todo}
                 setEditable={setEditable}
-              />
-            ) : (
-              <span
-                onDoubleClick={() => {
-                  setEditable(true)
-                }}
-                className={`text-gray-900 ${completed &&
-                  'line-through'} text-2xl font-medium`}
-              >
-                {todo.text}
-              </span>
-            )}
+            />
           </div>
           <div className='flex'>
             {!editable && (
