@@ -198,10 +198,12 @@ const EditTextInput = ({ updateToDo, todo }) => (
       text: string().required('Please provide a text')
     })}
     onSubmit={(values, { setErrors, resetForm }) => {
+      console.log("Submitted")
       setErrors({
         text: false
       })
       let { text } = values
+      console.log(text)
       updateToDo({
         variables: {
           todo: {
