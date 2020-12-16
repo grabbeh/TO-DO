@@ -20,7 +20,7 @@ const ToDoDataFetcher = () => {
 const ToDoPage = ({ unsortedTodos }) => {
   const client = useApolloClient()
   let todos = sortToDos(unsortedTodos)
-
+  // Simple mutation to rely on automatic cache updating based on ID for single entities
   const [updateToDo] = useMutation(UPDATE_TODO)
 
   const onDragEnd = result => {
