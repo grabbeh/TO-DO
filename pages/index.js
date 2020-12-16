@@ -155,20 +155,9 @@ const ToDo = props => {
             <EditTextInput
                 updateToDo={updateToDo}
                 todo={todo}
-                setEditable={setEditable}
             />
           </div>
           <div className='flex'>
-            {!editable && (
-              <div
-                onClick={() => {
-                  setEditable(true)
-                }}
-                className='ml-2 h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
-              >
-                <Edit />
-              </div>
-            )}
             {!todo.deleted && (
               <div
                 className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
@@ -199,7 +188,7 @@ const ToDo = props => {
   )
 }
 
-const EditTextInput = ({ updateToDo, setEditable, todo }) => (
+const EditTextInput = ({ updateToDo, todo }) => (
   <Formik
     initialValues={{
       text: todo.text
@@ -231,7 +220,6 @@ const EditTextInput = ({ updateToDo, setEditable, todo }) => (
         }
       })
       resetForm()
-      setEditable(false)
     }}
   >
     {props => {
