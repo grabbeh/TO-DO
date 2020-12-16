@@ -22,7 +22,7 @@ const Input = props => {
         </div>
       )}
       <input
-        className='focus:outline-none border-b-2 font-medium text-2xl'
+        className='focus:outline-none font-medium text-2xl'
         autoComplete={autoComplete}
         id={value}
         onChange={onChange}
