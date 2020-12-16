@@ -165,15 +165,6 @@ const ToDo = props => {
                   deleteToDo({
                     variables: {
                       todo: { ...todo, deleted: true }
-                    },
-                    optimisticResponse: {
-                      __typename: 'Mutation',
-                      updateToDo: {
-                        id: `ToDo:${todo.id}`,
-                        __typename: 'ToDo',
-                        ...todo,
-                        deleted: true
-                      }
                     }
                   })
                 }}
