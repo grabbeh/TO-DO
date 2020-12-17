@@ -9,7 +9,8 @@ const Input = props => {
     onFocus,
     onBlur,
     readOnly,
-    autoComplete
+    autoComplete,
+    completed
   } = props
 
   return (
@@ -22,7 +23,9 @@ const Input = props => {
         </div>
       )}
       <input
-        className='focus:outline-none font-medium text-2xl'
+        className={`text-gray-900 focus:outline-none ${
+          completed ? 'line-through' : ''
+        } text-2xl font-medium`}
         autoComplete={autoComplete}
         id={value}
         onChange={onChange}
@@ -33,7 +36,6 @@ const Input = props => {
         onFocus={onFocus}
         onBlur={onBlur}
         readOnly={readOnly}
-        {...props}
       />
     </div>
   )

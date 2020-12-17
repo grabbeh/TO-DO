@@ -77,7 +77,7 @@ const ToDoPage = ({ unsortedTodos }) => {
     <Container>
       <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
       <ul>
-        {todos.map((todo, index) => (
+        {todos.map(todo => (
           <ToDo key={todo.id} updateToDo={updateToDo} todo={todo} />
         ))}
         <li>
@@ -89,10 +89,12 @@ const ToDoPage = ({ unsortedTodos }) => {
 }
 
 const ToDo = props => {
-  let { todo, updateToDo, innerRef, ...rest } = props
-
+  let { todo, updateToDo } = props
+  /*
   const [updateCompleted] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateToDo } }) {
+      console.log(cache)
+       Cache modify shouldn't be necessary as just updating an existing item
       cache.modify({
         fields: {
           todos (todos = []) {
@@ -111,8 +113,10 @@ const ToDo = props => {
         }
       })
     }
-  })
-
+  })*/
+  /*
+  // As we are not actually deleting the item, just updated the 'deleted' property, shouldn't 
+  be a need to remove from cache
   const [deleteToDo] = useMutation(UPDATE_TODO, {
     update (cache, { data: updateToDo }) {
       cache.modify({
@@ -128,19 +132,28 @@ const ToDo = props => {
       })
     }
   })
-
+*/
   let [completed, setCompleted] = useState(todo.completed)
-  
+
   let handleChange = () => {
     setCompleted(!completed)
-    updateCompleted({
+    updateToDo({
       variables: {
         todo: { ...todo, completed: !completed }
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateToDo: {
+          id: `ToDo:${todo.id}`,
+          __typename: 'ToDo',
+          ...todo,
+          completed: true
+        }
       }
     })
   }
   return (
-    <li {...rest} ref={innerRef} key={todo.id}>
+    <li key={todo.id}>
       {!todo.deleted && (
         <div className='pb-2 flex justify-between'>
           <div className='flex flex-grow'>
@@ -153,8 +166,9 @@ const ToDo = props => {
               />
             </label>
             <EditTextInput
-                updateToDo={updateToDo}
-                todo={todo}
+              completed={completed}
+              updateToDo={updateToDo}
+              todo={todo}
             />
           </div>
           <div className='flex'>
@@ -162,7 +176,7 @@ const ToDo = props => {
               <div
                 className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
                 onClick={() => {
-                  deleteToDo({
+                  updateToDo({
                     variables: {
                       todo: { ...todo, deleted: true }
                     },
@@ -188,7 +202,7 @@ const ToDo = props => {
   )
 }
 
-const EditTextInput = ({ updateToDo, todo }) => (
+const EditTextInput = ({ completed, updateToDo, todo }) => (
   <Formik
     initialValues={{
       text: todo.text
@@ -198,12 +212,11 @@ const EditTextInput = ({ updateToDo, todo }) => (
       text: string().required('Please provide a text')
     })}
     onSubmit={(values, { setErrors, resetForm }) => {
-      console.log("Submitted")
       setErrors({
         text: false
       })
       let { text } = values
-      console.log(text)
+
       updateToDo({
         variables: {
           todo: {
@@ -220,7 +233,6 @@ const EditTextInput = ({ updateToDo, todo }) => (
           }
         }
       })
-      resetForm()
     }}
   >
     {props => {
@@ -232,6 +244,7 @@ const EditTextInput = ({ updateToDo, todo }) => (
             onChange={handleChange}
             name='text'
             value={values.text}
+            completed={completed}
           />
           <div className='mt-1'>
             {
@@ -391,11 +404,5 @@ const reorder = (list, sourceIndex, destinationIndex) => {
   result.splice(destinationIndex, 0, removed)
   return result
 }
-
-const getItemStyle = (isDragging, draggableStyle) => ({
-  userSelect: 'none',
-  borderBottom: isDragging && '3px solid gray',
-  ...draggableStyle
-})
 
 export default withApollo({ ssr: true })(ToDoDataFetcher)
