@@ -20,7 +20,7 @@ const ToDoDataFetcher = () => {
 const ToDoPage = ({ unsortedTodos }) => {
   const client = useApolloClient()
   let todos = sortToDos(unsortedTodos)
-  // Simple mutation to rely on automatic cache updating based on ID for single entities
+  // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
   const [updateToDo] = useMutation(UPDATE_TODO)
 
   const onDragEnd = result => {
@@ -91,10 +91,11 @@ const ToDoPage = ({ unsortedTodos }) => {
 const ToDo = props => {
   let { todo, updateToDo } = props
   /*
+  Cache modify shouldn't be necessary as just updating an existing item
   const [updateCompleted] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateToDo } }) {
       console.log(cache)
-       Cache modify shouldn't be necessary as just updating an existing item
+       
       cache.modify({
         fields: {
           todos (todos = []) {
@@ -172,29 +173,27 @@ const ToDo = props => {
             />
           </div>
           <div className='flex'>
-            {!todo.deleted && (
-              <div
-                className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
-                onClick={() => {
-                  updateToDo({
-                    variables: {
-                      todo: { ...todo, deleted: true }
-                    },
-                    optimisticResponse: {
-                      __typename: 'Mutation',
-                      updateToDo: {
-                        id: `ToDo:${todo.id}`,
-                        __typename: 'ToDo',
-                        ...todo,
-                        deleted: true
-                      }
+            <div
+              className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
+              onClick={() => {
+                updateToDo({
+                  variables: {
+                    todo: { ...todo, deleted: true }
+                  },
+                  optimisticResponse: {
+                    __typename: 'Mutation',
+                    updateToDo: {
+                      id: `ToDo:${todo.id}`,
+                      __typename: 'ToDo',
+                      ...todo,
+                      deleted: true
                     }
-                  })
-                }}
-              >
-                <Dustbin />
-              </div>
-            )}
+                  }
+                })
+              }}
+            >
+              <Dustbin />
+            </div>
           </div>
         </div>
       )}
@@ -260,13 +259,12 @@ const EditTextInput = ({ completed, updateToDo, todo }) => (
 )
 
 const TextInput = ({ position = 0 }) => {
-  //const client = useApolloClient()
   const [addToDo] = useMutation(ADD_TODO, {
     update (cache, { data: { addToDo } }) {
       cache.modify({
         fields: {
-          todos (todos = []) {
-            const newTodoRef = cache.writeFragment({
+          todos (existingTodos = []) {
+            const newToDoRef = cache.writeFragment({
               data: addToDo,
               fragment: gql`
                 fragment NewTodo on ToDo {
@@ -279,7 +277,7 @@ const TextInput = ({ position = 0 }) => {
                 }
               `
             })
-            return [...todos, addToDo]
+            return [...existingTodos, newToDoRef]
           }
         }
       })
@@ -304,8 +302,6 @@ const TextInput = ({ position = 0 }) => {
         //mutation example + optimistic response
         addToDo({
           variables: { todo: { user: 'mbg@outlook.com', text, position, id } },
-          // for a new item, optimisticResponse needs typename and the id of the
-          // item that will be returned - so id creation has to happen client-side
           optimisticResponse: {
             __typename: 'Mutation',
             addToDo: {
@@ -318,6 +314,8 @@ const TextInput = ({ position = 0 }) => {
               user: 'mbg@outlook.com'
             }
           }
+          // for a new item, optimisticResponse needs typename and the id of the
+          // item that will be returned - so id creation has to happen client-side
         })
         // cache only example
         /*
