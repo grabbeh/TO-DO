@@ -15,14 +15,11 @@ const typeDefs = `
     completed: Boolean
     deleted: Boolean
     position: Int
+    createdSince: String
   }
 
   scalar Date
   
-  type MyType {
-    created: Date
-  }
-
   type ToDo {
     id: ID!
     user: String!
@@ -30,6 +27,7 @@ const typeDefs = `
     completed: Boolean!
     deleted: Boolean!
     position: Int!
+    createdSince: String
   }
 
   schema {

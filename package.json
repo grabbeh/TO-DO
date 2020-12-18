@@ -11,6 +11,7 @@
     "apollo-server-micro": "^2.19.0",
     "autoprefixer": "^10.0.4",
     "aws-sdk": "^2.807.0",
+    "date-fns": "^2.16.1",
     "dotenv": "^8.2.0",
     "dynamodb-toolbox": "^0.2.0-beta.1",
     "formik": "^2.2.5",

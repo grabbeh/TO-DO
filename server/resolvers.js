@@ -1,6 +1,7 @@
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 import { ToDo } from './table.js'
+import { formatDistanceToNowStrict } from 'date-fns'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -24,6 +25,7 @@ const resolvers = {
       let todos = await ToDo.query('USER#mbg@outlook.com', {
         beginsWith: 'TODO#'
       })
+      console.log(todos.Items)
       return todos.Items
     }
   },
@@ -49,6 +51,15 @@ const resolvers = {
       let { todo } = a
       await ToDo.put({ ...todo })
       return todo
+    }
+  },
+  ToDo: {
+    createdSince: async todo => {
+      let days = formatDistanceToNowStrict(new Date(todo.created), {
+        unit: 'day'
+      })
+      let rating = days.slice(0, 1)
+      return Number(rating)
     }
   }
 }

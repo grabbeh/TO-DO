@@ -9,6 +9,7 @@ export default gql`
       completed
       deleted
       position
+      createdSince
     }
   }
 `

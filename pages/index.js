@@ -14,12 +14,10 @@ const ToDoDataFetcher = () => {
   const { loading, error, data } = useQuery(TODOS_QUERY)
   if (loading) return 'Loading'
   if (error) return 'Error'
-  return <ToDoPage unsortedTodos={data.todos} />
+  return <ToDoPage todos={data.todos} />
 }
 
-const ToDoPage = ({ unsortedTodos }) => {
-  const client = useApolloClient()
-  let todos = sortToDos(unsortedTodos)
+const ToDoPage = ({ todos }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
   const [updateToDo] = useMutation(UPDATE_TODO)
 
@@ -122,6 +120,10 @@ const ToDo = props => {
             />
           </div>
           <div className='flex'>
+            <div className='mt-1 mr-2'>
+              <Rating value={todo.createdSince} />
+            </div>
+
             <div
               className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
               onClick={() => {
@@ -350,6 +352,14 @@ const reorder = (list, sourceIndex, destinationIndex) => {
   const [removed] = result.splice(sourceIndex, 1)
   result.splice(destinationIndex, 0, removed)
   return result
+}
+
+const Rating = ({ value }) => {
+  let bgColor = 'bg-green-500'
+  if (value > 2) bgColor = 'bg-yellow-500'
+  if (value > 5) bgColor = 'bg-red-500'
+
+  return <div className={`${bgColor} rounded-full h-5 w-5`} />
 }
 
 export default withApollo({ ssr: true })(ToDoDataFetcher)
