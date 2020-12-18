@@ -23,56 +23,6 @@ const ToDoPage = ({ unsortedTodos }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
   const [updateToDo] = useMutation(UPDATE_TODO)
 
-  const onDragEnd = result => {
-    if (!result.destination) {
-      return
-    }
-
-    const { todos } = client.readQuery({
-      query: TODOS_QUERY
-    })
-    const items = reorder(todos, result.source.index, result.destination.index)
-    items.forEach((todo, index) => {
-      updateToDo({
-        variables: {
-          todo: { ...todo, position: index }
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateToDo: {
-            id: `ToDo${todo.id}`,
-            __typename: 'ToDo',
-            ...todo,
-            position: index
-          }
-        }
-      })
-
-      client.writeFragment({
-        id: `ToDo:${todo.id}`,
-        fragment: gql`
-          fragment PositionTodo on ToDo {
-            position
-          }
-        `,
-        data: {
-          position: index
-        }
-      })
-    })
-    /*
-
-        /*
-    stackoverflow.com/questions/52360171/optimistic-react-apollo-ui-lag-with-react-beautiful-drag-and-drop
-    Effect of supplying variables to writeQuery?
-
-    client.writeQuery({
-      query: TODOS_QUERY,
-      data: {
-        todos: [...items]
-      }
-    })*/
-  }
   return (
     <Container>
       <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
@@ -147,7 +97,6 @@ const ToDo = props => {
         updateToDo: {
           id: `ToDo:${todo.id}`,
           __typename: 'ToDo',
-          ...todo,
           completed: true
         }
       }
