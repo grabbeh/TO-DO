@@ -25,7 +25,6 @@ const resolvers = {
       let todos = await ToDo.query('USER#mbg@outlook.com', {
         beginsWith: 'TODO#'
       })
-      console.log(todos.Items)
       return todos.Items
     }
   },
@@ -49,6 +48,7 @@ const resolvers = {
     },
     updateToDo: async (p, a, c) => {
       let { todo } = a
+      delete todo['createdSince']
       await ToDo.put({ ...todo })
       return todo
     }

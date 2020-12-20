@@ -89,14 +89,6 @@ const ToDo = props => {
     updateToDo({
       variables: {
         todo: { ...todo, completed: !completed }
-      },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        updateToDo: {
-          id: `ToDo:${todo.id}`,
-          __typename: 'ToDo',
-          completed: true
-        }
       }
     })
   }
@@ -120,7 +112,7 @@ const ToDo = props => {
             />
           </div>
           <div className='flex'>
-            <div className='mt-1 mr-2'>
+            <div className='mr-2'>
               <Rating value={todo.createdSince} />
             </div>
 
