@@ -1,16 +1,17 @@
 import { useQuery, useMutation, useApolloClient } from '@apollo/client'
 import { useState } from 'react'
+import { Formik, Form } from 'formik'
+import { string, object } from 'yup'
 import { Container, Input } from '../components/index'
 import TODOS_QUERY from '../queries/ToDosQuery'
 import ADD_TODO from '../queries/AddToDoMutation'
 import UPDATE_TODO from '../queries/UpdateToDoMutation'
-import { Formik, Form } from 'formik'
-import { string, object } from 'yup'
 import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 
-const ToDoDataFetcher = () => {
+const ToDoFetcher = () => {
+  //https://github.com/apollographql/apollo-client/issues/7485
   const { loading, error, data } = useQuery(TODOS_QUERY)
   if (loading) return 'Loading'
   if (error) return 'Error'
@@ -95,9 +96,9 @@ const ToDo = props => {
   return (
     <li key={todo.id}>
       {!todo.deleted && (
-        <div className='pb-2 flex justify-between'>
+        <div className='pb-2 flex content-center'>
           <div className='flex flex-grow'>
-            <label className='flex items-center'>
+            <label>
               <input
                 type='checkbox'
                 checked={completed}
@@ -112,26 +113,23 @@ const ToDo = props => {
             />
           </div>
           <div className='flex'>
-            <div className='mr-2'>
-              <Rating value={todo.createdSince} />
-            </div>
-
+            {!todo.completed && (
+              <div className='mr-2'>
+                <Rating value={todo.createdSince} />
+              </div>
+            )}
             <div
               className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
               onClick={() => {
+                let updatedToDo = {
+                  ...todo,
+                  deleted: true
+                }
                 updateToDo({
                   variables: {
-                    todo: { ...todo, deleted: true }
+                    todo: updatedToDo
                   },
-                  optimisticResponse: {
-                    __typename: 'Mutation',
-                    updateToDo: {
-                      id: `ToDo:${todo.id}`,
-                      __typename: 'ToDo',
-                      ...todo,
-                      deleted: true
-                    }
-                  }
+                  optimisticResponse: updatedToDo
                 })
               }}
             >
@@ -151,29 +149,22 @@ const EditTextInput = ({ completed, updateToDo, todo }) => (
     }}
     validateOnChange={false}
     validationSchema={object().shape({
-      text: string().required('Please provide a text')
+      text: string().required('Please provide text')
     })}
-    onSubmit={(values, { setErrors, resetForm }) => {
+    onSubmit={(values, { setErrors }) => {
       setErrors({
         text: false
       })
       let { text } = values
-
+      let updatedToDo = {
+        ...todo,
+        text
+      }
       updateToDo({
         variables: {
-          todo: {
-            ...todo,
-            text
-          }
+          todo: updatedToDo
         },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          updateToDo: {
-            id: `ToDo:${todo.id}`,
-            __typename: 'ToDo',
-            text
-          }
-        }
+        optimisticResponse: updatedToDo
       })
     }}
   >
@@ -204,6 +195,18 @@ const EditTextInput = ({ completed, updateToDo, todo }) => (
 const TextInput = ({ position = 0 }) => {
   const [addToDo] = useMutation(ADD_TODO, {
     update (cache, { data: { addToDo } }) {
+      /*
+      // read then write query
+      console.log(addToDo)
+      const { todos } = cache.readQuery({ query: TODOS_QUERY })
+      cache.writeQuery({
+        query: TODOS_QUERY,
+        data: {
+          todos: [...todos, addToDo]
+        }
+      })
+      */
+      // cache.modify
       cache.modify({
         fields: {
           todos (existingTodos = []) {
@@ -217,6 +220,7 @@ const TextInput = ({ position = 0 }) => {
                   deleted
                   user
                   position
+                  createdSince
                 }
               `
             })
@@ -254,34 +258,14 @@ const TextInput = ({ position = 0 }) => {
               position,
               deleted: false,
               completed: false,
-              user: 'mbg@outlook.com'
+              user: 'mbg@outlook.com',
+              createdSince: 0
             }
           }
           // for a new item, optimisticResponse needs typename and the id of the
           // item that will be returned - so id creation has to happen client-side
         })
-        // cache only example
-        /*
-        const data = client.readQuery({ query: TODOS_QUERY })
 
-        // Create a new to-do item
-        const myNewTodo = {
-          id: position,
-          text: text,
-          completed: false,
-          deleted: false,
-          position,
-          user: 'mbg@outlook.com',
-          __typename: 'ToDo'
-        }
-
-        // Write back to the to-do list, appending the new item
-        client.writeQuery({
-          query: TODOS_QUERY,
-          data: {
-            todos: [...data.todos, myNewTodo]
-          }
-        })*/
         resetForm()
       }}
     >
@@ -354,4 +338,4 @@ const Rating = ({ value }) => {
   return <div className={`${bgColor} rounded-full h-5 w-5`} />
 }
 
-export default withApollo({ ssr: true })(ToDoDataFetcher)
+export default withApollo({ ssr: true })(ToDoFetcher)

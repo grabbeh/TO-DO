@@ -42,9 +42,10 @@ const resolvers = {
         completed: false,
         deleted: false
       }
-
       await ToDo.put({ ...todo })
-      return todo
+      // We don't store 'createdSince' in the DB because it's calculated on each request
+      // as relative to the time of creation
+      return { ...todo, createdSince: 0 }
     },
     updateToDo: async (p, a, c) => {
       let { todo } = a

@@ -14,7 +14,7 @@ const Input = props => {
   } = props
 
   return (
-    <div className='w-full'>
+    <div>
       {label && (
         <div className='mb-2'>
           <div className='text-bold text-xl'>
@@ -25,7 +25,7 @@ const Input = props => {
       <input
         className={`text-gray-900 focus:outline-none ${
           completed ? 'line-through' : ''
-        } text-2xl font-medium`}
+        } text-2xl font-medium w-full`}
         autoComplete={autoComplete}
         id={value}
         onChange={onChange}
