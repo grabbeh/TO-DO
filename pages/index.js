@@ -171,7 +171,7 @@ const EditTextInput = ({ completed, updateToDo, todo }) => (
     {props => {
       const { values, errors, handleChange } = props
       return (
-        <Form>
+        <Form className='w-full'>
           <Input
             style={{ boxSizing: 'border-box' }}
             onChange={handleChange}
@@ -272,7 +272,7 @@ const TextInput = ({ position = 0 }) => {
       {props => {
         const { values, errors, handleChange } = props
         return (
-          <Form>
+          <Form className='w-full'>
             <Input
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
