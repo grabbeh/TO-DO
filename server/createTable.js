@@ -20,7 +20,9 @@ var params = {
     {
       AttributeName: 'sk',
       AttributeType: 'S'
-    }
+    },
+    { AttributeName: 'GSI1pk', AttributeType: 'S' },
+    { AttributeName: 'GSI1sk', AttributeType: 'S' }
   ],
   KeySchema: [
     {
@@ -32,11 +34,26 @@ var params = {
       KeyType: 'RANGE'
     }
   ],
-  // create global secondary indexes to a) get toxic/active tweets and b) latest version
   ProvisionedThroughput: {
     ReadCapacityUnits: 1,
     WriteCapacityUnits: 1
   },
+  GlobalSecondaryIndexes: [
+    {
+      IndexName: 'GSI1',
+      KeySchema: [
+        { AttributeName: 'GSI1pk', KeyType: 'HASH' },
+        { AttributeName: 'GSI1sk', KeyType: 'RANGE' }
+      ],
+      Projection: {
+        ProjectionType: 'ALL'
+      },
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
+      }
+    }
+  ],
   TableName: 'todos'
 }
 

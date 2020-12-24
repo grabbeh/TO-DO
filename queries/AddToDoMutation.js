@@ -1,10 +1,11 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  mutation addToDo($todo: ToDoInput) {
-    addToDo(todo: $todo) {
+  mutation addTodo($todo: TodoInput) {
+    addTodo(todo: $todo) {
       text
       id
+      todoListId
       user
       completed
       deleted

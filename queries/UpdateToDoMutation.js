@@ -1,11 +1,12 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  mutation updateToDo($todo: ToDoInput) {
-    updateToDo(todo: $todo) {
+  mutation updateTodo($todo: TodoInput) {
+    updateTodo(todo: $todo) {
       text
       id
       user
+      todoListId
       completed
       deleted
       position

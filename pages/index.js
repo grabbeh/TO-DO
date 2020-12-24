@@ -10,53 +10,56 @@ import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 
-const ToDoFetcher = () => {
+const TodoFetcher = props => {
+  let { id } = props
   //https://github.com/apollographql/apollo-client/issues/7485
-  const { loading, error, data } = useQuery(TODOS_QUERY)
+  const { loading, error, data } = useQuery(TODOS_QUERY, {
+    variables: { id }
+  })
   if (loading) return 'Loading'
   if (error) return 'Error'
-  return <ToDoPage todos={data.todos} />
+  return <TodoPage parentId={id} todos={data.todos} />
 }
 
-const ToDoPage = ({ todos }) => {
+const TodoPage = ({ todos, parentId }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
-  const [updateToDo] = useMutation(UPDATE_TODO)
+  const [updateTodo] = useMutation(UPDATE_TODO)
 
   return (
     <Container>
       <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
       <ul>
         {todos.map(todo => (
-          <ToDo key={todo.id} updateToDo={updateToDo} todo={todo} />
+          <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
         ))}
         <li>
-          <TextInput position={todos.length} />
+          <TextInput parentId={parentId} position={todos.length} />
         </li>
       </ul>
     </Container>
   )
 }
 
-const ToDo = props => {
-  let { todo, updateToDo } = props
+const Todo = props => {
+  let { todo, updateTodo } = props
   /*
   Cache modify shouldn't be necessary as just updating an existing item
   const [updateCompleted] = useMutation(UPDATE_TODO, {
-    update (cache, { data: { updateToDo } }) {
+    update (cache, { data: { updateTodo } }) {
       console.log(cache)
        
       cache.modify({
         fields: {
           todos (todos = []) {
             cache.writeFragment({
-              id: `ToDo:${updateToDo.id}`,
+              id: `Todo:${updateTodo.id}`,
               fragment: gql`
-                fragment CompleteTodo on ToDo {
+                fragment CompleteTodo on Todo {
                   completed
                 }
               `,
               data: {
-                completed: updateToDo.completed
+                completed: updateTodo.completed
               }
             })
           }
@@ -67,14 +70,14 @@ const ToDo = props => {
   /*
   // As we are not actually deleting the item, just updated the 'deleted' property, shouldn't 
   be a need to remove from cache
-  const [deleteToDo] = useMutation(UPDATE_TODO, {
-    update (cache, { data: updateToDo }) {
+  const [deleteTodo] = useMutation(UPDATE_TODO, {
+    update (cache, { data: updateTodo }) {
       cache.modify({
         fields: {
           todos (existingTodoRefs = [], { readField }) {
             let updated = existingTodoRefs.filter(ref => {
               let existingId = readField('id', ref)
-              return existingId !== updateToDo.id
+              return existingId !== updateTodo.id
             })
             return [...updated]
           }
@@ -87,7 +90,7 @@ const ToDo = props => {
 
   let handleChange = () => {
     setCompleted(!completed)
-    updateToDo({
+    updateTodo({
       variables: {
         todo: { ...todo, completed: !completed }
       }
@@ -108,7 +111,7 @@ const ToDo = props => {
             </label>
             <EditTextInput
               completed={completed}
-              updateToDo={updateToDo}
+              updateTodo={updateTodo}
               todo={todo}
             />
           </div>
@@ -121,15 +124,15 @@ const ToDo = props => {
             <div
               className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
               onClick={() => {
-                let updatedToDo = {
+                let updatedTodo = {
                   ...todo,
                   deleted: true
                 }
-                updateToDo({
+                updateTodo({
                   variables: {
-                    todo: updatedToDo
+                    todo: updatedTodo
                   },
-                  optimisticResponse: updatedToDo
+                  optimisticResponse: updatedTodo
                 })
               }}
             >
@@ -142,7 +145,7 @@ const ToDo = props => {
   )
 }
 
-const EditTextInput = ({ completed, updateToDo, todo }) => (
+const EditTextInput = ({ completed, updateTodo, todo }) => (
   <Formik
     initialValues={{
       text: todo.text
@@ -156,15 +159,15 @@ const EditTextInput = ({ completed, updateToDo, todo }) => (
         text: false
       })
       let { text } = values
-      let updatedToDo = {
+      let updatedTodo = {
         ...todo,
         text
       }
-      updateToDo({
+      updateTodo({
         variables: {
-          todo: updatedToDo
+          todo: updatedTodo
         },
-        optimisticResponse: updatedToDo
+        optimisticResponse: updatedTodo
       })
     }}
   >
@@ -192,17 +195,17 @@ const EditTextInput = ({ completed, updateToDo, todo }) => (
   </Formik>
 )
 
-const TextInput = ({ position = 0 }) => {
-  const [addToDo] = useMutation(ADD_TODO, {
-    update (cache, { data: { addToDo } }) {
+const TextInput = ({ parentId, position = 0 }) => {
+  const [addTodo] = useMutation(ADD_TODO, {
+    update (cache, { data: { addTodo } }) {
       /*
       // read then write query
-      console.log(addToDo)
+      console.log(addTodo)
       const { todos } = cache.readQuery({ query: TODOS_QUERY })
       cache.writeQuery({
         query: TODOS_QUERY,
         data: {
-          todos: [...todos, addToDo]
+          todos: [...todos, addTodo]
         }
       })
       */
@@ -210,11 +213,12 @@ const TextInput = ({ position = 0 }) => {
       cache.modify({
         fields: {
           todos (existingTodos = []) {
-            const newToDoRef = cache.writeFragment({
-              data: addToDo,
+            const newTodoRef = cache.writeFragment({
+              data: addTodo,
               fragment: gql`
-                fragment NewTodo on ToDo {
+                fragment NewTodo on Todo {
                   id
+                  todoListId
                   text
                   completed
                   deleted
@@ -224,7 +228,7 @@ const TextInput = ({ position = 0 }) => {
                 }
               `
             })
-            return [...existingTodos, newToDoRef]
+            return [...existingTodos, newTodoRef]
           }
         }
       })
@@ -246,15 +250,25 @@ const TextInput = ({ position = 0 }) => {
         })
         let { text } = values
         const id = uuidv4()
+        // get parent ID from URL
         //mutation example + optimistic response
-        addToDo({
-          variables: { todo: { user: 'mbg@outlook.com', text, position, id } },
+        addTodo({
+          variables: {
+            todo: {
+              user: 'mbg@outlook.com',
+              text,
+              position,
+              id,
+              todoListId: parentId
+            }
+          },
           optimisticResponse: {
             __typename: 'Mutation',
-            addToDo: {
-              __typename: 'ToDo',
+            addTodo: {
+              __typename: 'Todo',
               text,
               id,
+              todoListId: parentId,
               position,
               deleted: false,
               completed: false,
@@ -317,7 +331,7 @@ const Edit = () => (
   </svg>
 )
 
-const sortToDos = arr => {
+const sortTodos = arr => {
   return arr.slice().sort((a, b) => {
     return a.position - b.position
   })
@@ -338,4 +352,9 @@ const Rating = ({ value }) => {
   return <div className={`${bgColor} rounded-full h-5 w-5`} />
 }
 
-export default withApollo({ ssr: true })(ToDoFetcher)
+const Apollo = withApollo({ ssr: true })(TodoFetcher)
+export default Apollo
+
+Apollo.getInitialProps = async ({ query }) => {
+  return { id: query.id }
+}

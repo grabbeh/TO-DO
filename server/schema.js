@@ -1,18 +1,36 @@
 const typeDefs = `
   type Query {
-    todos: [ToDo]
+    todos(id: ID!): [Todo]
+    todoLists: [TodoList]
   }
 
   type Mutation {
-    addToDo(todo: ToDoInput): ToDo
-    updateToDo(todo: ToDoInput): ToDo
+    addTodoList(todoList: TodoListInput): TodoList
+    updateTodoList(todoList: TodoListInput): TodoList
+    addTodo(todo: TodoInput): Todo
+    updateTodo(todo: TodoInput): Todo
   }
 
-  input ToDoInput {
+  input TodoListInput {
+    name: String
+    user: String
+    id: ID
+    deleted: Boolean
+  }
+
+  type TodoList {
+    name: String
+    user: String
+    id: ID
+    deleted: Boolean
+  }
+
+  input TodoInput {
     text: String
     user: String
     id: ID
     completed: Boolean
+    todoListId: String
     deleted: Boolean
     position: Int
     createdSince: String
@@ -20,10 +38,11 @@ const typeDefs = `
 
   scalar Date
   
-  type ToDo {
+  type Todo {
     id: ID!
     user: String!
     text: String!
+    todoListId: String!
     completed: Boolean!
     deleted: Boolean!
     position: Int!

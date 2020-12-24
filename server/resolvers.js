@@ -1,6 +1,6 @@
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
-import { ToDo } from './table.js'
+import { Todo, TodoList, TodoTable } from './table.js'
 import { formatDistanceToNowStrict } from 'date-fns'
 
 const resolvers = {
@@ -21,17 +21,50 @@ const resolvers = {
     }
   }),
   Query: {
+    todoLists: async () => {
+      let todoLists = await TodoList.query('USER#mbg@outlook.com', {
+        beginsWith: 'TODOLIST#'
+      })
+      return todoLists.Items
+    },
     todos: async (p, a, c) => {
-      let todos = await ToDo.query('USER#mbg@outlook.com', {
-        beginsWith: 'TODO#'
+      let pk = `USER#mbg@outlook.com#TODOLIST#${a.id}`
+      let todos = await TodoTable.query(pk, {
+        beginsWith: 'TODO#',
+        index: 'GSI1'
       })
       return todos.Items
     }
   },
   Mutation: {
-    addToDo: async (p, a, c) => {
+    addTodoList: async (p, a, c) => {
       let {
-        todo: { text, position, id, user }
+        todoList: { name, id, user }
+      } = a
+
+      let todoList = {
+        name,
+        user,
+        id,
+        deleted: false,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${id}`,
+        GSI1sk: `TODOLIST#${id}`
+      }
+      await TodoList.put({ ...todoList })
+      return todoList
+    },
+    updateTodoList: async (p, a, c) => {
+      let { todoList } = a
+      await TodoList.put({
+        ...todoList,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${a.id}`,
+        GSI1pk: `TODOLIST#${a.id}`
+      })
+      return todoList
+    },
+    addTodo: async (p, a, c) => {
+      let {
+        todo: { text, position, id, todoListId, user }
       } = a
 
       let todo = {
@@ -39,22 +72,37 @@ const resolvers = {
         position,
         user,
         id,
+        todoListId,
         completed: false,
         deleted: false
       }
-      await ToDo.put({ ...todo })
+      await Todo.put({
+        ...todo,
+        pk: id,
+        sk: id,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
+        GSI1sk: `TODO#${id}`
+      })
       // We don't store 'createdSince' in the DB because it's calculated on each request
       // as relative to the time of creation
       return { ...todo, createdSince: 0 }
     },
-    updateToDo: async (p, a, c) => {
+    updateTodo: async (p, a, c) => {
       let { todo } = a
+
+      let { id, todoListId } = todo
       delete todo['createdSince']
-      await ToDo.put({ ...todo })
+      await Todo.put({
+        ...todo,
+        pk: id,
+        sk: id,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
+        GSI1sk: `TODO#${id}`
+      })
       return todo
     }
   },
-  ToDo: {
+  Todo: {
     createdSince: async todo => {
       let days = formatDistanceToNowStrict(new Date(todo.created), {
         unit: 'day'
