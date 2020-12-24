@@ -1,53 +1,41 @@
 import { useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import Link from 'next/link'
-import { Container, Input } from '../components/index'
+import { Input } from '../components/index'
 import {
-  TodoLists as TODO_LISTS_QUERY,
-  AddToDoList as ADD_TODOLIST,
-  updateTodoList as UPDATE_TODOLIST
+  AddTodoList as ADD_TODOLIST,
+  UpdateTodoList as UPDATE_TODOLIST
 } from '../queries/index'
-import TODO_LISTS_QUERY from '../queries/TodoListsQuery'
-import ADD_TODOLIST from '../queries/AddTodoListMutation'
-import UPDATE_TODOLIST from '../queries/UpdateToDoListMutation'
-import withApollo from '../lib/withApollo'
 
-const TodoListsFetcher = () => {
-  //https://github.com/apollographql/apollo-client/issues/7485
-  const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
-  if (loading) return 'Loading'
-  if (error) return 'Error'
-  return <TodoListPage todoLists={data.todoLists} />
-}
-
-const TodoListPage = ({ todoLists }) => {
+const TodoLists = ({ todoLists, getTodos, setParentId }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
-    <Container>
-      <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
+    <div className='mr-5'>
+      <h1 className='font-bold text-xl'>Lists</h1>
       <ul>
         {todoLists.map(todoList => (
           <TodoList
             key={todoList.id}
             updateTodoList={updateTodoList}
             todoList={todoList}
+            getTodos={getTodos}
+            setParentId={setParentId}
           />
         ))}
         <li>
           <TextInput />
         </li>
       </ul>
-    </Container>
+    </div>
   )
 }
 
 const TodoList = props => {
-  let { todoList, updateTodo } = props
+  let { todoList, getTodos, updateTodo, setParentId } = props
   let [editable, setEditable] = useState(false)
   return (
     <li key={todoList.id}>
@@ -57,9 +45,15 @@ const TodoList = props => {
             {editable ? (
               <EditTextInput updateTodo={updateTodo} todoList={todoList} />
             ) : (
-              <Link href={`/?id=${todoList.id}`}>
-                <a>{todoList.name}</a>
-              </Link>
+              <div
+                className='text-2xl font-medium'
+                onClick={() => {
+                  getTodos({ variables: { id: todoList.id } })
+                  setParentId(todoList.id)
+                }}
+              >
+                {todoList.name}
+              </div>
             )}
           </div>
           <div className='flex'>
@@ -253,4 +247,4 @@ const Edit = () => (
   </svg>
 )
 
-export default withApollo({ ssr: true })(TodoListsFetcher)
+export default TodoLists

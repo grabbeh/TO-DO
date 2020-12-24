@@ -2,6 +2,7 @@ const typeDefs = `
   type Query {
     todos(id: ID!): [Todo]
     todoLists: [TodoList]
+    todoList(id: ID!): TodoList
   }
 
   type Mutation {

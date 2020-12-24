@@ -21,6 +21,15 @@ const resolvers = {
     }
   }),
   Query: {
+    todoList: async (p, a, c) => {
+      console.log(a)
+      let pk = `USER#mbg@outlook.com#TODOLIST#${a.id}`
+      let todoList = await TodoTable.query(pk, {
+        beginsWith: 'TODOLIST#',
+        index: 'GSI1'
+      })
+      return todoList.Items[0]
+    },
     todoLists: async () => {
       let todoLists = await TodoList.query('USER#mbg@outlook.com', {
         beginsWith: 'TODOLIST#'

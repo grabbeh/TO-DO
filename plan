@@ -8,4 +8,5 @@ TODO#[ID]       TODO#[ID]       USER#[USER]#TODOLIST#[ID]   #TODO#[ID]
 SECONDARY INDEX
 
 PK                          SK
-USER#[USER]#TODOLIST#[ID]   #TODO#ID
+USER#[USER]#TODOLIST#[ID]   #TODO[ID]
+                            #TODOLIST[ID]
