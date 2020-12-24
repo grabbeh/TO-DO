@@ -1,43 +1,69 @@
-import { useQuery, useMutation, useApolloClient } from '@apollo/client'
-import { useState } from 'react'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useEffect, useState } from 'react'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import { Container, Input } from '../components/index'
 import {
   Todos as TODOS_QUERY,
-  AddToDo as ADD_TODO,
-  updateTodo as UPDATE_TODO
+  AddTodo as ADD_TODO,
+  UpdateTodo as UPDATE_TODO,
+  TodoLists as TODO_LISTS_QUERY
 } from '../queries/index'
 import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
+import TodoLists from '../components/todoLists'
 
-const TodoFetcher = props => {
-  let { id } = props
+const TodoFetcher = () => {
   //https://github.com/apollographql/apollo-client/issues/7485
-  const { loading, error, data } = useQuery(TODOS_QUERY, {
-    variables: { id }
-  })
+  const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading) return 'Loading'
   if (error) return 'Error'
-  return <TodoPage parentId={id} todos={data.todos} />
+  console.log(data)
+  return <TodoPage todoLists={data.todoLists} />
 }
 
-const TodoPage = ({ todos, parentId }) => {
-  // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
+const TodoPage = ({ todoLists }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
+  /*const { loading, error, data } = useQuery(TODOS_QUERY, {
+    variables: { id: todoLists[0].id }
+  })*/
+  const [getTodos, { loading, data }] = useLazyQuery(TODOS_QUERY)
+  let [parentId, setParentId] = useState(todoLists[0].id)
+  if (loading) return 'Loading'
+  console.log(data)
 
+  /* useEffect(() => {
+    if (todoLists) {
+      getTodos({ variables: { id: todoLists[0].id } })
+    }
+  }, [])*/
+
+  // pass getTodos lazy query down to todoLists component
   return (
     <Container>
-      <h1 className='mb-3 font-bold text-4xl'>To-dos</h1>
-      <ul>
-        {todos.map(todo => (
-          <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
-        ))}
-        <li>
-          <TextInput parentId={parentId} position={todos.length} />
-        </li>
-      </ul>
+      <div className='flex'>
+        <div>
+          <TodoLists
+            setParentId={setParentId}
+            getTodos={getTodos}
+            todoLists={todoLists}
+          />
+        </div>
+        {data && (
+          <div>
+            <h1 className='mb-3 font-bold text-4xl'>{data.todoList.name}</h1>
+            <ul>
+              {data.todos.map(todo => (
+                <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
+              ))}
+              <li>
+                <TextInput parentId={parentId} position={data.todos.length} />
+              </li>
+            </ul>
+          </div>
+        )}
+      </div>
     </Container>
   )
 }
@@ -356,7 +382,3 @@ const Rating = ({ value }) => {
 
 const Apollo = withApollo({ ssr: true })(TodoFetcher)
 export default Apollo
-
-Apollo.getInitialProps = async ({ query }) => {
-  return { id: query.id }
-}
