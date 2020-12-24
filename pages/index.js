@@ -42,7 +42,7 @@ const TodoPage = ({ todoLists }) => {
   // pass getTodos lazy query down to todoLists component
   return (
     <Container>
-      <div className='flex'>
+      <div className='flex flex-wrap'>
         <div>
           <TodoLists
             setParentId={setParentId}

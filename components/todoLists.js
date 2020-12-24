@@ -43,7 +43,11 @@ const TodoList = props => {
         <div className='pb-2 flex content-center'>
           <div className='flex flex-grow'>
             {editable ? (
-              <EditTextInput updateTodo={updateTodo} todoList={todoList} />
+              <EditTextInput
+                setEditable={setEditable}
+                updateTodo={updateTodo}
+                todoList={todoList}
+              />
             ) : (
               <div
                 className='text-2xl font-medium'
@@ -89,7 +93,7 @@ const TodoList = props => {
   )
 }
 
-const EditTextInput = ({ updateTodoList, todoList }) => (
+const EditTextInput = ({ updateTodoList, setEditable, todoList }) => (
   <Formik
     initialValues={{
       name: todoList.name
@@ -113,6 +117,7 @@ const EditTextInput = ({ updateTodoList, todoList }) => (
         },
         optimisticResponse: updatedTodoList
       })
+      setEditable(false)
     }}
   >
     {props => {
