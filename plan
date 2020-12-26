@@ -1,9 +1,10 @@
 USER#[USER]#TODOLIST#[LISTID]
 
 
-PK              SK              GSI1PK                      GSISK
-USER#[USER]     TODOLIST#[ID]   USER#[USER]#TODOLIST#[ID]   #TODOLIST[ID]
-TODO#[ID]       TODO#[ID]       USER#[USER]#TODOLIST#[ID]   #TODO#[ID]
+PK              SK              GSI1PK                      GSISK           GSI2PK                      GSI2SK
+USER#[USER]     TODOLIST#[ID]   USER#[USER]#TODOLIST#[ID]   #TODOLIST[ID]   
+TODO#[ID]       TODO#[ID]       USER#[USER]#TODOLIST#[ID]   #TODO#[ID]      
+COMMENT[ID]     COMMENT[COMMENT]                                            USER#[USER]#TODO#[ID]       COMMENT#[ID]
 
 SECONDARY INDEX
 

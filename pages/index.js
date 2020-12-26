@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import { Container, Input } from '../components/index'
@@ -7,37 +7,29 @@ import {
   Todos as TODOS_QUERY,
   AddTodo as ADD_TODO,
   UpdateTodo as UPDATE_TODO,
-  TodoLists as TODO_LISTS_QUERY
+  TodoLists as TODO_LISTS_QUERY,
+  Comments as COMMENTS_QUERY
 } from '../queries/index'
 import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import TodoLists from '../components/todoLists'
+import Comments from '../components/comments'
+import CommentInput from '../components/commentInput'
 
 const TodoFetcher = () => {
   //https://github.com/apollographql/apollo-client/issues/7485
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading) return 'Loading'
   if (error) return 'Error'
-  console.log(data)
   return <TodoPage todoLists={data.todoLists} />
 }
 
 const TodoPage = ({ todoLists }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
-  /*const { loading, error, data } = useQuery(TODOS_QUERY, {
-    variables: { id: todoLists[0].id }
-  })*/
   const [getTodos, { loading, data }] = useLazyQuery(TODOS_QUERY)
   let [parentId, setParentId] = useState(todoLists[0].id)
   if (loading) return 'Loading'
-  console.log(data)
-
-  /* useEffect(() => {
-    if (todoLists) {
-      getTodos({ variables: { id: todoLists[0].id } })
-    }
-  }, [])*/
 
   // pass getTodos lazy query down to todoLists component
   return (
@@ -70,6 +62,7 @@ const TodoPage = ({ todoLists }) => {
 
 const Todo = props => {
   let { todo, updateTodo } = props
+  const [getComments, { loading, data }] = useLazyQuery(COMMENTS_QUERY)
   /*
   Cache modify shouldn't be necessary as just updating an existing item
   const [updateCompleted] = useMutation(UPDATE_TODO, {
@@ -127,7 +120,7 @@ const Todo = props => {
   return (
     <li key={todo.id}>
       {!todo.deleted && (
-        <div className='pb-2 flex content-center'>
+        <div className='pb-2 flex'>
           <div className='flex flex-grow'>
             <label>
               <input
@@ -137,12 +130,25 @@ const Todo = props => {
                 className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
               />
             </label>
-            <EditTextInput
-              completed={completed}
-              updateTodo={updateTodo}
-              todo={todo}
-            />
+            <div>
+              <EditTextInput
+                completed={completed}
+                updateTodo={updateTodo}
+                todo={todo}
+              />
+              <div
+                className='text-sm'
+                onClick={() => {
+                  getComments({ variables: { id: todo.id } })
+                }}
+              >
+                Get comments {todo.commentsCount}
+              </div>
+              {data && data.comments && <Comments comments={data.comments} />}
+              <CommentInput todoId={todo.id} />
+            </div>
           </div>
+
           <div className='flex'>
             {!todo.completed && (
               <div className='mr-2'>

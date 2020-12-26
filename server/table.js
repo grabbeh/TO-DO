@@ -17,7 +17,8 @@ const TodoTable = new Table({
   partitionKey: 'pk',
   sortKey: 'sk',
   indexes: {
-    GSI1: { partitionKey: 'GSI1pk', sortKey: 'GSI1sk' }
+    GSI1: { partitionKey: 'GSI1pk', sortKey: 'GSI1sk' },
+    GSI2: { partitionKey: 'GSI2pk', sortKey: 'GSI2sk' }
   },
   DocumentClient
 })
@@ -38,9 +39,8 @@ const TodoList = new Entity({
 const Todo = new Entity({
   name: 'Todo',
   attributes: {
-    pk: { partitionKey: true, prefix: 'TODO#' },
+    id: { partitionKey: true, prefix: 'TODO#' },
     sk: { sortKey: true, prefix: 'TODO#' },
-    id: { type: 'string' },
     todoListId: { type: 'string' },
     user: { type: 'string' },
     text: { type: 'string' },
@@ -53,4 +53,18 @@ const Todo = new Entity({
   table: TodoTable
 })
 
-export { Todo, TodoList, TodoTable }
+const Comment = new Entity({
+  name: 'Comment',
+  attributes: {
+    id: { partitionKey: true, prefix: 'COMMENT#' },
+    sk: { sortKey: true, prefix: 'COMMENT#' },
+    text: { type: 'string' },
+    user: { type: 'string' },
+    todoId: 'string',
+    GSI2pk: { type: 'string' },
+    GSI2sk: { type: 'string' }
+  },
+  table: TodoTable
+})
+
+export { Comment, Todo, TodoList, TodoTable }

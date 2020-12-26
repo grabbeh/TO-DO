@@ -1,6 +1,7 @@
 const typeDefs = `
   type Query {
     todos(id: ID!): [Todo]
+    comments(id: ID!): [Comment]
     todoLists: [TodoList]
     todoList(id: ID!): TodoList
   }
@@ -10,6 +11,7 @@ const typeDefs = `
     updateTodoList(todoList: TodoListInput): TodoList
     addTodo(todo: TodoInput): Todo
     updateTodo(todo: TodoInput): Todo
+    addComment(comment: CommentInput): Comment
   }
 
   input TodoListInput {
@@ -17,6 +19,20 @@ const typeDefs = `
     user: String
     id: ID
     deleted: Boolean
+  }
+
+  type Comment {
+    text: String
+    user: String
+    id: ID!
+    todoId: String
+  }
+
+  input CommentInput {
+    text: String
+    user: String
+    id: ID!
+    todoId: String
   }
 
   type TodoList {
@@ -34,7 +50,6 @@ const typeDefs = `
     todoListId: String
     deleted: Boolean
     position: Int
-    createdSince: String
   }
 
   scalar Date
@@ -48,6 +63,7 @@ const typeDefs = `
     deleted: Boolean!
     position: Int!
     createdSince: String
+    commentsCount: Int
   }
 
   schema {

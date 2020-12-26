@@ -22,7 +22,9 @@ var params = {
       AttributeType: 'S'
     },
     { AttributeName: 'GSI1pk', AttributeType: 'S' },
-    { AttributeName: 'GSI1sk', AttributeType: 'S' }
+    { AttributeName: 'GSI1sk', AttributeType: 'S' },
+    { AttributeName: 'GSI2pk', AttributeType: 'S' },
+    { AttributeName: 'GSI2sk', AttributeType: 'S' }
   ],
   KeySchema: [
     {
@@ -44,6 +46,20 @@ var params = {
       KeySchema: [
         { AttributeName: 'GSI1pk', KeyType: 'HASH' },
         { AttributeName: 'GSI1sk', KeyType: 'RANGE' }
+      ],
+      Projection: {
+        ProjectionType: 'ALL'
+      },
+      ProvisionedThroughput: {
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
+      }
+    },
+    {
+      IndexName: 'GSI2',
+      KeySchema: [
+        { AttributeName: 'GSI2pk', KeyType: 'HASH' },
+        { AttributeName: 'GSI2sk', KeyType: 'RANGE' }
       ],
       Projection: {
         ProjectionType: 'ALL'

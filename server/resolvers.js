@@ -1,6 +1,6 @@
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
-import { Todo, TodoList, TodoTable } from './table.js'
+import { Todo, TodoList, TodoTable, Comment } from './table.js'
 import { formatDistanceToNowStrict } from 'date-fns'
 
 const resolvers = {
@@ -42,6 +42,14 @@ const resolvers = {
         index: 'GSI1'
       })
       return todos.Items
+    },
+    comments: async (p, a, c) => {
+      let pk = `USER#mbg@outlook.com#TODO#${a.id}`
+      let comments = await TodoTable.query(pk, {
+        beginsWith: 'COMMENT#',
+        index: 'GSI2'
+      })
+      return comments.Items
     }
   },
   Mutation: {
@@ -71,22 +79,11 @@ const resolvers = {
       return todoList
     },
     addTodo: async (p, a, c) => {
-      let {
-        todo: { text, position, id, todoListId, user }
-      } = a
-
-      let todo = {
-        text,
-        position,
-        user,
-        id,
-        todoListId,
-        completed: false,
-        deleted: false
-      }
+      let { todo } = a
+      let { id, todoListId } = a
       await Todo.put({
         ...todo,
-        pk: id,
+        id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
         GSI1sk: `TODO#${id}`
@@ -97,7 +94,6 @@ const resolvers = {
     },
     updateTodo: async (p, a, c) => {
       let { todo } = a
-
       let { id, todoListId } = todo
       delete todo['createdSince']
       await Todo.put({
@@ -108,6 +104,20 @@ const resolvers = {
         GSI1sk: `TODO#${id}`
       })
       return todo
+    },
+    addComment: async (p, a, c) => {
+      let { comment } = a
+      let { id, todoId } = comment
+      await Comment.put({
+        ...comment,
+        id,
+        sk: id,
+        GSI2pk: `USER#mbg@outlook.com#TODO#${todoId}`,
+        GSI2sk: `COMMENT#${id}`
+      })
+      // We don't store 'createdSince' in the DB because it's calculated on each request
+      // as relative to the time of creation
+      return comment
     }
   },
   Todo: {
@@ -117,6 +127,14 @@ const resolvers = {
       })
       let rating = days.slice(0, 1)
       return Number(rating)
+    },
+    commentsCount: async todo => {
+      let pk = `USER#mbg@outlook.com#TODO#${todo.id}`
+      let comments = await TodoTable.query(pk, {
+        beginsWith: 'COMMENT#',
+        index: 'GSI2'
+      })
+      return comments.Items.length
     }
   }
 }

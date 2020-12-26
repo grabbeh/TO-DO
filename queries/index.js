@@ -4,5 +4,16 @@ import TodoLists from './TodoLists'
 import Todos from './Todos'
 import UpdateTodoList from './UpdateTodoList'
 import UpdateTodo from './UpdateTodo'
+import Comments from './Comments'
+import AddComment from './AddComment'
 
-export { AddTodo, AddTodoList, TodoLists, Todos, UpdateTodoList, UpdateTodo }
+export {
+  AddTodo,
+  AddTodoList,
+  AddComment,
+  Comments,
+  TodoLists,
+  Todos,
+  UpdateTodoList,
+  UpdateTodo
+}
