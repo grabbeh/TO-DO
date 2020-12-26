@@ -26,16 +26,12 @@ const Input = props => {
         className={`text-gray-900 focus:outline-none ${
           completed ? 'line-through' : ''
         } text-2xl font-medium w-full`}
-        autoComplete={autoComplete}
         id={value}
         onChange={onChange}
         placeholder={placeholder}
         value={value}
         type={type}
         name={name}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        readOnly={readOnly}
       />
     </div>
   )

@@ -1,17 +1,25 @@
-import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import { Input } from './index'
+import { Textarea } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
 
-const CommentInput = ({ todoId }) => {
+const CommentInput = ({ todoId, comments }) => {
   return (
-    <div className='mr-5'>
-      <h1 className='font-bold text-sm'>Add comment</h1>
-      <TextInput todoId={todoId} />
+    <div>
+      {comments ? (
+        <div className='mt-2 p-2 rounded bg-blue-500'>
+          <div className='font-bold'>Comments</div>
+          <ul>
+            {comments.map(comment => (
+              <Comment comment={comment} key={comment.id} />
+            ))}
+            <TextInput todoId={todoId} />
+          </ul>
+        </div>
+      ) : null}
     </div>
   )
 }
@@ -81,7 +89,7 @@ const TextInput = props => {
         const { values, errors, handleChange } = props
         return (
           <Form>
-            <Input
+            <Textarea
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
               name='text'
@@ -94,10 +102,31 @@ const TextInput = props => {
                 </div>
               }
             </div>
+            <div className='flex justify-end'>
+              <button
+                className=' bg-green-500 p-1 text-xs font-bold text-white'
+                type='submit'
+              >
+                Submit
+              </button>
+            </div>
           </Form>
         )
       }}
     </Formik>
+  )
+}
+
+const Comment = props => {
+  let { comment } = props
+  return (
+    <li key={comment.id}>
+      <div className='flex '>
+        <div className='flex flex-grow'>
+          <div className='text-white text-sx font-medium'>{comment.text}</div>
+        </div>
+      </div>
+    </li>
   )
 }
 

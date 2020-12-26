@@ -4,17 +4,17 @@ export default gql`
   query todos($id: ID!) {
     todoList(id: $id) {
       name
-    }
-    todos(id: $id) {
-      id
-      todoListId
-      text
-      user
-      completed
-      deleted
-      position
-      createdSince
-      commentsCount
+      todos {
+        id
+        todoListId
+        text
+        user
+        completed
+        deleted
+        position
+        createdSince
+        commentsCount
+      }
     }
   }
 `

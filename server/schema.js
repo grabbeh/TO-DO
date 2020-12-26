@@ -1,6 +1,7 @@
 const typeDefs = `
   type Query {
     todos(id: ID!): [Todo]
+    todo(id: ID!): Todo
     comments(id: ID!): [Comment]
     todoLists: [TodoList]
     todoList(id: ID!): TodoList
@@ -39,6 +40,7 @@ const typeDefs = `
     name: String
     user: String
     id: ID
+    todos: [Todo]
     deleted: Boolean
   }
 
@@ -48,8 +50,11 @@ const typeDefs = `
     id: ID
     completed: Boolean
     todoListId: String
+    comments: [CommentInput]
     deleted: Boolean
     position: Int
+    createdSince: String
+    commentsCount: Int
   }
 
   scalar Date
@@ -62,6 +67,7 @@ const typeDefs = `
     completed: Boolean!
     deleted: Boolean!
     position: Int!
+    comments: [Comment]
     createdSince: String
     commentsCount: Int
   }

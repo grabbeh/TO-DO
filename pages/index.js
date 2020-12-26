@@ -8,13 +8,12 @@ import {
   AddTodo as ADD_TODO,
   UpdateTodo as UPDATE_TODO,
   TodoLists as TODO_LISTS_QUERY,
-  Comments as COMMENTS_QUERY
+  Todo as TODO_QUERY
 } from '../queries/index'
 import withApollo from '../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import TodoLists from '../components/todoLists'
-import Comments from '../components/comments'
 import CommentInput from '../components/commentInput'
 
 const TodoFetcher = () => {
@@ -30,8 +29,6 @@ const TodoPage = ({ todoLists }) => {
   const [getTodos, { loading, data }] = useLazyQuery(TODOS_QUERY)
   let [parentId, setParentId] = useState(todoLists[0].id)
   if (loading) return 'Loading'
-
-  // pass getTodos lazy query down to todoLists component
   return (
     <Container>
       <div className='flex flex-wrap'>
@@ -46,11 +43,14 @@ const TodoPage = ({ todoLists }) => {
           <div>
             <h1 className='mb-3 font-bold text-4xl'>{data.todoList.name}</h1>
             <ul>
-              {data.todos.map(todo => (
+              {data.todoList.todos.map(todo => (
                 <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
               ))}
               <li>
-                <TextInput parentId={parentId} position={data.todos.length} />
+                <TextInput
+                  parentId={parentId}
+                  position={data.todoList.todos.length}
+                />
               </li>
             </ul>
           </div>
@@ -62,52 +62,9 @@ const TodoPage = ({ todoLists }) => {
 
 const Todo = props => {
   let { todo, updateTodo } = props
-  const [getComments, { loading, data }] = useLazyQuery(COMMENTS_QUERY)
-  /*
-  Cache modify shouldn't be necessary as just updating an existing item
-  const [updateCompleted] = useMutation(UPDATE_TODO, {
-    update (cache, { data: { updateTodo } }) {
-      console.log(cache)
-       
-      cache.modify({
-        fields: {
-          todos (todos = []) {
-            cache.writeFragment({
-              id: `Todo:${updateTodo.id}`,
-              fragment: gql`
-                fragment CompleteTodo on Todo {
-                  completed
-                }
-              `,
-              data: {
-                completed: updateTodo.completed
-              }
-            })
-          }
-        }
-      })
-    }
-  })*/
-  /*
-  // As we are not actually deleting the item, just updated the 'deleted' property, shouldn't 
-  be a need to remove from cache
-  const [deleteTodo] = useMutation(UPDATE_TODO, {
-    update (cache, { data: updateTodo }) {
-      cache.modify({
-        fields: {
-          todos (existingTodoRefs = [], { readField }) {
-            let updated = existingTodoRefs.filter(ref => {
-              let existingId = readField('id', ref)
-              return existingId !== updateTodo.id
-            })
-            return [...updated]
-          }
-        }
-      })
-    }
-  })
-*/
+
   let [completed, setCompleted] = useState(todo.completed)
+  const [getComments, { loading, data }] = useLazyQuery(TODO_QUERY)
 
   let handleChange = () => {
     setCompleted(!completed)
@@ -136,16 +93,25 @@ const Todo = props => {
                 updateTodo={updateTodo}
                 todo={todo}
               />
-              <div
-                className='text-sm'
-                onClick={() => {
-                  getComments({ variables: { id: todo.id } })
-                }}
-              >
-                Get comments {todo.commentsCount}
+              <div className='text-sm'>
+                <div>
+                  <div
+                    onClick={() => {
+                      getComments({ variables: { id: todo.id } })
+                    }}
+                  >
+                    <div className='flex'>
+                      <div className='h-4 w-4 text-gray-500'>
+                        <CommentsIcon />
+                      </div>
+                      <div className='ml-1 text-xs'> {todo.commentsCount}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              {data && data.comments && <Comments comments={data.comments} />}
-              <CommentInput todoId={todo.id} />
+              {data && data.todo && (
+                <CommentInput comments={data.todo.comments} todoId={todo.id} />
+              )}
             </div>
           </div>
 
@@ -232,18 +198,6 @@ const EditTextInput = ({ completed, updateTodo, todo }) => (
 const TextInput = ({ parentId, position = 0 }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
-      /*
-      // read then write query
-      console.log(addTodo)
-      const { todos } = cache.readQuery({ query: TODOS_QUERY })
-      cache.writeQuery({
-        query: TODOS_QUERY,
-        data: {
-          todos: [...todos, addTodo]
-        }
-      })
-      */
-      // cache.modify
       cache.modify({
         fields: {
           todos (existingTodos = []) {
@@ -362,6 +316,34 @@ const Edit = () => (
     fill='currentColor'
   >
     <path d='M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z' />
+  </svg>
+)
+
+const CommentsIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 20 20'
+    fill='currentColor'
+  >
+    <path
+      fillRule='evenodd'
+      d='M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z'
+      clipRule='evenodd'
+    />
+  </svg>
+)
+
+const PlusIcon = () => (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 20 20'
+    fill='currentColor'
+  >
+    <path
+      fillRule='evenodd'
+      d='M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z'
+      clipRule='evenodd'
+    />
   </svg>
 )
 

@@ -35,6 +35,11 @@ const resolvers = {
       })
       return todoLists.Items
     },
+    todo: async (p, a, c) => {
+      let { id } = a
+      let todo = await Todo.get({ id, sk: id })
+      return todo
+    },
     todos: async (p, a, c) => {
       let pk = `USER#mbg@outlook.com#TODOLIST#${a.id}`
       let todos = await TodoTable.query(pk, {
@@ -96,6 +101,8 @@ const resolvers = {
       let { todo } = a
       let { id, todoListId } = todo
       delete todo['createdSince']
+      delete todo['commentsCount']
+      delete todo['comments']
       await Todo.put({
         ...todo,
         pk: id,
@@ -120,6 +127,16 @@ const resolvers = {
       return comment
     }
   },
+  TodoList: {
+    todos: async todoList => {
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+      let todos = await TodoTable.query(pk, {
+        beginsWith: 'TODO#',
+        index: 'GSI1'
+      })
+      return todos.Items
+    }
+  },
   Todo: {
     createdSince: async todo => {
       let days = formatDistanceToNowStrict(new Date(todo.created), {
@@ -135,6 +152,14 @@ const resolvers = {
         index: 'GSI2'
       })
       return comments.Items.length
+    },
+    comments: async todo => {
+      let pk = `USER#mbg@outlook.com#TODO#${todo.Item.id}`
+      let comments = await TodoTable.query(pk, {
+        beginsWith: 'COMMENT#',
+        index: 'GSI2'
+      })
+      return comments.Items
     }
   }
 }
