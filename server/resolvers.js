@@ -85,7 +85,7 @@ const resolvers = {
     },
     addTodo: async (p, a, c) => {
       let { todo } = a
-      let { id, todoListId } = a
+      let { id, todoListId } = todo
       await Todo.put({
         ...todo,
         id,
@@ -95,7 +95,7 @@ const resolvers = {
       })
       // We don't store 'createdSince' in the DB because it's calculated on each request
       // as relative to the time of creation
-      return { ...todo, createdSince: 0 }
+      return { ...todo, createdSince: 0, commentsCount: 0 }
     },
     updateTodo: async (p, a, c) => {
       let { todo } = a

@@ -30,7 +30,7 @@ const TextInput = props => {
     update (cache, { data: { addComment } }) {
       cache.modify({
         fields: {
-          comments (existingComments = []) {
+          todo (existingTodo = []) {
             const newCommentRef = cache.writeFragment({
               data: addComment,
               fragment: gql`
@@ -42,7 +42,11 @@ const TextInput = props => {
                 }
               `
             })
-            return [...existingComments, newCommentRef]
+
+            return {
+              ...existingTodo,
+              comments: [...existingTodo.comments, newCommentRef]
+            }
           }
         }
       })

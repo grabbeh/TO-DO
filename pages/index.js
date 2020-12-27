@@ -1,4 +1,9 @@
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import {
+  useQuery,
+  useMutation,
+  useLazyQuery,
+  useApolloClient
+} from '@apollo/client'
 import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
@@ -18,13 +23,16 @@ import CommentInput from '../components/commentInput'
 
 const TodoFetcher = () => {
   //https://github.com/apollographql/apollo-client/issues/7485
-  const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
-  if (loading) return 'Loading'
+  const { loading, error, data } = useQuery(TODO_LISTS_QUERY, {
+    fetchPolicy: 'cache-first'
+  })
+  if (loading || !data) return 'Loading'
   if (error) return 'Error'
   return <TodoPage todoLists={data.todoLists} />
 }
 
 const TodoPage = ({ todoLists }) => {
+  const client = useApolloClient()
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [getTodos, { loading, data }] = useLazyQuery(TODOS_QUERY)
   let [parentId, setParentId] = useState(todoLists[0].id)
@@ -200,7 +208,7 @@ const TextInput = ({ parentId, position = 0 }) => {
     update (cache, { data: { addTodo } }) {
       cache.modify({
         fields: {
-          todos (existingTodos = []) {
+          todoList (existingTodoList = []) {
             const newTodoRef = cache.writeFragment({
               data: addTodo,
               fragment: gql`
@@ -213,10 +221,15 @@ const TextInput = ({ parentId, position = 0 }) => {
                   user
                   position
                   createdSince
+                  commentsCount
                 }
               `
             })
-            return [...existingTodos, newTodoRef]
+
+            return {
+              ...existingTodoList,
+              todos: [...existingTodoList.todos, newTodoRef]
+            }
           }
         }
       })
@@ -246,6 +259,8 @@ const TextInput = ({ parentId, position = 0 }) => {
               user: 'mbg@outlook.com',
               text,
               position,
+              completed: false,
+              deleted: false,
               id,
               todoListId: parentId
             }
@@ -261,7 +276,8 @@ const TextInput = ({ parentId, position = 0 }) => {
               deleted: false,
               completed: false,
               user: 'mbg@outlook.com',
-              createdSince: 0
+              createdSince: 0,
+              commentsCount: 0
             }
           }
           // for a new item, optimisticResponse needs typename and the id of the
