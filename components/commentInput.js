@@ -10,14 +10,14 @@ const CommentInput = ({ todoId, comments }) => {
   return (
     <div>
       {comments ? (
-        <div className='mt-2 p-2 rounded bg-blue-500'>
-          <div className='font-bold'>Comments</div>
-          <ul>
+        <div className='p-3 h-full'>
+          <div className='font-bold text-xl'>Comments</div>
+          <ul className='mb-4'>
             {comments.map(comment => (
               <Comment comment={comment} key={comment.id} />
             ))}
-            <TextInput todoId={todoId} />
           </ul>
+          <TextInput todoId={todoId} />
         </div>
       ) : null}
     </div>
@@ -108,7 +108,7 @@ const TextInput = props => {
             </div>
             <div className='flex justify-end'>
               <button
-                className=' bg-green-500 p-1 text-xs font-bold text-white'
+                className=' bg-green-500 p-1 text-sm text-white font-bold'
                 type='submit'
               >
                 Submit
@@ -124,10 +124,10 @@ const TextInput = props => {
 const Comment = props => {
   let { comment } = props
   return (
-    <li key={comment.id}>
+    <li className='border-b py-2 border-gray-500' key={comment.id}>
       <div className='flex '>
         <div className='flex flex-grow'>
-          <div className='text-white text-sx font-medium'>{comment.text}</div>
+          <div className='text-md font-medium'>{comment.text}</div>
         </div>
       </div>
     </li>

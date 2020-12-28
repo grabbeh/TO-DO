@@ -10,7 +10,8 @@ const Input = props => {
     onBlur,
     readOnly,
     autoComplete,
-    completed
+    completed,
+    textSize
   } = props
 
   return (
@@ -23,9 +24,9 @@ const Input = props => {
         </div>
       )}
       <input
-        className={`text-gray-900 focus:outline-none ${
+        className={`${textSize} text-gray-900 focus:outline-none ${
           completed ? 'line-through' : ''
-        } text-2xl font-medium w-full`}
+        } font-medium w-full`}
         id={value}
         onChange={onChange}
         placeholder={placeholder}

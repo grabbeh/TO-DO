@@ -1,9 +1,4 @@
-import {
-  useQuery,
-  useMutation,
-  useLazyQuery,
-  useApolloClient
-} from '@apollo/client'
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
@@ -20,60 +15,80 @@ import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import TodoLists from '../components/todoLists'
 import CommentInput from '../components/commentInput'
+import Loading from '../components/loading'
 
 const TodoFetcher = () => {
   //https://github.com/apollographql/apollo-client/issues/7485
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY, {
     fetchPolicy: 'cache-first'
   })
-  if (loading || !data) return 'Loading'
+  if (loading || !data) return <Loading />
   if (error) return 'Error'
   return <TodoPage todoLists={data.todoLists} />
 }
 
 const TodoPage = ({ todoLists }) => {
-  const client = useApolloClient()
   const [updateTodo] = useMutation(UPDATE_TODO)
-  const [getTodos, { loading, data }] = useLazyQuery(TODOS_QUERY)
+  const [getTodos, todosResponse] = useLazyQuery(TODOS_QUERY)
+  const [getComments, commentsResponse] = useLazyQuery(TODO_QUERY)
   let [parentId, setParentId] = useState(todoLists[0].id)
-  if (loading) return 'Loading'
+
   return (
     <Container>
       <div className='flex flex-wrap'>
-        <div>
+        <div className='w-1/4 flex-shrink'>
           <TodoLists
             setParentId={setParentId}
             getTodos={getTodos}
             todoLists={todoLists}
           />
         </div>
-        {data && (
-          <div>
-            <h1 className='mb-3 font-bold text-4xl'>{data.todoList.name}</h1>
-            <ul>
-              {data.todoList.todos.map(todo => (
-                <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
-              ))}
-              <li>
-                <TextInput
-                  parentId={parentId}
-                  position={data.todoList.todos.length}
-                />
-              </li>
-            </ul>
-          </div>
-        )}
+
+        <div className='p-3 w-1/2'>
+          {todosResponse.loading && <Loading />}
+          {todosResponse.data && (
+            <div>
+              <h1 className='mb-3 font-bold text-4xl'>
+                {todosResponse.data.todoList.name}
+              </h1>
+              <ul>
+                {todosResponse.data.todoList.todos.map(todo => (
+                  <Todo
+                    key={todo.id}
+                    getComments={getComments}
+                    updateTodo={updateTodo}
+                    todo={todo}
+                  />
+                ))}
+                <li>
+                  <TextInput
+                    parentId={parentId}
+                    position={todosResponse.data.todoList.todos.length}
+                  />
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+
+        <div className='w-1/4 flex justify-center'>
+          {commentsResponse.loading && <Loading />}
+          {commentsResponse.data && (
+            <div className='w-full'>
+              <CommentInput
+                comments={commentsResponse.data.todo.comments}
+                todoId={commentsResponse.data.todo.id}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </Container>
   )
 }
 
-const Todo = props => {
-  let { todo, updateTodo } = props
-
+const Todo = ({ todo, updateTodo, getComments }) => {
   let [completed, setCompleted] = useState(todo.completed)
-  const [getComments, { loading, data }] = useLazyQuery(TODO_QUERY)
-
   let handleChange = () => {
     setCompleted(!completed)
     updateTodo({
@@ -85,66 +100,64 @@ const Todo = props => {
   return (
     <li key={todo.id}>
       {!todo.deleted && (
-        <div className='pb-2 flex'>
-          <div className='flex flex-grow'>
-            <label>
-              <input
-                type='checkbox'
-                checked={completed}
-                onChange={handleChange}
-                className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
-              />
-            </label>
-            <div>
-              <EditTextInput
-                completed={completed}
-                updateTodo={updateTodo}
-                todo={todo}
-              />
-              <div className='text-sm'>
-                <div>
-                  <div
-                    onClick={() => {
-                      getComments({ variables: { id: todo.id } })
-                    }}
-                  >
-                    <div className='flex'>
-                      <div className='h-4 w-4 text-gray-500'>
-                        <CommentsIcon />
+        <div>
+          <div className='flex'>
+            <div className='flex flex-grow'>
+              <label>
+                <input
+                  type='checkbox'
+                  checked={completed}
+                  onChange={handleChange}
+                  className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
+                />
+              </label>
+              <div>
+                <EditTextInput
+                  completed={completed}
+                  updateTodo={updateTodo}
+                  todo={todo}
+                />
+                <div className='text-sm'>
+                  <div>
+                    <div
+                      onClick={() => {
+                        getComments({ variables: { id: todo.id } })
+                      }}
+                    >
+                      <div className='flex'>
+                        <div className='h-4 w-4 text-gray-500'>
+                          <CommentsIcon />
+                        </div>
+                        <div className='ml-1 text-xs'>{todo.commentsCount}</div>
                       </div>
-                      <div className='ml-1 text-xs'> {todo.commentsCount}</div>
                     </div>
                   </div>
                 </div>
               </div>
-              {data && data.todo && (
-                <CommentInput comments={data.todo.comments} todoId={todo.id} />
-              )}
             </div>
-          </div>
-
-          <div className='flex'>
-            {!todo.completed && (
-              <div className='mr-2'>
-                <Rating value={todo.createdSince} />
+            <div className='flex'>
+              {!todo.completed && (
+                <div className='mr-2'>
+                  <Rating value={todo.createdSince} />
+                </div>
+              )}
+              <div
+                className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
+                onClick={() => {
+                  let updatedTodo = {
+                    ...todo,
+                    deleted: true
+                  }
+                  updateTodo({
+                    variables: {
+                      todo: updatedTodo
+                    },
+                    optimisticResponse: updatedTodo
+                  })
+                }}
+              >
+                <Dustbin />
               </div>
-            )}
-            <div
-              className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
-              onClick={() => {
-                let updatedTodo = {
-                  ...todo,
-                  deleted: true
-                }
-                updateTodo({
-                  variables: {
-                    todo: updatedTodo
-                  },
-                  optimisticResponse: updatedTodo
-                })
-              }}
-            >
-              <Dustbin />
             </div>
           </div>
         </div>
@@ -184,6 +197,7 @@ const EditTextInput = ({ completed, updateTodo, todo }) => (
       return (
         <Form className='w-full'>
           <Input
+            textSize='text-2xl'
             style={{ boxSizing: 'border-box' }}
             onChange={handleChange}
             name='text'
@@ -292,6 +306,7 @@ const TextInput = ({ parentId, position = 0 }) => {
         return (
           <Form className='w-full'>
             <Input
+              textSize='text-2xl'
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
               name='text'

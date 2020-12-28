@@ -14,7 +14,7 @@ const TodoLists = ({ todoLists, getTodos, setParentId }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
-    <div className='mr-5'>
+    <div className='p-3'>
       <h1 className='font-bold text-xl'>Lists</h1>
       <ul>
         {todoLists.map(todoList => (
@@ -40,7 +40,7 @@ const TodoList = props => {
   return (
     <li key={todoList.id}>
       {!todoList.deleted && (
-        <div className='pb-2 flex content-center'>
+        <div className='flex content-center'>
           <div className='flex flex-grow'>
             {editable ? (
               <EditTextInput
@@ -50,7 +50,7 @@ const TodoList = props => {
               />
             ) : (
               <div
-                className='text-2xl font-medium'
+                className='cursor-pointer text-sm font-medium'
                 onClick={() => {
                   getTodos({ variables: { id: todoList.id } })
                   setParentId(todoList.id)
@@ -65,12 +65,12 @@ const TodoList = props => {
               onClick={() => {
                 setEditable(true)
               }}
-              className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
+              className='h-4 w-4 text-gray-500 hover:text-black cursor-pointer'
             >
               <Edit />
             </div>
             <div
-              className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
+              className='h-4 w-4 text-gray-500 hover:text-black cursor-pointer'
               onClick={() => {
                 let updatedTodoList = {
                   ...todoList,
@@ -125,6 +125,7 @@ const EditTextInput = ({ updateTodoList, setEditable, todoList }) => (
       return (
         <Form>
           <Input
+            textSize='text:sm'
             style={{ boxSizing: 'border-box' }}
             onChange={handleChange}
             name='name'
@@ -181,7 +182,7 @@ const TextInput = () => {
           name: false
         })
         let { name } = values
-        console.log(name)
+
         const id = uuidv4()
         //mutation example + optimistic response
         addTodoList({
@@ -209,6 +210,7 @@ const TextInput = () => {
         return (
           <Form>
             <Input
+              textSize='text:sm'
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
               name='name'
