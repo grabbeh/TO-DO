@@ -14,7 +14,7 @@ const TodoLists = ({ todoLists, getTodos, setParentId }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
-    <div className='p-3'>
+    <div className='border-r-2 p-3'>
       <h1 className='font-bold text-xl'>Lists</h1>
       <ul>
         {todoLists.map(todoList => (

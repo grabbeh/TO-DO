@@ -10,8 +10,8 @@ const CommentInput = ({ todoId, comments }) => {
   return (
     <div>
       {comments ? (
-        <div className='p-3 h-full'>
-          <div className='font-bold text-xl'>Comments</div>
+        <div className='bg-black p-3 h-full'>
+          <div className='font-bold text-xl text-gray-50'>Comments</div>
           <ul className='mb-4'>
             {comments.map(comment => (
               <Comment comment={comment} key={comment.id} />
@@ -127,7 +127,9 @@ const Comment = props => {
     <li className='border-b py-2 border-gray-500' key={comment.id}>
       <div className='flex '>
         <div className='flex flex-grow'>
-          <div className='text-md font-medium'>{comment.text}</div>
+          <div className='text-md font-medium text-gray-300'>
+            {comment.text}
+          </div>
         </div>
       </div>
     </li>
