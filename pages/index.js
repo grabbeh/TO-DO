@@ -46,27 +46,13 @@ const TodoPage = ({ todoLists }) => {
         <div className='p-3 w-full md:w-1/2'>
           {todosResponse.loading && <Loading />}
           {todosResponse.data && (
-            <div>
-              <h1 className='mb-3 font-bold text-4xl'>
-                {todosResponse.data.todoList.name}
-              </h1>
-              <ul>
-                {todosResponse.data.todoList.todos.map(todo => (
-                  <Todo
-                    key={todo.id}
-                    getComments={getComments}
-                    updateTodo={updateTodo}
-                    todo={todo}
-                  />
-                ))}
-                <li>
-                  <TextInput
-                    parentId={parentId}
-                    position={todosResponse.data.todoList.todos.length}
-                  />
-                </li>
-              </ul>
-            </div>
+            <TodoList
+              name={todosResponse.data.todoList.name}
+              parentId={parentId}
+              getComments={getComments}
+              updateTodo={updateTodo}
+              todos={todosResponse.data.todoList.todos}
+            />
           )}
         </div>
 
@@ -85,6 +71,25 @@ const TodoPage = ({ todoLists }) => {
     </Container>
   )
 }
+
+const TodoList = ({ todos, name, parentId, getComments, updateTodo }) => (
+  <div>
+    <h1 className='mb-3 font-bold text-4xl'>{name}</h1>
+    <ul>
+      {todos.map(todo => (
+        <Todo
+          key={todo.id}
+          getComments={getComments}
+          updateTodo={updateTodo}
+          todo={todo}
+        />
+      ))}
+      <li>
+        <TextInput parentId={parentId} position={todos.length} />
+      </li>
+    </ul>
+  </div>
+)
 
 const Todo = ({ todo, updateTodo, getComments }) => {
   let [completed, setCompleted] = useState(todo.completed)
@@ -117,7 +122,7 @@ const Todo = ({ todo, updateTodo, getComments }) => {
                   todo={todo}
                 />
                 <div className='text-sm'>
-                  <div>
+                  <div className='cursor-pointer'>
                     <div
                       onClick={() => {
                         getComments({ variables: { id: todo.id } })
@@ -196,7 +201,7 @@ const EditTextInput = ({ completed, updateTodo, todo }) => (
       return (
         <Form className='w-full'>
           <Input
-            textSize='text-2xl'
+            textSize='text-xl'
             style={{ boxSizing: 'border-box' }}
             onChange={handleChange}
             name='text'
@@ -305,7 +310,7 @@ const TextInput = ({ parentId, position = 0 }) => {
         return (
           <Form className='w-full'>
             <Input
-              textSize='text-2xl'
+              textSize='text-xl'
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
               name='text'
