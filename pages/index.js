@@ -36,15 +36,14 @@ const TodoPage = ({ todoLists }) => {
   return (
     <Container>
       <div className='flex flex-wrap'>
-        <div className='w-1/4 flex-shrink'>
+        <div className='md:w-1/4 w-full flex-shrink'>
           <TodoLists
             setParentId={setParentId}
             getTodos={getTodos}
             todoLists={todoLists}
           />
         </div>
-
-        <div className='p-3 w-1/2'>
+        <div className='p-3 w-full md:w-1/2'>
           {todosResponse.loading && <Loading />}
           {todosResponse.data && (
             <div>
@@ -71,7 +70,7 @@ const TodoPage = ({ todoLists }) => {
           )}
         </div>
 
-        <div className='w-1/4 flex justify-center'>
+        <div className='md:w-1/4 w-full flex justify-center'>
           {commentsResponse.loading && <Loading />}
           {commentsResponse.data && (
             <div className='w-full'>
