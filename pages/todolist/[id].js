@@ -6,7 +6,8 @@ import _ from 'lodash'
 import {
   MainContainer as Container,
   Input,
-  Header
+  Header,
+  Back
 } from '../../components/index'
 import {
   AddTodo as ADD_TODO,
@@ -41,6 +42,7 @@ const TodoPage = ({ data, id }) => {
   let completed = todos.filter(t => t.completed)
   return (
     <Container>
+      <Back />
       <Header>{name}</Header>
       {Object.entries(grouped).map(([key, value]) => (
         <TodoList
