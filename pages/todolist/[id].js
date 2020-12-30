@@ -1,88 +1,74 @@
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
-import { Container, Input } from '../components/index'
+import _ from 'lodash'
 import {
-  Todos as TODOS_QUERY,
+  MainContainer as Container,
+  Input,
+  Header
+} from '../../components/index'
+import {
   AddTodo as ADD_TODO,
   UpdateTodo as UPDATE_TODO,
-  TodoLists as TODO_LISTS_QUERY,
-  Todo as TODO_QUERY
-} from '../queries/index'
-import withApollo from '../lib/withApollo'
+  Todos as TODOS_QUERY
+} from '../../queries/index'
+import withApollo from '../../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import TodoLists from '../components/todoLists'
-import CommentInput from '../components/commentInput'
-import Loading from '../components/loading'
+import Loading from '../../components/loading'
+import Link from 'next/link'
 
-const TodoFetcher = () => {
-  //https://github.com/apollographql/apollo-client/issues/7485
-  const { loading, error, data } = useQuery(TODO_LISTS_QUERY, {
-    fetchPolicy: 'cache-first'
+const TodoFetcher = props => {
+  const { loading, error, data } = useQuery(TODOS_QUERY, {
+    fetchPolicy: 'cache-first',
+    variables: { id: props.id }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  return <TodoPage todoLists={data.todoLists} />
+
+  return <TodoPage id={props.id} data={data} />
 }
 
-const TodoPage = ({ todoLists }) => {
+const TodoPage = ({ data, id }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
-  const [getTodos, todosResponse] = useLazyQuery(TODOS_QUERY)
-  const [getComments, commentsResponse] = useLazyQuery(TODO_QUERY)
-  let [parentId, setParentId] = useState(todoLists[0].id)
-
+  let {
+    todoList: { name, todos }
+  } = data
+  todos = todos.filter(t => !t.deleted)
+  let nonCompleted = todos.filter(t => !t.completed)
+  let grouped = _.groupBy(nonCompleted, 'createdSince')
+  let completed = todos.filter(t => t.completed)
   return (
     <Container>
-      <div className='flex flex-wrap'>
-        <div className='md:w-1/4 w-full flex-shrink'>
-          <TodoLists
-            setParentId={setParentId}
-            getTodos={getTodos}
-            todoLists={todoLists}
-          />
-        </div>
-        <div className='p-3 w-full md:w-1/2'>
-          {todosResponse.loading && <Loading />}
-          {todosResponse.data && (
-            <TodoList
-              name={todosResponse.data.todoList.name}
-              parentId={parentId}
-              getComments={getComments}
-              updateTodo={updateTodo}
-              todos={todosResponse.data.todoList.todos}
-            />
-          )}
-        </div>
-
-        <div className='md:w-1/4 w-full flex justify-center'>
-          {commentsResponse.loading && <Loading />}
-          {commentsResponse.data && (
-            <div className='w-full'>
-              <CommentInput
-                comments={commentsResponse.data.todo.comments}
-                todoId={commentsResponse.data.todo.id}
-              />
-            </div>
-          )}
-        </div>
-      </div>
+      <Header>{name}</Header>
+      {Object.entries(grouped).map(([key, value]) => (
+        <TodoList
+          key={key}
+          parentId={id}
+          title={key}
+          updateTodo={updateTodo}
+          todos={value}
+        />
+      ))}
+      {completed.length > 0 && (
+        <TodoList
+          title='Completed'
+          parentId={id}
+          updateTodo={updateTodo}
+          todos={completed}
+        />
+      )}
     </Container>
   )
 }
 
-const TodoList = ({ todos, name, parentId, getComments, updateTodo }) => (
+const TodoList = ({ todos, title, parentId, updateTodo }) => (
   <div>
-    <h1 className='mb-3 font-bold text-4xl'>{name}</h1>
+    {title && <div className='font-bold text-xl'>{title}</div>}
     <ul>
       {todos.map(todo => (
-        <Todo
-          key={todo.id}
-          getComments={getComments}
-          updateTodo={updateTodo}
-          todo={todo}
-        />
+        <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
       ))}
       <li>
         <TextInput parentId={parentId} position={todos.length} />
@@ -91,7 +77,7 @@ const TodoList = ({ todos, name, parentId, getComments, updateTodo }) => (
   </div>
 )
 
-const Todo = ({ todo, updateTodo, getComments }) => {
+const Todo = ({ todo, updateTodo }) => {
   let [completed, setCompleted] = useState(todo.completed)
   let handleChange = () => {
     setCompleted(!completed)
@@ -102,70 +88,59 @@ const Todo = ({ todo, updateTodo, getComments }) => {
     })
   }
   return (
-    <li key={todo.id}>
-      {!todo.deleted && (
-        <div>
+    <li className='border-b py-2 border-gray-500' key={todo.id}>
+      <div>
+        <div className='flex'>
+          <div className='flex flex-grow'>
+            <label>
+              <input
+                type='checkbox'
+                checked={completed}
+                onChange={handleChange}
+                className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
+              />
+            </label>
+            <EditTextInput
+              completed={completed}
+              updateTodo={updateTodo}
+              todo={todo}
+            />
+          </div>
           <div className='flex'>
-            <div className='flex flex-grow'>
-              <label>
-                <input
-                  type='checkbox'
-                  checked={completed}
-                  onChange={handleChange}
-                  className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
-                />
-              </label>
-              <div>
-                <EditTextInput
-                  completed={completed}
-                  updateTodo={updateTodo}
-                  todo={todo}
-                />
-              </div>
+            <div
+              className='mr-2 h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
+              onClick={() => {
+                let updatedTodo = {
+                  ...todo,
+                  deleted: true
+                }
+                updateTodo({
+                  variables: {
+                    todo: updatedTodo
+                  },
+                  optimisticResponse: updatedTodo
+                })
+              }}
+            >
+              <Dustbin />
             </div>
-            <div className='flex'>
-              {!todo.completed && (
-                <div className='mr-2'>
-                  <Rating value={todo.createdSince} />
-                </div>
-              )}
-              <div
-                className='mr-2 h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
-                onClick={() => {
-                  let updatedTodo = {
-                    ...todo,
-                    deleted: true
-                  }
-                  updateTodo({
-                    variables: {
-                      todo: updatedTodo
-                    },
-                    optimisticResponse: updatedTodo
-                  })
-                }}
-              >
-                <Dustbin />
-              </div>
-              <div className='text-sm'>
-                <div className='cursor-pointer'>
-                  <div
-                    onClick={() => {
-                      getComments({ variables: { id: todo.id } })
-                    }}
-                  >
+            <div className='text-sm'>
+              <div className='cursor-pointer'>
+                <Link href={`/todo/${encodeURIComponent(todo.id)}`}>
+                  <a>
                     <div className='flex'>
                       <div className='h-6 w-6 text-gray-500'>
                         <CommentsIcon />
                       </div>
                       <div className='ml-1 text-xs'>{todo.commentsCount}</div>
                     </div>
-                  </div>
-                </div>
+                  </a>
+                </Link>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </li>
   )
 }
@@ -368,33 +343,6 @@ const CommentsIcon = () => (
   </svg>
 )
 
-const PlusIcon = () => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    viewBox='0 0 20 20'
-    fill='currentColor'
-  >
-    <path
-      fillRule='evenodd'
-      d='M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z'
-      clipRule='evenodd'
-    />
-  </svg>
-)
-
-const sortTodos = arr => {
-  return arr.slice().sort((a, b) => {
-    return a.position - b.position
-  })
-}
-
-const reorder = (list, sourceIndex, destinationIndex) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(sourceIndex, 1)
-  result.splice(destinationIndex, 0, removed)
-  return result
-}
-
 const Rating = ({ value }) => {
   let bgColor = 'bg-green-500'
   if (value > 2) bgColor = 'bg-yellow-500'
@@ -404,4 +352,9 @@ const Rating = ({ value }) => {
 }
 
 const Apollo = withApollo({ ssr: true })(TodoFetcher)
+
+Apollo.getInitialProps = async ({ query }) => {
+  return { id: query.id }
+}
+
 export default Apollo

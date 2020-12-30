@@ -5,21 +5,18 @@ import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import { Textarea } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
+import { Header } from '../components/index'
 
-const CommentInput = ({ todoId, comments }) => {
+const CommentInput = ({ todoId, text, comments }) => {
   return (
     <div>
-      {comments ? (
-        <div className='p-3 h-full'>
-          <div className='font-bold text-xl'>Comments</div>
-          <ul className='mb-4'>
-            {comments.map(comment => (
-              <Comment comment={comment} key={comment.id} />
-            ))}
-          </ul>
-          <TextInput todoId={todoId} />
-        </div>
-      ) : null}
+      <Header>Comments</Header>
+      <ul className='mb-4'>
+        {comments.map(comment => (
+          <Comment comment={comment} key={comment.id} />
+        ))}
+      </ul>
+      <TextInput todoId={todoId} />
     </div>
   )
 }
@@ -92,7 +89,7 @@ const TextInput = props => {
       {props => {
         const { values, errors, handleChange } = props
         return (
-          <Form>
+          <Form className='mb-4'>
             <Textarea
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
@@ -108,7 +105,7 @@ const TextInput = props => {
             </div>
             <div className='flex justify-end'>
               <button
-                className=' bg-green-500 p-1 text-sm font-bold'
+                className=' bg-green-500 py-2 px-3 text-white text-xl font-bold'
                 type='submit'
               >
                 Submit
@@ -127,7 +124,7 @@ const Comment = props => {
     <li className='border-b py-2 border-gray-500' key={comment.id}>
       <div className='flex '>
         <div className='flex flex-grow'>
-          <div className='text-md font-medium'>{comment.text}</div>
+          <div className='text-xl font-medium'>{comment.text}</div>
         </div>
       </div>
     </li>

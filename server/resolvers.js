@@ -1,7 +1,7 @@
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 import { Todo, TodoList, TodoTable, Comment } from './table.js'
-import { formatDistanceToNowStrict } from 'date-fns'
+import { formatDistanceToNow } from 'date-fns'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -76,7 +76,7 @@ const resolvers = {
     },
     updateTodoList: async (p, a, c) => {
       let { todoList } = a
-      await TodoList.put({
+      await TodoList.update({
         ...todoList,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${a.id}`,
         GSI1pk: `TODOLIST#${a.id}`
@@ -103,7 +103,7 @@ const resolvers = {
       delete todo['createdSince']
       delete todo['commentsCount']
       delete todo['comments']
-      await Todo.put({
+      await Todo.update({
         ...todo,
         pk: id,
         sk: id,
@@ -139,11 +139,8 @@ const resolvers = {
   },
   Todo: {
     createdSince: async todo => {
-      let days = formatDistanceToNowStrict(new Date(todo.created), {
-        unit: 'day'
-      })
-      let rating = days.slice(0, 1)
-      return Number(rating)
+      let distance = formatDistanceToNow(new Date(todo.created))
+      return distance
     },
     commentsCount: async todo => {
       let pk = `USER#mbg@outlook.com#TODO#${todo.id}`
