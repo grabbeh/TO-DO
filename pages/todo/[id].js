@@ -4,26 +4,27 @@ import { Todo as TODO_QUERY } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import Comments from '../../components/commentsStandalone'
 import Loading from '../../components/loading'
-import { Back } from '../../components/index'
+import { Back, Header } from '../../components/index'
 
 const CommentsFetcher = props => {
+  let { id } = props
   const { loading, error, data } = useQuery(TODO_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { id: props.id }
+    variables: { id }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  return <TodoPage data={data} />
+  return <TodoPage todoId={id} data={data} />
 }
 
-const TodoPage = ({ data }) => {
+const TodoPage = ({ data, todoId }) => {
   let {
-    todo: { text, id, comments }
+    todo: { text, comments }
   } = data
   return (
     <Container>
-      <Back />
-      <Comments text={text} comments={comments} todoId={id} />
+      <Back title={text} />
+      <Comments comments={comments} todoId={todoId} />
     </Container>
   )
 }

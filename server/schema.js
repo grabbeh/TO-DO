@@ -27,6 +27,7 @@ const typeDefs = `
     user: String
     id: ID!
     todoId: String
+    createdAt: String
   }
 
   input CommentInput {
@@ -34,6 +35,7 @@ const typeDefs = `
     user: String
     id: ID!
     todoId: String
+    createdAt: String
   }
 
   type TodoList {
@@ -52,7 +54,6 @@ const typeDefs = `
     todoListId: String
     comments: [CommentInput]
     deleted: Boolean
-    position: Int
     createdSince: String
     commentsCount: Int
   }
@@ -66,7 +67,6 @@ const typeDefs = `
     todoListId: String!
     completed: Boolean!
     deleted: Boolean!
-    position: Int!
     comments: [Comment]
     createdSince: String
     commentsCount: Int

@@ -9,7 +9,6 @@ export default gql`
       todoListId
       completed
       deleted
-      position
     }
   }
 `

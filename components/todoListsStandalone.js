@@ -37,7 +37,7 @@ const TodoList = props => {
   let { todoList, updateTodo } = props
   let [editable, setEditable] = useState(false)
   return (
-    <li className='border-b py-2 border-gray-500' key={todoList.id}>
+    <li className='border-b-2 py-2 border-gray-500' key={todoList.id}>
       {!todoList.deleted && (
         <div className='flex content-center'>
           <div className='flex flex-grow'>

@@ -1,20 +1,24 @@
 import { useRouter } from 'next/router'
+import { Header } from './index'
 
-const Back = () => {
+const Back = ({ title }) => {
   const router = useRouter()
   return (
-    <div
-      className='mt-4 cursor-pointer font-bold'
-      onClick={() => router.back()}
-    >
-      <Arrow />
+    <div className='flex align-middle'>
+      <div
+        className='mr-3 mt-4 cursor-pointer font-bold'
+        onClick={() => router.back()}
+      >
+        <Arrow />
+      </div>
+      <Header>{title}</Header>
     </div>
   )
 }
 
 const Arrow = () => (
   <svg
-    class='w-6 h-6'
+    className='w-6 h-6'
     fill='none'
     stroke='currentColor'
     viewBox='0 0 24 24'

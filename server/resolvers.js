@@ -1,7 +1,7 @@
 import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 import { Todo, TodoList, TodoTable, Comment } from './table.js'
-import { formatDistanceToNow } from 'date-fns'
+import { formatDistanceToNow, format } from 'date-fns'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -38,7 +38,7 @@ const resolvers = {
     todo: async (p, a, c) => {
       let { id } = a
       let todo = await Todo.get({ id, sk: id })
-      return todo
+      return todo.Item
     },
     todos: async (p, a, c) => {
       let pk = `USER#mbg@outlook.com#TODOLIST#${a.id}`
@@ -47,14 +47,6 @@ const resolvers = {
         index: 'GSI1'
       })
       return todos.Items
-    },
-    comments: async (p, a, c) => {
-      let pk = `USER#mbg@outlook.com#TODO#${a.id}`
-      let comments = await TodoTable.query(pk, {
-        beginsWith: 'COMMENT#',
-        index: 'GSI2'
-      })
-      return comments.Items
     }
   },
   Mutation: {
@@ -119,12 +111,12 @@ const resolvers = {
         ...comment,
         id,
         sk: id,
-        GSI2pk: `USER#mbg@outlook.com#TODO#${todoId}`,
+        GSI2pk: `TODO#${todoId}`,
         GSI2sk: `COMMENT#${id}`
       })
       // We don't store 'createdSince' in the DB because it's calculated on each request
       // as relative to the time of creation
-      return comment
+      return { ...comment, createdAt: new Date().toISOString() }
     }
   },
   TodoList: {
@@ -137,13 +129,20 @@ const resolvers = {
       return todos.Items
     }
   },
+  Comment: {
+    createdAt: async comment => {
+      if (comment.created) {
+        return format(new Date(comment.created), 'd MMM yyyy k:m')
+      } else return 'Just now'
+    }
+  },
   Todo: {
     createdSince: async todo => {
       let distance = formatDistanceToNow(new Date(todo.created))
       return distance
     },
     commentsCount: async todo => {
-      let pk = `USER#mbg@outlook.com#TODO#${todo.id}`
+      let pk = `TODO#${todo.id}`
       let comments = await TodoTable.query(pk, {
         beginsWith: 'COMMENT#',
         index: 'GSI2'
@@ -151,7 +150,7 @@ const resolvers = {
       return comments.Items.length
     },
     comments: async todo => {
-      let pk = `USER#mbg@outlook.com#TODO#${todo.Item.id}`
+      let pk = `TODO#${todo.id}`
       let comments = await TodoTable.query(pk, {
         beginsWith: 'COMMENT#',
         index: 'GSI2'

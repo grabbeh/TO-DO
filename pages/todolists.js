@@ -6,7 +6,6 @@ import TodoLists from '../components/todoListsStandalone'
 import Loading from '../components/loading'
 
 const TodoFetcher = () => {
-  //https://github.com/apollographql/apollo-client/issues/7485
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY, {
     fetchPolicy: 'cache-first'
   })

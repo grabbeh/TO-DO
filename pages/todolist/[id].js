@@ -7,7 +7,8 @@ import {
   MainContainer as Container,
   Input,
   Header,
-  Back
+  Back,
+  Add
 } from '../../components/index'
 import {
   AddTodo as ADD_TODO,
@@ -42,8 +43,7 @@ const TodoPage = ({ data, id }) => {
   let completed = todos.filter(t => t.completed)
   return (
     <Container>
-      <Back />
-      <Header>{name}</Header>
+      <Back title={name} />
       {Object.entries(grouped).map(([key, value]) => (
         <TodoList
           key={key}
@@ -61,6 +61,7 @@ const TodoPage = ({ data, id }) => {
           todos={completed}
         />
       )}
+      <Add id={id} />
     </Container>
   )
 }
@@ -90,7 +91,7 @@ const Todo = ({ todo, updateTodo }) => {
     })
   }
   return (
-    <li className='border-b py-2 border-gray-500' key={todo.id}>
+    <li className='border-b-2 py-2 border-gray-500' key={todo.id}>
       <div>
         <div className='flex'>
           <div className='flex flex-grow'>
@@ -134,7 +135,9 @@ const Todo = ({ todo, updateTodo }) => {
                       <div className='h-6 w-6 text-gray-500'>
                         <CommentsIcon />
                       </div>
-                      <div className='ml-1 text-xs'>{todo.commentsCount}</div>
+                      <div className='ml-1 text-md font-bold'>
+                        {todo.commentsCount}
+                      </div>
                     </div>
                   </a>
                 </Link>
@@ -198,7 +201,7 @@ const EditTextInput = ({ completed, updateTodo, todo }) => (
   </Formik>
 )
 
-const TextInput = ({ parentId, position = 0 }) => {
+const TextInput = ({ parentId }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
       cache.modify({
@@ -214,7 +217,6 @@ const TextInput = ({ parentId, position = 0 }) => {
                   completed
                   deleted
                   user
-                  position
                   createdSince
                   commentsCount
                 }
@@ -253,7 +255,7 @@ const TextInput = ({ parentId, position = 0 }) => {
             todo: {
               user: 'mbg@outlook.com',
               text,
-              position,
+
               completed: false,
               deleted: false,
               id,
@@ -267,7 +269,6 @@ const TextInput = ({ parentId, position = 0 }) => {
               text,
               id,
               todoListId: parentId,
-              position,
               deleted: false,
               completed: false,
               user: 'mbg@outlook.com',

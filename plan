@@ -11,3 +11,9 @@ SECONDARY INDEX
 PK                          SK
 USER#[USER]#TODOLIST#[ID]   #TODO[ID]
                             #TODOLIST[ID]
+
+
+PK
+TODO#[ID]                   #COMMENT#
+
+

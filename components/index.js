@@ -5,5 +5,6 @@ import Input from './input'
 import Textarea from './textarea'
 import MainContainer from './mainContainer'
 import Back from './back'
+import Add from './add'
 
-export { Button, Back, Container, Header, Input, Textarea, MainContainer }
+export { Add, Button, Back, Container, Header, Input, Textarea, MainContainer }

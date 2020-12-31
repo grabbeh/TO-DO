@@ -3,7 +3,7 @@ const Textarea = props => {
 
   return (
     <textarea
-      className='p-1 outline-black h-40 text-gray-900 text-md font-medium w-full'
+      className='p-1 border-2 border-blue-500 h-40 text-gray-900 text-md font-medium w-full'
       id={value}
       onChange={onChange}
       placeholder={placeholder}

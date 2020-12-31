@@ -24,7 +24,7 @@ const Input = props => {
         </div>
       )}
       <input
-        className={`${textSize} text-gray-900 focus:outline-none ${
+        className={`${textSize} text-gray-900  focus:outline-none ${
           completed ? 'line-through' : ''
         } font-medium w-full`}
         id={value}

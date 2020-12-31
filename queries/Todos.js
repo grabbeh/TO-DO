@@ -11,7 +11,6 @@ export default gql`
         user
         completed
         deleted
-        position
         createdSince
         commentsCount
       }
