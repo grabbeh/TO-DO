@@ -1,14 +1,14 @@
 import { useQuery } from '@apollo/client'
 import { MainContainer as Container } from '../../components/index'
-import { Todo as TODO_QUERY } from '../../queries/index'
+import { TodoNotes as TODO_NOTES_QUERY } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import Comments from '../../components/commentsStandalone'
 import Loading from '../../components/loading'
-import { Back, Header } from '../../components/index'
+import { Back } from '../../components/index'
 
 const CommentsFetcher = props => {
   let { id } = props
-  const { loading, error, data } = useQuery(TODO_QUERY, {
+  const { loading, error, data } = useQuery(TODO_NOTES_QUERY, {
     fetchPolicy: 'cache-first',
     variables: { id }
   })

@@ -8,6 +8,8 @@ export default gql`
         id
         todoListId
         text
+        contact
+        priority
         user
         completed
         deleted

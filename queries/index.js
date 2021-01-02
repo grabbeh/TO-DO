@@ -5,6 +5,7 @@ import Todos from './Todos'
 import UpdateTodoList from './UpdateTodoList'
 import UpdateTodo from './UpdateTodo'
 import AddComment from './AddComment'
+import TodoNotes from './TodoNotes'
 import Todo from './Todo'
 
 export {
@@ -13,7 +14,8 @@ export {
   AddComment,
   TodoLists,
   Todos,
-  Todo,
+  TodoNotes,
   UpdateTodoList,
-  UpdateTodo
+  UpdateTodo,
+  Todo
 }

@@ -8,84 +8,52 @@ import {
   Back,
   Button
 } from '../../components/index'
-import { Todos as TODOS_QUERY, AddTodo as ADD_TODO } from '../../queries/index'
+import {
+  Todo as TODO_QUERY,
+  UpdateTodo as UPDATE_TODO
+} from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import Loading from '../../components/loading'
 
 const TodoFetcher = props => {
-  const { loading, error, data } = useQuery(TODOS_QUERY, {
+  const { loading, error, data } = useQuery(TODO_QUERY, {
     fetchPolicy: 'cache-first',
     variables: { id: props.id }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  return <AddTodoPage id={props.id} data={data} />
+  return <EditTodoPage data={data} />
 }
 
-const AddTodoPage = ({ id, data }) => {
-  let {
-    todoList: { name }
-  } = data
+const EditTodoPage = ({ data: { todo } }) => {
   return (
     <Container>
-      <AddTodoInput name={name} parentId={id} />
+      <div>
+        <Back title={todo.text} />
+        <Header>Edit todo</Header>
+        <ul>
+          <li>
+            <TextInput todo={todo} />
+          </li>
+        </ul>
+      </div>
     </Container>
   )
 }
 
-const AddTodoInput = ({ name, parentId }) => (
-  <div>
-    <Back title={name} />
-    <Header>Add todo</Header>
-    <ul>
-      <li>
-        <TextInput parentId={parentId} />
-      </li>
-    </ul>
-  </div>
-)
-
-const TextInput = ({ parentId, position = 0 }) => {
-  const [addTodo] = useMutation(ADD_TODO, {
-    update (cache, { data: { addTodo } }) {
-      cache.modify({
-        fields: {
-          todoList (existingTodoList = []) {
-            const newTodoRef = cache.writeFragment({
-              data: addTodo,
-              fragment: gql`
-                fragment NewTodo on Todo {
-                  id
-                  todoListId
-                  text
-                  completed
-                  deleted
-                  user
-                  position
-                  createdSince
-                  commentsCount
-                }
-              `
-            })
-
-            return {
-              ...existingTodoList,
-              todos: [...existingTodoList.todos, newTodoRef]
-            }
-          }
-        }
-      })
-    }
-  })
+const TextInput = ({ todo }) => {
+  console.log(todo)
+  let { contact, text, priority } = todo
+  const [updateTodo] = useMutation(UPDATE_TODO)
 
   return (
     <Formik
       initialValues={{
-        text: '',
-        priority: '',
-        contact: ''
+        text,
+        priority,
+        contact
       }}
       validateOnChange={false}
       validationSchema={object().shape({
@@ -98,48 +66,22 @@ const TextInput = ({ parentId, position = 0 }) => {
           priority: false
         })
         let { text, contact, priority } = values
-        const id = uuidv4()
-        // get parent ID from URL
-        //mutation example + optimistic response
-        addTodo({
+        let updatedTodo = {
+          ...todo,
+          text,
+          contact,
+          priority
+        }
+        updateTodo({
           variables: {
-            todo: {
-              user: 'mbg@outlook.com',
-              text,
-              contact,
-              priority,
-              completed: false,
-              deleted: false,
-              id,
-              todoListId: parentId
-            }
+            todo: updatedTodo
           },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            addTodo: {
-              __typename: 'Todo',
-              text,
-              contact,
-              priority,
-              id,
-              todoListId: parentId,
-              position,
-              deleted: false,
-              completed: false,
-              user: 'mbg@outlook.com',
-              createdSince: 0,
-              commentsCount: 0
-            }
-          }
-          // for a new item, optimisticResponse needs typename and the id of the
-          // item that will be returned - so id creation has to happen client-side
+          optimisticResponse: updatedTodo
         })
-        resetForm()
       }}
     >
       {props => {
         const { values, errors, handleChange } = props
-        console.log(values)
         return (
           <Form className='w-full'>
             <Input
@@ -164,6 +106,7 @@ const TextInput = ({ parentId, position = 0 }) => {
             <div role='group'>
               <label className='inline-flex items-center'>
                 <input
+                  checked={values.priority === 'low'}
                   type='radio'
                   name='priority'
                   onChange={handleChange}
@@ -173,6 +116,7 @@ const TextInput = ({ parentId, position = 0 }) => {
               </label>
               <label className='inline-flex items-center ml-3'>
                 <input
+                  checked={values.priority === 'medium'}
                   type='radio'
                   name='priority'
                   onChange={handleChange}
@@ -182,6 +126,7 @@ const TextInput = ({ parentId, position = 0 }) => {
               </label>
               <label className='inline-flex items-center ml-3'>
                 <input
+                  checked={values.priority === 'high'}
                   type='radio'
                   name='priority'
                   onChange={handleChange}

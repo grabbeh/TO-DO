@@ -44,6 +44,7 @@ const typeDefs = `
     id: ID
     todos: [Todo]
     deleted: Boolean
+    
   }
 
   input TodoInput {
@@ -56,6 +57,8 @@ const typeDefs = `
     deleted: Boolean
     createdSince: String
     commentsCount: Int
+    priority: String
+    contact: String
   }
 
   scalar Date
@@ -70,6 +73,8 @@ const typeDefs = `
     comments: [Comment]
     createdSince: String
     commentsCount: Int
+    priority: String
+    contact: String
   }
 
   schema {

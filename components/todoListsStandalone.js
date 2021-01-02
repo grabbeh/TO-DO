@@ -48,7 +48,7 @@ const TodoList = props => {
                 todoList={todoList}
               />
             ) : (
-              <Link href={`/todolist/${encodeURIComponent(todoList.id)}`}>
+              <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
                 <a className='font-medium text-xl'>{todoList.name}</a>
               </Link>
             )}

@@ -44,6 +44,8 @@ const Todo = new Entity({
     todoListId: { type: 'string' },
     user: { type: 'string' },
     text: { type: 'string' },
+    priority: { type: 'string' },
+    contact: { type: 'string' },
     completed: { type: 'boolean', default: false },
     deleted: { type: 'boolean', default: false },
     position: { type: 'number' },

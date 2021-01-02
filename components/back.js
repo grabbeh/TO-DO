@@ -4,7 +4,7 @@ import { Header } from './index'
 const Back = ({ title }) => {
   const router = useRouter()
   return (
-    <div className='flex align-middle'>
+    <div className='px-3 flex align-middle'>
       <div
         className='mr-3 mt-4 cursor-pointer font-bold'
         onClick={() => router.back()}

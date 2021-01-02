@@ -1,3 +1,5 @@
+import { Field } from 'formik'
+
 const Input = props => {
   const {
     label,
@@ -6,25 +8,21 @@ const Input = props => {
     name,
     onChange,
     value,
-    onFocus,
-    onBlur,
-    readOnly,
-    autoComplete,
     completed,
     textSize
   } = props
 
   return (
-    <div>
+    <div className='my-3'>
       {label && (
-        <div className='mb-2'>
-          <div className='text-bold text-xl'>
+        <div>
+          <div className='font-bold text-md'>
             <label htmlFor={value}>{label}</label>
           </div>
         </div>
       )}
       <input
-        className={`${textSize} text-gray-900  focus:outline-none ${
+        className={`${textSize} ${
           completed ? 'line-through' : ''
         } font-medium w-full`}
         id={value}

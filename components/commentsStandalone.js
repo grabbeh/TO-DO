@@ -134,7 +134,9 @@ const Comment = props => {
         </div>
         <div>Michael Goulbourn</div>
       </div>
-      <div className='text-xs text-gray-500'>{comment.createdAt}</div>
+      <div className='flex justify-end text-xs text-gray-500'>
+        {comment.createdAt}
+      </div>
       <div className='text-xl font-medium'>{comment.text}</div>
     </li>
   )
