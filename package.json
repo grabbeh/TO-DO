@@ -49,7 +49,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "NODE_ENV=production next build",
-    "start-next": "NODE_ENV=production forever start index.js"
+    "start-next": "NODE_ENV=production forever start index.js",
+    "start-next-prod": "NODE_ENV=production next start"
   },
   "repository": {
     "type": "git",
