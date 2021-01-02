@@ -53,7 +53,9 @@ const TodoPage = ({ data, id }) => {
           todos={completed}
         />
       )}
-      <Add id={id} />
+      <div className='mt-2'>
+        <Add id={id} />
+      </div>
     </Container>
   )
 }
@@ -80,9 +82,9 @@ const Todo = ({ todo, updateTodo }) => {
     })
   }
   return (
-    <li className='border-b-2 p-2 border-gray-500' key={todo.id}>
-      <div className='flex justify-between'>
-        <div className='flex'>
+    <li className='border-b-2 px-2 py-4 border-gray-500' key={todo.id}>
+      <div className='flex'>
+        <div className='flex flex-grow'>
           <div className='flex flex-grow'>
             <label>
               <input
@@ -94,20 +96,13 @@ const Todo = ({ todo, updateTodo }) => {
             </label>
             <div>
               <div className='flex'>
-                <div className='mr-2'>
-                  {todo.priority && (
-                    <span className='mt-1'>
-                      <Rating priority={todo.priority} />
-                    </span>
-                  )}
-                </div>
                 <div>
                   <div className='flex'>
                     <div>
                       <span
                         className={`${
                           completed ? 'line-through' : ''
-                        } flex font-bold`}
+                        } flex font-bold text-gray-900 text-xl`}
                       >
                         {todo.text}
                       </span>
@@ -120,6 +115,13 @@ const Todo = ({ todo, updateTodo }) => {
               </div>
             </div>
           </div>
+        </div>
+        <div className='flex justify-end mr-2'>
+          {todo.priority && (
+            <span className='mt-1'>
+              <Rating priority={todo.priority} />
+            </span>
+          )}
         </div>
         <div>
           <div className='align-bottom flex'>
@@ -165,7 +167,7 @@ const Todo = ({ todo, updateTodo }) => {
             </div>
           </div>
 
-          <div className='flex justify-end'>
+          <div className='flex align-bottom justify-end'>
             <div className='text-xs font-semibold text-gray-500'>
               {todo.createdSince}
             </div>
@@ -203,11 +205,10 @@ const CommentsIcon = () => (
 )
 
 const Rating = ({ priority }) => {
-  let bgColor = 'bg-green-500'
-  if ((priority = 'medium')) bgColor = 'bg-yellow-500'
-  if ((priority = 'high')) bgColor = 'bg-red-500'
-
-  return <div className={`${bgColor} rounded-full h-5 w-5`} />
+  let bgColor = 'border-green-500'
+  if (priority === 'medium') bgColor = 'border-yellow-500'
+  if (priority === 'high') bgColor = 'border-red-500'
+  return <div className={`${bgColor} h-full border-r-8`} />
 }
 
 const Apollo = withApollo({ ssr: true })(TodoFetcher)
@@ -217,15 +218,3 @@ Apollo.getInitialProps = async ({ query }) => {
 }
 
 export default Apollo
-
-/*
-      {Object.entries(grouped).map(([key, value]) => (
-        <TodoList
-          key={key}
-          parentId={id}
-          title={key}
-          updateTodo={updateTodo}
-          todos={value}
-        />
-      ))}
-      */

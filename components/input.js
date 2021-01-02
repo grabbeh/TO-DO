@@ -22,9 +22,7 @@ const Input = props => {
         </div>
       )}
       <input
-        className={`${textSize} ${
-          completed ? 'line-through' : ''
-        } font-medium w-full`}
+        className='w-full font-medium text-xl outline-none focus:border-blue-500 border-gray-300 border-2 p-2 rounded'
         id={value}
         onChange={onChange}
         placeholder={placeholder}

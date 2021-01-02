@@ -1,11 +1,12 @@
 import { useQuery, useMutation } from '@apollo/client'
-import { Formik, Field, Form } from 'formik'
+import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import {
   MainContainer as Container,
   Input,
   Header,
   Back,
+  Subheader,
   Button
 } from '../../components/index'
 import { Todos as TODOS_QUERY, AddTodo as ADD_TODO } from '../../queries/index'
@@ -38,7 +39,7 @@ const AddTodoPage = ({ id, data }) => {
 const AddTodoInput = ({ name, parentId }) => (
   <div>
     <Back title={name} />
-    <Header>Add todo</Header>
+    <Subheader>Add todo</Subheader>
     <ul>
       <li>
         <TextInput parentId={parentId} />
@@ -143,7 +144,6 @@ const TextInput = ({ parentId, position = 0 }) => {
         return (
           <Form className='w-full'>
             <Input
-              textSize='text-xl focus:border-blue-500 border-gray-300 border-2 p-2 rounded'
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
               name='text'
@@ -152,7 +152,6 @@ const TextInput = ({ parentId, position = 0 }) => {
               value={values.text}
             />
             <Input
-              textSize='text-xl focus:border-blue-500 border-gray-300 border-2 p-2 rounded'
               style={{ boxSizing: 'border-box' }}
               onChange={handleChange}
               label='Contact'

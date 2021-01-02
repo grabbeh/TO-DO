@@ -1,16 +1,14 @@
 import { DirectiveLocation } from 'graphql'
 import Link from 'next/link'
+import Button from './button'
 
 const AddTodo = ({ id }) => (
   <div className='flex justify-end align-bottom'>
-    <button>
+    <Button>
       <Link href={`/add-todo/${encodeURIComponent(id)}`}>
-        <a className='mt-4 cursor-pointer font-bold'>
-          <Plus />
-          Add
-        </a>
+        <a className='mt-4 cursor-pointer font-bold'>Add</a>
       </Link>
-    </button>
+    </Button>
   </div>
 )
 
