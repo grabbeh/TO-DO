@@ -6,6 +6,7 @@ import {
   Input,
   Header,
   Back,
+  Subheader,
   Button
 } from '../../components/index'
 import {
@@ -32,12 +33,8 @@ const EditTodoPage = ({ data: { todo } }) => {
     <Container>
       <div>
         <Back title={todo.text} />
-        <Header>Edit todo</Header>
-        <ul>
-          <li>
-            <TextInput todo={todo} />
-          </li>
-        </ul>
+        <Subheader>Edit todo</Subheader>
+        <TextInput todo={todo} />
       </div>
     </Container>
   )
@@ -112,7 +109,7 @@ const TextInput = ({ todo }) => {
                   onChange={handleChange}
                   value='low'
                 />
-                <span className='font-bold text-md ml-2'>Low</span>
+                <span className='font-semibold text-xl ml-2'>Low</span>
               </label>
               <label className='inline-flex items-center ml-3'>
                 <input
@@ -122,7 +119,7 @@ const TextInput = ({ todo }) => {
                   onChange={handleChange}
                   value='medium'
                 />
-                <span className='font-bold text-md ml-2'>Medium</span>
+                <span className='font-semibold  text-xl ml-2'>Medium</span>
               </label>
               <label className='inline-flex items-center ml-3'>
                 <input
@@ -132,7 +129,7 @@ const TextInput = ({ todo }) => {
                   onChange={handleChange}
                   value='high'
                 />
-                <span className='font-bold text-md ml-2'>High</span>
+                <span className='font-semibold text-xl ml-2'>High</span>
               </label>
             </div>
             <div className='mt-3 flex justify-end'>

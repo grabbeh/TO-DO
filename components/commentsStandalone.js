@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import { Textarea, Header } from './index'
+import { Textarea, Header, Button, Subheader } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
 
 const CommentInput = ({ todoId, comments }) => {
@@ -11,7 +11,7 @@ const CommentInput = ({ todoId, comments }) => {
     <div>
       {comments.length > 0 && (
         <div>
-          <Header>Comments</Header>
+          <Subheader>Comments</Subheader>
           <ul className='mb-4'>
             {comments.map(comment => (
               <Comment comment={comment} key={comment.id} />
@@ -19,7 +19,7 @@ const CommentInput = ({ todoId, comments }) => {
           </ul>
         </div>
       )}
-      <Header>Add comment</Header>
+      <Subheader>Add comment</Subheader>
       <TextInput todoId={todoId} />
     </div>
   )
@@ -110,12 +110,12 @@ const TextInput = props => {
               }
             </div>
             <div className='flex justify-end'>
-              <button
+              <Button
                 className=' bg-green-500 py-2 px-3 text-white text-xl font-bold'
                 type='submit'
               >
-                Submit
-              </button>
+                Add
+              </Button>
             </div>
           </Form>
         )

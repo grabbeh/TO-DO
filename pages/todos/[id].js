@@ -82,96 +82,84 @@ const Todo = ({ todo, updateTodo }) => {
     })
   }
   return (
-    <li className='border-b-2 px-2 py-4 border-gray-500' key={todo.id}>
+    <li className='my-6 pl-2' key={todo.id}>
       <div className='flex'>
-        <div className='flex flex-grow'>
-          <div className='flex flex-grow'>
-            <label>
-              <input
-                type='checkbox'
-                checked={completed}
-                onChange={handleChange}
-                className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
-              />
-            </label>
-            <div>
-              <div className='flex'>
-                <div>
-                  <div className='flex'>
-                    <div>
-                      <span
-                        className={`${
-                          completed ? 'line-through' : ''
-                        } flex font-bold text-gray-900 text-xl`}
-                      >
-                        {todo.text}
-                      </span>
-                      <div className='text-gray-500 text-sm font-semibold'>
-                        {todo.contact}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className='flex justify-end mr-2'>
-          {todo.priority && (
-            <span className='mt-1'>
-              <Rating priority={todo.priority} />
-            </span>
-          )}
-        </div>
         <div>
-          <div className='align-bottom flex'>
-            <Link href={`/edit-todo/${encodeURIComponent(todo.id)}`}>
-              <a>
-                <div className='text-gray-500 hover:text-black mr-2 h-4 w-4'>
-                  <Edit />
-                </div>
-              </a>
-            </Link>
-            <div
-              className='mr-2 h-4 w-4 text-gray-500 hover:text-black cursor-pointer'
-              onClick={() => {
-                let updatedTodo = {
-                  ...todo,
-                  deleted: true
-                }
-                updateTodo({
-                  variables: {
-                    todo: updatedTodo
-                  },
-                  optimisticResponse: updatedTodo
-                })
-              }}
-            >
-              <Dustbin />
+          <label>
+            <input
+              type='checkbox'
+              checked={completed}
+              onChange={handleChange}
+              className='mr-3 cursor-pointer form-checkbox h-6 w-6 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
+            />
+          </label>
+        </div>
+        <div className='flex-grow'>
+          <span
+            className={`${
+              completed ? 'line-through' : ''
+            } flex font-bold text-gray-900 text-xl`}
+          >
+            {todo.text}
+          </span>
+          <div className='flex justify-between'>
+            <div className='text-gray-500 text-base font-semibold'>
+              {todo.contact}
             </div>
-            <div>
-              <div className='cursor-pointer'>
-                <Link href={`/notes/${encodeURIComponent(todo.id)}`}>
-                  <a>
-                    <div className='flex hover:text-black text-gray-500'>
-                      <div className='h-4 w-4'>
-                        <CommentsIcon />
-                      </div>
-                      <div className=' ml-2 text-md font-bold'>
-                        {todo.commentsCount}
-                      </div>
-                    </div>
-                  </a>
-                </Link>
+            <div className='mb-2 flex align-bottom justify-end'>
+              <div className='text-base font-semibold text-gray-500'>
+                {todo.createdSince}
               </div>
             </div>
           </div>
 
-          <div className='flex align-bottom justify-end'>
-            <div className='text-xs font-semibold text-gray-500'>
-              {todo.createdSince}
+          <div className='border-t-2 py-1 border-blue-500'>
+            <div className='align-bottom justify-between flex-grow flex'>
+              <Link href={`/edit-todo/${encodeURIComponent(todo.id)}`}>
+                <a>
+                  <div className='cursor-pointer text-blue-500 hover:text-black mr-2 h-4 w-4'>
+                    <Edit />
+                  </div>
+                </a>
+              </Link>
+              <div
+                className='mr-2 h-4 w-4 text-blue-500 hover:text-black cursor-pointer'
+                onClick={() => {
+                  let updatedTodo = {
+                    ...todo,
+                    deleted: true
+                  }
+                  updateTodo({
+                    variables: {
+                      todo: updatedTodo
+                    },
+                    optimisticResponse: updatedTodo
+                  })
+                }}
+              >
+                <Dustbin />
+              </div>
+              <div>
+                <div className='cursor-pointer'>
+                  <Link href={`/notes/${encodeURIComponent(todo.id)}`}>
+                    <a>
+                      <div className='flex hover:text-black text-blue-500'>
+                        <div className='h-4 w-4'>
+                          <CommentsIcon />
+                        </div>
+                        <div className=' ml-2 text-md font-bold'>
+                          {todo.commentsCount}
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
+        </div>
+        <div className='flex justify-end'>
+          {todo.priority && <Rating priority={todo.priority} />}
         </div>
       </div>
     </li>
@@ -208,7 +196,7 @@ const Rating = ({ priority }) => {
   let bgColor = 'border-green-500'
   if (priority === 'medium') bgColor = 'border-yellow-500'
   if (priority === 'high') bgColor = 'border-red-500'
-  return <div className={`${bgColor} h-full border-r-8`} />
+  return <div className={`${bgColor} ml-3 h-full border-r-8`} />
 }
 
 const Apollo = withApollo({ ssr: true })(TodoFetcher)
