@@ -82,7 +82,10 @@ const Todo = ({ todo, updateTodo }) => {
     })
   }
   return (
-    <li className='my-6 pl-2' key={todo.id}>
+    <li
+      className='hover:shadow-xl border border-gray-200 shadow rounded px-3 pt-3 my-6'
+      key={todo.id}
+    >
       <div className='flex'>
         <div>
           <label>
@@ -95,25 +98,30 @@ const Todo = ({ todo, updateTodo }) => {
           </label>
         </div>
         <div className='flex-grow'>
-          <span
-            className={`${
-              completed ? 'line-through' : ''
-            } flex font-bold text-gray-900 text-xl`}
-          >
-            {todo.text}
-          </span>
           <div className='flex justify-between'>
-            <div className='text-gray-500 text-base font-semibold'>
-              {todo.contact}
+            <div>
+              <span
+                className={`${
+                  completed ? 'line-through' : ''
+                } flex font-bold text-gray-900 text-xl`}
+              >
+                {todo.text}
+              </span>
+              <div className='text-gray-500 text-xl font-semibold'>
+                {todo.contact}
+              </div>
             </div>
-            <div className='mb-2 flex align-bottom justify-end'>
-              <div className='text-base font-semibold text-gray-500'>
+            <div>
+              <div className='flex justify-end flex-shrink'>
+                {todo.priority && <Rating priority={todo.priority} />}
+              </div>
+              <div className='flex justify-end text-base font-semibold text-gray-500'>
                 {todo.createdSince}
               </div>
             </div>
           </div>
 
-          <div className='border-t-2 py-1 border-blue-500'>
+          <div className='border-t-2 py-1 mt-2 border-blue-500'>
             <div className='align-bottom justify-between flex-grow flex'>
               <Link href={`/edit-todo/${encodeURIComponent(todo.id)}`}>
                 <a>
@@ -147,7 +155,7 @@ const Todo = ({ todo, updateTodo }) => {
                         <div className='h-4 w-4'>
                           <CommentsIcon />
                         </div>
-                        <div className=' ml-2 text-md font-bold'>
+                        <div className=' ml-1 text-md font-bold'>
                           {todo.commentsCount}
                         </div>
                       </div>
@@ -157,9 +165,6 @@ const Todo = ({ todo, updateTodo }) => {
               </div>
             </div>
           </div>
-        </div>
-        <div className='flex justify-end'>
-          {todo.priority && <Rating priority={todo.priority} />}
         </div>
       </div>
     </li>
@@ -205,10 +210,15 @@ const CommentsIcon = () => (
 )
 
 const Rating = ({ priority }) => {
-  let bgColor = 'border-green-500'
-  if (priority === 'medium') bgColor = 'border-yellow-500'
-  if (priority === 'high') bgColor = 'border-red-500'
-  return <div className={`${bgColor} ml-3 h-full border-r-8`} />
+  let bgColor = 'text-green-500'
+  if (priority === 'medium') bgColor = 'text-yellow-500'
+  if (priority === 'high') bgColor = 'text-red-500'
+  //return <div className={`${bgColor} ml-3 h-full border-r-8`} />
+  return (
+    <div className={`${bgColor} font-bold  rounded`}>
+      {priority.toUpperCase()}
+    </div>
+  )
 }
 
 const Apollo = withApollo({ ssr: true })(TodoFetcher)

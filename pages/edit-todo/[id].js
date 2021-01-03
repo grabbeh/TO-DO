@@ -41,7 +41,6 @@ const EditTodoPage = ({ data: { todo } }) => {
 }
 
 const TextInput = ({ todo }) => {
-  console.log(todo)
   let { contact, text, priority } = todo
   const [updateTodo] = useMutation(UPDATE_TODO)
 
@@ -133,7 +132,7 @@ const TextInput = ({ todo }) => {
               </label>
             </div>
             <div className='mt-3 flex justify-end'>
-              <Button>Add</Button>
+              <Button>Edit</Button>
             </div>
 
             <div className='mt-1'>
