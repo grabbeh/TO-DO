@@ -5,7 +5,8 @@ import {
   MainContainer as Container,
   Back,
   Button,
-  Loading
+  Loading,
+  Card
 } from '../../components/index'
 import {
   UpdateTodo as UPDATE_TODO,
@@ -79,10 +80,7 @@ const Todo = ({ todo, updateTodo }) => {
     })
   }
   return (
-    <li
-      className='hover:shadow-xl border border-gray-200 shadow rounded px-3 pt-3 my-6'
-      key={todo.id}
-    >
+    <Card key={todo.id}>
       <div className='flex'>
         <div>
           <label>
@@ -164,7 +162,7 @@ const Todo = ({ todo, updateTodo }) => {
           </div>
         </div>
       </div>
-    </li>
+    </Card>
   )
 }
 

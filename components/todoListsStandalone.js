@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useMutation } from '@apollo/client'
-import { Header, Button } from '../components/index'
+import { Header, Button, Card } from '../components/index'
 import { UpdateTodoList as UPDATE_TODOLIST } from '../queries/index'
 
 const TodoLists = ({ todoLists }) => {
@@ -29,47 +29,65 @@ const TodoLists = ({ todoLists }) => {
   )
 }
 
-const TodoList = props => {
-  let { todoList, updateTodoList } = props
+const TodoList = ({ todoList, updateTodoList }) => {
   return (
-    <li className='border-b-2 py-2 border-gray-500' key={todoList.id}>
+    <React.Fragment>
       {!todoList.deleted && (
-        <div className='flex content-center'>
-          <div className='flex flex-grow'>
-            <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
-              <a className='font-medium text-xl'>{todoList.name}</a>
-            </Link>
-          </div>
+        <Card key={todoList.id}>
           <div className='flex'>
-            <Link href={`/edit-todolist/${encodeURIComponent(todoList.id)}`}>
-              <a className='mt-4 cursor-pointer font-bold'>
-                <div className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'>
-                  <Edit />
-                </div>
-              </a>
-            </Link>
+            <div className='flex-grow'>
+              <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
+                <span className='cursor-pointer flex font-bold text-gray-900 text-xl'>
+                  {todoList.name}
+                </span>
+              </Link>
 
-            <div
-              className='h-6 w-6 text-gray-500 hover:text-black cursor-pointer'
-              onClick={() => {
-                let updatedTodoList = {
-                  ...todoList,
-                  deleted: true
-                }
-                updateTodoList({
-                  variables: {
-                    todoList: updatedTodoList
-                  },
-                  optimisticResponse: updatedTodoList
-                })
-              }}
-            >
-              <Dustbin />
+              <div className='border-t-2 py-1 mt-2 border-blue-500'>
+                <div className='align-bottom justify-between flex-grow flex'>
+                  <Link
+                    href={`/edit-todolist/${encodeURIComponent(todoList.id)}`}
+                  >
+                    <a>
+                      <div className='cursor-pointer text-blue-500 hover:text-black mr-2 h-4 w-4'>
+                        <Edit />
+                      </div>
+                    </a>
+                  </Link>
+                  <div
+                    className='mr-2 h-4 w-4 text-blue-500 hover:text-black cursor-pointer'
+                    onClick={() => {
+                      let updatedTodoList = {
+                        ...todoList,
+                        deleted: true
+                      }
+                      updateTodoList({
+                        variables: {
+                          todoList: updatedTodoList
+                        },
+                        optimisticResponse: updatedTodoList
+                      })
+                    }}
+                  >
+                    <Dustbin />
+                  </div>
+                  <div>
+                    <div className='cursor-pointer'>
+                      <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
+                        <a>
+                          <div className='font-semibold hover:text-black text-blue-500'>
+                            Todos
+                          </div>
+                        </a>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </Card>
       )}
-    </li>
+    </React.Fragment>
   )
 }
 

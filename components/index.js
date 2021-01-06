@@ -9,12 +9,14 @@ import Subheader from './subheader'
 import TodoForm from './todoForm'
 import TodolistForm from './todolistForm'
 import Loading from './loading'
+import Card from './card'
 
 export {
   Subheader,
   Button,
   Back,
   Container,
+  Card,
   Header,
   Input,
   Loading,
