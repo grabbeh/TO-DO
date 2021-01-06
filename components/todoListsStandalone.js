@@ -1,15 +1,21 @@
 import Link from 'next/link'
+import { useMutation } from '@apollo/client'
 import { Header, Button } from '../components/index'
+import { UpdateTodoList as UPDATE_TODOLIST } from '../queries/index'
 
 const TodoLists = ({ todoLists }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
-
+  const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
     <div>
       <Header>Lists</Header>
       <ul>
         {todoLists.map(todoList => (
-          <TodoList key={todoList.id} todoList={todoList} />
+          <TodoList
+            updateTodoList={updateTodoList}
+            key={todoList.id}
+            todoList={todoList}
+          />
         ))}
       </ul>
       <div className='mt-2 flex justify-end'>
@@ -24,7 +30,7 @@ const TodoLists = ({ todoLists }) => {
 }
 
 const TodoList = props => {
-  let { todoList, updateTodo } = props
+  let { todoList, updateTodoList } = props
   return (
     <li className='border-b-2 py-2 border-gray-500' key={todoList.id}>
       {!todoList.deleted && (
@@ -50,7 +56,7 @@ const TodoList = props => {
                   ...todoList,
                   deleted: true
                 }
-                updateTodo({
+                updateTodoList({
                   variables: {
                     todoList: updatedTodoList
                   },
