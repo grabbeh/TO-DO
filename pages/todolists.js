@@ -2,7 +2,7 @@ import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { useState } from 'react'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
-import { Container, Input } from '../components/index'
+import { Container, Input, Loading } from '../components/index'
 import {
   Todos as TODOS_QUERY,
   AddTodo as ADD_TODO,
@@ -15,7 +15,6 @@ import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import TodoLists from '../components/todoLists'
 import CommentInput from '../components/commentInput'
-import Loading from '../components/loading'
 
 const TodoFetcher = () => {
   //https://github.com/apollographql/apollo-client/issues/7485

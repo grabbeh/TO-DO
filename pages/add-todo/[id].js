@@ -1,19 +1,21 @@
 import { useQuery, useMutation } from '@apollo/client'
-import { Formik, Form } from 'formik'
+import { Formik } from 'formik'
+import { useRouter } from 'next/router'
 import { string, object } from 'yup'
 import {
   MainContainer as Container,
-  Input,
-  Header,
   Back,
   Subheader,
-  Button
+  TodoForm,
+  Loading
 } from '../../components/index'
 import { Todos as TODOS_QUERY, AddTodo as ADD_TODO } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import Loading from '../../components/loading'
+import capitalise from '../../utils/capitalise'
+
+const priorities = ['low', 'medium', 'high']
 
 const TodoFetcher = props => {
   const { loading, error, data } = useQuery(TODOS_QUERY, {
@@ -48,7 +50,9 @@ const AddTodoInput = ({ name, parentId }) => (
   </div>
 )
 
-const TextInput = ({ parentId, position = 0 }) => {
+const TextInput = ({ parentId }) => {
+  const router = useRouter()
+
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
       cache.modify({
@@ -64,7 +68,6 @@ const TextInput = ({ parentId, position = 0 }) => {
                   completed
                   deleted
                   user
-                  position
                   createdSince
                   commentsCount
                 }
@@ -124,7 +127,6 @@ const TextInput = ({ parentId, position = 0 }) => {
               priority,
               id,
               todoListId: parentId,
-              position,
               deleted: false,
               completed: false,
               user: 'mbg@outlook.com',
@@ -136,72 +138,11 @@ const TextInput = ({ parentId, position = 0 }) => {
           // item that will be returned - so id creation has to happen client-side
         })
         resetForm()
+        router.back()
       }}
     >
       {props => {
-        const { values, errors, handleChange } = props
-        console.log(values)
-        return (
-          <Form className='w-full'>
-            <Input
-              style={{ boxSizing: 'border-box' }}
-              onChange={handleChange}
-              name='text'
-              label='Text'
-              placeholder='Text'
-              value={values.text}
-            />
-            <Input
-              style={{ boxSizing: 'border-box' }}
-              onChange={handleChange}
-              label='Contact'
-              name='contact'
-              placeholder='Contact'
-              value={values.contact}
-            />
-            <div className='text-md font-bold'>Priority</div>
-            <div role='group'>
-              <label className='inline-flex items-center'>
-                <input
-                  type='radio'
-                  name='priority'
-                  onChange={handleChange}
-                  value='low'
-                />
-                <span className='font-bold text-md ml-2'>Low</span>
-              </label>
-              <label className='inline-flex items-center ml-3'>
-                <input
-                  type='radio'
-                  name='priority'
-                  onChange={handleChange}
-                  value='medium'
-                />
-                <span className='font-bold text-md ml-2'>Medium</span>
-              </label>
-              <label className='inline-flex items-center ml-3'>
-                <input
-                  type='radio'
-                  name='priority'
-                  onChange={handleChange}
-                  value='high'
-                />
-                <span className='font-bold text-md ml-2'>High</span>
-              </label>
-            </div>
-            <div className='mt-3 flex justify-end'>
-              <Button>Add</Button>
-            </div>
-
-            <div className='mt-1'>
-              {
-                <div>
-                  <div>{errors.text || errors.serverError}</div>
-                </div>
-              }
-            </div>
-          </Form>
-        )
+        return <TodoForm {...props} />
       }}
     </Formik>
   )

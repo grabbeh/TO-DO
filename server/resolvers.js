@@ -22,12 +22,13 @@ const resolvers = {
   }),
   Query: {
     todoList: async (p, a, c) => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${a.id}`
-      let todoList = await TodoTable.query(pk, {
-        beginsWith: 'TODOLIST#',
-        index: 'GSI1'
+      // get queries are auto prefixed with stated prefix
+      let todoList = await TodoList.get({
+        pk: `mbg@outlook.com`,
+        sk: `${a.id}`
       })
-      return todoList.Items[0]
+
+      return todoList.Item
     },
     todoLists: async () => {
       let todoLists = await TodoList.query('USER#mbg@outlook.com', {
@@ -67,6 +68,7 @@ const resolvers = {
       return todoList
     },
     updateTodoList: async (p, a, c) => {
+      console.log(a)
       let { todoList } = a
       await TodoList.update({
         ...todoList,

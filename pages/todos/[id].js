@@ -1,24 +1,17 @@
 import { useQuery, useMutation } from '@apollo/client'
 import { useState } from 'react'
-import { Formik, Form } from 'formik'
-import { string, object } from 'yup'
 import _ from 'lodash'
 import {
   MainContainer as Container,
-  Input,
-  Header,
   Back,
-  Add
+  Button,
+  Loading
 } from '../../components/index'
 import {
-  AddTodo as ADD_TODO,
   UpdateTodo as UPDATE_TODO,
   Todos as TODOS_QUERY
 } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
-import gql from 'graphql-tag'
-import { v4 as uuidv4 } from 'uuid'
-import Loading from '../../components/loading'
 import Link from 'next/link'
 
 const TodoFetcher = props => {
@@ -53,8 +46,12 @@ const TodoPage = ({ data, id }) => {
           todos={completed}
         />
       )}
-      <div className='mt-2'>
-        <Add id={id} />
+      <div className='mt-2 flex justify-end'>
+        <Button>
+          <Link href={`/add-todo/${encodeURIComponent(id)}`}>
+            <a className='mt-4 cursor-pointer font-bold'>Add</a>
+          </Link>
+        </Button>
       </div>
     </Container>
   )
@@ -213,7 +210,6 @@ const Rating = ({ priority }) => {
   let bgColor = 'text-green-500'
   if (priority === 'medium') bgColor = 'text-yellow-500'
   if (priority === 'high') bgColor = 'text-red-500'
-  //return <div className={`${bgColor} ml-3 h-full border-r-8`} />
   return (
     <div className={`${bgColor} font-bold  rounded`}>
       {priority.toUpperCase()}

@@ -5,17 +5,21 @@ import Input from './input'
 import Textarea from './textarea'
 import MainContainer from './mainContainer'
 import Back from './back'
-import Add from './add'
 import Subheader from './subheader'
+import TodoForm from './todoForm'
+import TodolistForm from './todolistForm'
+import Loading from './loading'
 
 export {
-  Add,
   Subheader,
   Button,
   Back,
   Container,
   Header,
   Input,
+  Loading,
   Textarea,
-  MainContainer
+  MainContainer,
+  TodoForm,
+  TodolistForm
 }
