@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { useMutation } from '@apollo/client'
 import { Header, Button, Card } from '../components/index'
 import { UpdateTodoList as UPDATE_TODOLIST } from '../queries/index'
+import toast from 'react-hot-toast'
 
 const TodoLists = ({ todoLists }) => {
   // Simple mutation to rely on automatic cache updating based on ID for single entities (hopefully)
@@ -60,11 +61,16 @@ const TodoList = ({ todoList, updateTodoList }) => {
                         ...todoList,
                         deleted: true
                       }
-                      updateTodoList({
+                      let mutation = updateTodoList({
                         variables: {
                           todoList: updatedTodoList
                         },
                         optimisticResponse: updatedTodoList
+                      })
+                      toast.promise(mutation, {
+                        loading: 'Loading',
+                        success: data => `Successfully deleted todolist`,
+                        error: err => `This just happened: ${err.toString()}`
                       })
                     }}
                   >

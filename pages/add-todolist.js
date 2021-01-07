@@ -57,7 +57,7 @@ const TextInput = () => {
         })
         let { name } = values
         const id = uuidv4()
-        addTodoList({
+        let mutation = addTodoList({
           variables: {
             todoList: { user: 'mbg@outlook.com', name, id }
           },
@@ -71,6 +71,11 @@ const TextInput = () => {
               user: 'mbg@outlook.com'
             }
           }
+        })
+        toast.promise(mutation, {
+          loading: 'Loading',
+          success: data => `Successfully added todolist`,
+          error: err => `This just happened: ${err.toString()}`
         })
         resetForm()
       }}

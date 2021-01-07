@@ -8,6 +8,7 @@ import {
   Loading,
   Card
 } from '../../components/index'
+import toast from 'react-hot-toast'
 import {
   UpdateTodo as UPDATE_TODO,
   Todos as TODOS_QUERY
@@ -22,7 +23,6 @@ const TodoFetcher = props => {
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  console.log(data)
   return <TodoPage id={props.id} data={data} />
 }
 
@@ -73,10 +73,15 @@ const Todo = ({ todo, updateTodo }) => {
   let [completed, setCompleted] = useState(todo.completed)
   let handleChange = () => {
     setCompleted(!completed)
-    updateTodo({
+    let mutation = updateTodo({
       variables: {
         todo: { ...todo, completed: !completed }
       }
+    })
+    toast.promise(mutation, {
+      loading: 'Loading',
+      success: data => `Successfully deleted todo`,
+      error: err => `This just happened: ${err.toString()}`
     })
   }
   return (

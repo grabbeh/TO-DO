@@ -1,10 +1,8 @@
 import { useMutation, useQuery } from '@apollo/client'
-import { Formik, Form } from 'formik'
+import { Formik } from 'formik'
 import { string, object } from 'yup'
-import gql from 'graphql-tag'
-import { v4 as uuidv4 } from 'uuid'
+import toast from 'react-hot-toast'
 import {
-  Input,
   TodolistForm,
   Loading,
   MainContainer as Container,
@@ -24,7 +22,6 @@ const TodoFetcher = props => {
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  console.log(data)
   return <EditTodoListPage todoList={data.todoList} />
 }
 
@@ -58,11 +55,16 @@ const EditTextInput = ({ todoList }) => {
           ...todoList,
           name
         }
-        updateTodoList({
+        let mutation = updateTodoList({
           variables: {
             todoList: updatedTodoList
           },
           optimisticResponse: updatedTodoList
+        })
+        toast.promise(mutation, {
+          loading: 'Loading',
+          success: data => `Successfully edited todo list`,
+          error: err => `This just happened: ${err.toString()}`
         })
       }}
     >

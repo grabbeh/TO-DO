@@ -2,6 +2,7 @@ import { useQuery, useMutation } from '@apollo/client'
 import { Formik } from 'formik'
 import { useRouter } from 'next/router'
 import { string, object } from 'yup'
+import toast from 'react-hot-toast'
 import {
   MainContainer as Container,
   Back,
@@ -13,9 +14,6 @@ import { Todos as TODOS_QUERY, AddTodo as ADD_TODO } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import capitalise from '../../utils/capitalise'
-
-const priorities = ['low', 'medium', 'high']
 
 const TodoFetcher = props => {
   const { loading, error, data } = useQuery(TODOS_QUERY, {
@@ -105,7 +103,7 @@ const TextInput = ({ parentId }) => {
         const id = uuidv4()
         // get parent ID from URL
         //mutation example + optimistic response
-        addTodo({
+        let mutation = addTodo({
           variables: {
             todo: {
               user: 'mbg@outlook.com',
@@ -137,8 +135,15 @@ const TextInput = ({ parentId }) => {
           // for a new item, optimisticResponse needs typename and the id of the
           // item that will be returned - so id creation has to happen client-side
         })
+
+        toast.promise(mutation, {
+          loading: 'Loading',
+          success: data => `Successfully saved todo`,
+          error: err => `This just happened: ${err.toString()}`
+        })
+
         resetForm()
-        router.back()
+        //router.back()
       }}
     >
       {props => {

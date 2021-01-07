@@ -9,6 +9,7 @@ import {
   Loading,
   TodoForm
 } from '../../components/index'
+import toast from 'react-hot-toast'
 import {
   Todo as TODO_QUERY,
   UpdateTodo as UPDATE_TODO
@@ -64,13 +65,18 @@ const TextInput = ({ todo }) => {
           contact,
           priority
         }
-        updateTodo({
+        let mutation = updateTodo({
           variables: {
             todo: updatedTodo
           },
           optimisticResponse: updatedTodo
         })
-        router.back()
+
+        toast.promise(mutation, {
+          loading: 'Loading',
+          success: data => `Successfully edited todo`,
+          error: err => `This just happened: ${err.toString()}`
+        })
       }}
     >
       {props => {
