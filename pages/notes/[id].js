@@ -19,17 +19,17 @@ const CommentsFetcher = props => {
   return <TodoPage todoId={id} data={data} />
 }
 
-const TodoPage = ({ data, todoId }) => {
-  let {
+const TodoPage = ({
+  data: {
     todo: { text, comments }
-  } = data
-  return (
-    <Container>
-      <Back title={text} />
-      <Comments comments={comments} todoId={todoId} />
-    </Container>
-  )
-}
+  },
+  todoId
+}) => (
+  <Container>
+    <Back title={text} />
+    <Comments comments={comments} todoId={todoId} />
+  </Container>
+)
 
 const Apollo = withApollo({ ssr: true })(CommentsFetcher)
 

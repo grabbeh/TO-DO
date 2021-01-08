@@ -10,7 +10,7 @@ const TodoLists = ({ todoLists }) => {
   return (
     <div>
       <Header>Lists</Header>
-      <ul>
+      <ul className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2'>
         {todoLists.map(todoList => (
           <TodoList
             updateTodoList={updateTodoList}
@@ -19,10 +19,10 @@ const TodoLists = ({ todoLists }) => {
           />
         ))}
       </ul>
-      <div className='mt-2 flex justify-end'>
+      <div className='flex justify-end'>
         <Button>
           <Link href={`/add-todolist`}>
-            <a className='mt-4 cursor-pointer font-bold'>Add</a>
+            <a className='cursor-pointer font-bold'>Add</a>
           </Link>
         </Button>
       </div>
@@ -81,7 +81,7 @@ const TodoList = ({ todoList, updateTodoList }) => {
                       <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
                         <a>
                           <div className='font-semibold hover:text-black text-blue-500'>
-                            Todos
+                            TODOS
                           </div>
                         </a>
                       </Link>

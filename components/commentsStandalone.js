@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import { Textarea, Header, Button, Subheader } from './index'
+import { Textarea, Button, Subheader, Card } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
 
 const CommentInput = ({ todoId, comments }) => {
@@ -127,18 +127,21 @@ const TextInput = props => {
 const Comment = props => {
   let { comment } = props
   return (
-    <li className='border-b-2 py-2 border-gray-500' key={comment.id}>
-      <div className='flex'>
-        <div className='mr-1 h-5 w-5'>
-          <User />
+    <Card key={comment.id}>
+      <div className='justify-between flex'>
+        <div className='flex'>
+          <div className='mr-1 text-gray-500 font-semibold h-5 w-5'>
+            <User />
+          </div>
+          <div className='text-gray-500 font-semibold'>Michael Goulbourn</div>
         </div>
-        <div>Michael Goulbourn</div>
+        <div className='text-xs text-gray-500'>{comment.createdAt}</div>
       </div>
-      <div className='flex justify-end text-xs text-gray-500'>
-        {comment.createdAt}
+
+      <div className='pb-3 text-xl font:semibold font-medium'>
+        {comment.text}
       </div>
-      <div className='text-xl font-medium'>{comment.text}</div>
-    </li>
+    </Card>
   )
 }
 
