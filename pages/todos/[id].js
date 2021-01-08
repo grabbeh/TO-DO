@@ -73,15 +73,10 @@ const Todo = ({ todo, updateTodo }) => {
   let [completed, setCompleted] = useState(todo.completed)
   let handleChange = () => {
     setCompleted(!completed)
-    let mutation = updateTodo({
+    updateTodo({
       variables: {
         todo: { ...todo, completed: !completed }
       }
-    })
-    toast.promise(mutation, {
-      loading: 'Loading',
-      success: data => `Successfully deleted todo`,
-      error: err => `This just happened: ${err.toString()}`
     })
   }
   return (
@@ -137,11 +132,16 @@ const Todo = ({ todo, updateTodo }) => {
                     ...todo,
                     deleted: true
                   }
-                  updateTodo({
+                  let mutation = updateTodo({
                     variables: {
                       todo: updatedTodo
                     },
                     optimisticResponse: updatedTodo
+                  })
+                  toast.promise(mutation, {
+                    loading: 'Loading',
+                    success: data => `Successfully deleted todo`,
+                    error: err => `This just happened: ${err.toString()}`
                   })
                 }}
               >
