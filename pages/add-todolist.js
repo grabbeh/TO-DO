@@ -10,8 +10,9 @@ import {
 } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
 import withApollo from '../lib/withApollo'
+import toast from 'react-hot-toast'
 
-const EditTodoListPage = () => (
+const AddTodoListPage = () => (
   <Container>
     <Back title='Add todo list' />
     <TextInput />
@@ -87,6 +88,6 @@ const TextInput = () => {
   )
 }
 
-const Apollo = withApollo({ ssr: true })(EditTodoListPage)
+const Apollo = withApollo({ ssr: true })(AddTodoListPage)
 
 export default Apollo
