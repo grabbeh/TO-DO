@@ -27,7 +27,6 @@ const resolvers = {
         pk: `mbg@outlook.com`,
         sk: `${a.id}`
       })
-
       return todoList.Item
     },
     todoLists: async () => {
@@ -40,14 +39,6 @@ const resolvers = {
       let { id } = a
       let todo = await Todo.get({ id, sk: id })
       return todo.Item
-    },
-    todos: async (p, a, c) => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${a.id}`
-      let todos = await TodoTable.query(pk, {
-        beginsWith: 'TODO#',
-        index: 'GSI1'
-      })
-      return todos.Items
     }
   },
   Mutation: {
@@ -73,18 +64,20 @@ const resolvers = {
       await TodoList.update({
         ...todoList,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${a.id}`,
-        GSI1pk: `TODOLIST#${a.id}`
+        GSI1sk: `TODOLIST#${a.id}`
       })
       return todoList
     },
     addTodo: async (p, a, c) => {
       let { todo } = a
-      let { id, todoListId } = todo
+      let { id, todoListId, completed, deleted } = todo
+      let status = getStatus(completed, deleted)
+      console.log(status)
       await Todo.put({
         ...todo,
         id,
         sk: id,
-        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
         GSI1sk: `TODO#${id}`
       })
       // We don't store 'createdSince' in the DB because it's calculated on each request
@@ -93,7 +86,9 @@ const resolvers = {
     },
     updateTodo: async (p, a, c) => {
       let { todo } = a
-      let { id, todoListId } = todo
+      let { id, todoListId, completed, deleted } = todo
+      let status = getStatus(completed, deleted)
+      console.log(status)
       delete todo['createdSince']
       delete todo['commentsCount']
       delete todo['comments']
@@ -101,7 +96,7 @@ const resolvers = {
         ...todo,
         pk: id,
         sk: id,
-        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
         GSI1sk: `TODO#${id}`
       })
       return todo
@@ -123,7 +118,7 @@ const resolvers = {
   },
   TodoList: {
     todos: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#ACTIVE`
       let todos = await TodoTable.query(pk, {
         beginsWith: 'TODO#',
         index: 'GSI1'
@@ -160,6 +155,13 @@ const resolvers = {
       return comments.Items
     }
   }
+}
+
+const getStatus = (deleted, completed) => {
+  let status = 'ACTIVE'
+  if (completed) status = 'COMPLETED'
+  if (deleted) status = 'DELETED'
+  return status
 }
 
 export default resolvers
