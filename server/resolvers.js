@@ -117,8 +117,7 @@ const resolvers = {
   },
   TodoList: {
     todos: async (todoList, a) => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
-      // #STATUS#${a.status}`
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#${a.status}`
       let todos = await TodoTable.query(pk, {
         beginsWith: 'TODO#',
         index: 'GSI1'
