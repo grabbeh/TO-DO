@@ -88,7 +88,6 @@ const resolvers = {
       let { todo } = a
       let { id, todoListId, completed, deleted } = todo
       let status = getStatus(completed, deleted)
-      console.log(status)
       delete todo['createdSince']
       delete todo['commentsCount']
       delete todo['comments']
@@ -118,7 +117,8 @@ const resolvers = {
   },
   TodoList: {
     todos: async (todoList, a) => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#${a.status}`
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+      // #STATUS#${a.status}`
       let todos = await TodoTable.query(pk, {
         beginsWith: 'TODO#',
         index: 'GSI1'
