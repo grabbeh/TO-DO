@@ -42,7 +42,7 @@ const typeDefs = `
     name: String
     user: String
     id: ID
-    todos: [Todo]
+    todos(status: String): [Todo]
     deleted: Boolean
     
   }
