@@ -18,7 +18,8 @@ const TodoTable = new Table({
   sortKey: 'sk',
   indexes: {
     GSI1: { partitionKey: 'GSI1pk', sortKey: 'GSI1sk' },
-    GSI2: { partitionKey: 'GSI2pk', sortKey: 'GSI2sk' }
+    GSI2: { partitionKey: 'GSI2pk', sortKey: 'GSI2sk' },
+    GSI3: { partitionKey: 'GSI3pk', sortKey: 'GSI3sk' }
   },
   DocumentClient
 })
@@ -50,7 +51,9 @@ const Todo = new Entity({
     deleted: { type: 'boolean', default: false },
     position: { type: 'number' },
     GSI1pk: { type: 'string' },
-    GSI1sk: { type: 'string' }
+    GSI1sk: { type: 'string' },
+    GSI3pk: { type: 'string' },
+    GSI3sk: { type: 'string' }
   },
   table: TodoTable
 })

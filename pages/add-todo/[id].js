@@ -10,13 +10,16 @@ import {
   TodoForm,
   Loading
 } from '../../components/index'
-import { Todos as TODOS_QUERY, AddTodo as ADD_TODO } from '../../queries/index'
+import {
+  TodoList as TODOLIST_QUERY,
+  AddTodo as ADD_TODO
+} from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 
 const TodoFetcher = props => {
-  const { loading, error, data } = useQuery(TODOS_QUERY, {
+  const { loading, error, data } = useQuery(TODOLIST_QUERY, {
     fetchPolicy: 'cache-first',
     variables: { id: props.id }
   })
@@ -49,13 +52,11 @@ const AddTodoInput = ({ name, parentId }) => (
 )
 
 const TextInput = ({ parentId }) => {
-  const router = useRouter()
-
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
       cache.modify({
         fields: {
-          todoList (existingTodoList = []) {
+          todoList (existingTodoList) {
             const newTodoRef = cache.writeFragment({
               data: addTodo,
               fragment: gql`
@@ -71,10 +72,14 @@ const TextInput = ({ parentId }) => {
                 }
               `
             })
-
+            console.log(existingTodoList)
+            let todos
+            if (!existingTodoList.todos) {
+              todos = [newTodoRef]
+            } else todos = [...existingTodoList.todos, newTodoRef]
             return {
               ...existingTodoList,
-              todos: [...existingTodoList.todos, newTodoRef]
+              todos
             }
           }
         }

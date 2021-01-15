@@ -5,6 +5,7 @@ const typeDefs = `
     comments(id: ID!): [Comment]
     todoLists: [TodoList]
     todoList(id: ID!): TodoList
+    todosByDate: [Todo]
   }
 
   type Mutation {

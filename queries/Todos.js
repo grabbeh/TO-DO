@@ -4,6 +4,7 @@ export default gql`
   query todos($id: ID!, $status: String) {
     todoList(id: $id) {
       name
+      id
       todos(status: $status) {
         id
         todoListId

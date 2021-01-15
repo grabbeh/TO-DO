@@ -2,6 +2,8 @@ import { GraphQLScalarType } from 'graphql'
 import { Kind } from 'graphql/language'
 import { Todo, TodoList, TodoTable, Comment } from './table.js'
 import { formatDistanceToNow, format } from 'date-fns'
+import KSUID from 'ksuid'
+import crypto from 'crypto'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -21,6 +23,19 @@ const resolvers = {
     }
   }),
   Query: {
+    todosByDate: async (p, a, c) => {
+      const yesterdayInMs = Date.now() - 86400 * 1000
+      const payload = crypto.randomBytes(16)
+      const yesterdayKSUID = KSUID.fromParts(yesterdayInMs, payload)
+      console.log(yesterdayKSUID)
+      let todos = await Todo.query(`USER#mbg@outlook.com#TODO`, {
+        limit: 4,
+        index: 'GSI3',
+        reverse: true,
+        lt: yesterdayKSUID.string
+      })
+      return todos.Items
+    },
     todoList: async (p, a, c) => {
       // get queries are auto prefixed with stated prefix
       let todoList = await TodoList.get({
@@ -72,13 +87,15 @@ const resolvers = {
       let { todo } = a
       let { id, todoListId, completed, deleted } = todo
       let status = getStatus(completed, deleted)
-      console.log(status)
+      const ksuid = await KSUID.random()
       await Todo.put({
         ...todo,
         id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
-        GSI1sk: `TODO#${id}`
+        GSI1sk: `TODO#${id}`,
+        GSI3pk: `USER#mbg@outlook.com#TODO`,
+        GSI3sk: ksuid
       })
       // We don't store 'createdSince' in the DB because it's calculated on each request
       // as relative to the time of creation
@@ -87,6 +104,8 @@ const resolvers = {
     updateTodo: async (p, a, c) => {
       let { todo } = a
       let { id, todoListId, completed, deleted } = todo
+      let dbResult = await Todo.get({ id, sk: id })
+      console.log(dbResult)
       let status = getStatus(completed, deleted)
       delete todo['createdSince']
       delete todo['commentsCount']
@@ -96,7 +115,9 @@ const resolvers = {
         pk: id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
-        GSI1sk: `TODO#${id}`
+        GSI1sk: `TODO#${id}`,
+        GSI3pk: dbResult.Item.GSI3pk,
+        GSI3sk: dbResult.Item.GSI3sk
       })
       return todo
     },
