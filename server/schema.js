@@ -5,7 +5,7 @@ const typeDefs = `
     comments(id: ID!): [Comment]
     todoLists: [TodoList]
     todoList(id: ID!): TodoList
-    todosByDate: [Todo]
+    todosByDate(olderThan: Int, earlierThan: Int): [Todo]
   }
 
   type Mutation {
@@ -45,7 +45,8 @@ const typeDefs = `
     id: ID
     todos(status: String): [Todo]
     deleted: Boolean
-    
+    totalTodos: Int
+    completedTodos: Int
   }
 
   input TodoInput {

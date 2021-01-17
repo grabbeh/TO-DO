@@ -7,6 +7,8 @@ export default gql`
       name
       user
       deleted
+      totalTodos
+      completedTodos
     }
   }
 `

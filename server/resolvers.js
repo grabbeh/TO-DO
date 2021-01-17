@@ -24,16 +24,29 @@ const resolvers = {
   }),
   Query: {
     todosByDate: async (p, a, c) => {
-      const yesterdayInMs = Date.now() - 86400 * 1000
+      const timeInMs =
+        Date.now() - 86400 * 1000 * (a.olderThan || a.earlierThan)
+      console.log(timeInMs)
       const payload = crypto.randomBytes(16)
-      const yesterdayKSUID = KSUID.fromParts(yesterdayInMs, payload)
-      console.log(yesterdayKSUID)
-      let todos = await Todo.query(`USER#mbg@outlook.com#TODO`, {
-        limit: 4,
+      const relevantKSUID = KSUID.fromParts(timeInMs, payload)
+      let baseOptions = {
         index: 'GSI3',
-        reverse: true,
-        lt: yesterdayKSUID.string
-      })
+        reverse: true
+      }
+      let options
+      if (a.olderThan) {
+        options = {
+          ...baseOptions,
+          lt: relevantKSUID.string
+        }
+      } else {
+        options = {
+          ...baseOptions,
+          gt: relevantKSUID.string
+        }
+      }
+
+      let todos = await Todo.query(`USER#mbg@outlook.com#TODO`, options)
       return todos.Items
     },
     todoList: async (p, a, c) => {
@@ -85,15 +98,15 @@ const resolvers = {
     },
     addTodo: async (p, a, c) => {
       let { todo } = a
-      let { id, todoListId, completed, deleted } = todo
-      let status = getStatus(completed, deleted)
+      let { id, todoListId, deleted } = todo
+      let status = deleted ? 'DELETED' : 'ACTIVE'
       const ksuid = await KSUID.random()
       await Todo.put({
         ...todo,
         id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
-        GSI1sk: `TODO#${id}`,
+        GSI1sk: `TODO#${id}#STATUS#${status}`,
         GSI3pk: `USER#mbg@outlook.com#TODO`,
         GSI3sk: ksuid
       })
@@ -103,10 +116,9 @@ const resolvers = {
     },
     updateTodo: async (p, a, c) => {
       let { todo } = a
-      let { id, todoListId, completed, deleted } = todo
+      let { id, todoListId, deleted } = todo
       let dbResult = await Todo.get({ id, sk: id })
-      console.log(dbResult)
-      let status = getStatus(completed, deleted)
+      let status = deleted ? 'DELETED' : 'ACTIVE'
       delete todo['createdSince']
       delete todo['commentsCount']
       delete todo['comments']
@@ -115,7 +127,7 @@ const resolvers = {
         pk: id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
-        GSI1sk: `TODO#${id}`,
+        GSI1sk: `TODO#${id}#STATUS#${status}`,
         GSI3pk: dbResult.Item.GSI3pk,
         GSI3sk: dbResult.Item.GSI3sk
       })
@@ -144,6 +156,25 @@ const resolvers = {
         index: 'GSI1'
       })
       return todos.Items
+    },
+    totalTodos: async todoList => {
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#ACTIVE`
+      let todos = await TodoTable.query(pk, {
+        beginsWith: 'TODO#',
+        index: 'GSI1'
+      })
+      return todos.Items.length
+    },
+    completedTodos: async todoList => {
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#ACTIVE`
+      let todos = await TodoTable.query(pk, {
+        beginsWith: 'TODO#',
+        index: 'GSI1'
+      })
+      let completed = todos.Items.filter(t => {
+        return t.completed
+      })
+      return completed.length
     }
   },
   Comment: {
@@ -175,13 +206,6 @@ const resolvers = {
       return comments.Items
     }
   }
-}
-
-const getStatus = (deleted, completed) => {
-  let status = 'ACTIVE'
-  if (completed) status = 'COMPLETED'
-  if (deleted) status = 'DELETED'
-  return status
 }
 
 export default resolvers

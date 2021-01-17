@@ -1,5 +1,5 @@
-const Card = ({ children }) => (
-  <li className='bg-white hover:shadow-xl border border-gray-200 shadow rounded px-3 pt-3 mb-6'>
+const Card = ({ children, className }) => (
+  <li className={`${className} bg-yellow-300 rounded-lg px-3 pt-3`}>
     {children}
   </li>
 )

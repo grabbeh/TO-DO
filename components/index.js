@@ -10,6 +10,8 @@ import TodoForm from './todoForm'
 import TodolistForm from './todolistForm'
 import Loading from './loading'
 import Card from './card'
+import TodoList from './todoList'
+import TodoLists from './todoLists'
 
 export {
   Subheader,
@@ -23,5 +25,7 @@ export {
   Textarea,
   MainContainer,
   TodoForm,
-  TodolistForm
+  TodolistForm,
+  TodoList,
+  TodoLists
 }

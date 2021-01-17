@@ -13,29 +13,54 @@ import {
 import Link from 'next/link'
 import withApollo from '../lib/withApollo'
 
-const TodoFetcher = () => {
-  const { loading, error, data } = useQuery(TODOSBYDATE_QUERY, {
-    fetchPolicy: 'cache-first'
-  })
-  if (loading || !data) return <Loading />
-  if (error) return 'Error'
-  console.log(data)
-  return <TodoPage todosByDate={data.todosByDate} />
-}
-
-const TodoPage = ({ todosByDate }) => {
+const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   return (
     <Container>
-      <Back title='Back' />
-      <TodoList updateTodo={updateTodo} todos={todosByDate} />
+      <Latest updateTodo={updateTodo} />
+
+      <OlderThanSevenDays updatedTodo={updateTodo} />
     </Container>
   )
 }
 
-const TodoList = ({ todos, updateTodo }) => (
+const TodosByTime = ({ earlerThan, olderThan }) => {}
+
+const Latest = ({ updateTodo }) => {
+  const { loading, error, data } = useQuery(TODOSBYDATE_QUERY, {
+    fetchPolicy: 'cache-first',
+    variables: { earlierThan: 1 }
+  })
+  if (loading || !data) return <Loading />
+  if (error) return 'Error'
+  return (
+    <TodoList
+      title='Recently added'
+      updateTodo={updateTodo}
+      todos={data.todosByDate}
+    />
+  )
+}
+
+const OlderThanSevenDays = ({ updateTodo }) => {
+  const { loading, error, data } = useQuery(TODOSBYDATE_QUERY, {
+    fetchPolicy: 'cache-first',
+    variables: { olderThan: 7 }
+  })
+  if (loading || !data) return <Loading />
+  if (error) return 'Error'
+  return (
+    <TodoList
+      title='7 days or older'
+      updateTodo={updateTodo}
+      todos={data.todosByDate}
+    />
+  )
+}
+
+const TodoList = ({ todos, updateTodo, title }) => (
   <div>
-    <div className='font-bold text-xl'>New todos</div>
+    <div className='font-bold text-xl'>{title}</div>
     <ul>
       {todos.map(todo => (
         <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
@@ -195,5 +220,5 @@ const Rating = ({ priority }) => {
   )
 }
 
-const Apollo = withApollo({ ssr: true })(TodoFetcher)
+const Apollo = withApollo({ ssr: true })(TodoPage)
 export default Apollo

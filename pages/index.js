@@ -1,8 +1,11 @@
 import { useQuery } from '@apollo/client'
-import { MainContainer as Container, Loading } from '../components/index'
+import {
+  MainContainer as Container,
+  Loading,
+  TodoLists
+} from '../components/index'
 import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
 import withApollo from '../lib/withApollo'
-import TodoLists from '../components/todoListsStandalone'
 
 const TodoFetcher = () => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY, {

@@ -1,5 +1,6 @@
-const Button = ({ children, bg = 'bg-green-500' }) => (
+const Button = ({ children, bg = 'bg-green-500', ...rest }) => (
   <button
+    {...rest}
     type='submit'
     className={`${bg} rounded text-white text-xl px-5 py-1 font-bold flex-shrink-0`}
   >

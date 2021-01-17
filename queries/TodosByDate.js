@@ -1,16 +1,18 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  query {
-    todosByDate {
-      text
-      priority
+  query todosByDate($olderThan: Int, $earlierThan: Int) {
+    todosByDate(olderThan: $olderThan, earlierThan: $earlierThan) {
       id
-      contact
-      user
       todoListId
+      text
+      contact
+      priority
+      user
       completed
       deleted
+      createdSince
+      commentsCount
     }
   }
 `
