@@ -106,7 +106,7 @@ const resolvers = {
         id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
-        GSI1sk: `TODO#${id}#STATUS#${status}`,
+        GSI1sk: `TODO#STATUS#${status}`,
         GSI3pk: `USER#mbg@outlook.com#TODO`,
         GSI3sk: ksuid
       })
@@ -127,7 +127,7 @@ const resolvers = {
         pk: id,
         sk: id,
         GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
-        GSI1sk: `TODO#${id}#STATUS#${status}`,
+        GSI1sk: `TODO#STATUS#${status}`,
         GSI3pk: dbResult.Item.GSI3pk,
         GSI3sk: dbResult.Item.GSI3sk
       })
