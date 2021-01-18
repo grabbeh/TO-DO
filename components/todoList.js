@@ -56,7 +56,7 @@ const Todo = ({ todo, updateTodo }) => {
               <div className='flex justify-end flex-shrink'>
                 {todo.priority && <Rating priority={todo.priority} />}
               </div>
-              <div className='flex justify-end text-base font-semibold text-gray-500'>
+              <div className='flex justify-end text-base text-right font-semibold text-gray-500'>
                 {todo.createdSince}
               </div>
             </div>
@@ -122,7 +122,7 @@ const Rating = ({ priority }) => {
   if (priority === 'medium') textColor = 'text-yellow-500'
   if (priority === 'high') textColor = 'text-red-500'
   return (
-    <div className={`${textColor} font-bold py-1 px-2 bg-white rounded`}>
+    <div className={`${textColor} font-bold bg-black-200 rounded`}>
       {priority.toUpperCase()}
     </div>
   )
