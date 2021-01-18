@@ -76,9 +76,6 @@ const TextInput = ({ parentId }) => {
                 }
               `
             })
-            console.log(newTodoRef)
-            console.log(existingTodos)
-            console.log("Updated")
             return [...existingTodos, newTodoRef]
           }
         }
