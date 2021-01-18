@@ -104,6 +104,7 @@ const TextInput = ({ parentId }) => {
         //mutation example + optimistic response
         
         let todo = {
+              __typename: 'Todo',
               user: 'mbg@outlook.com',
               text,
               contact,
