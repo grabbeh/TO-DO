@@ -57,7 +57,6 @@ const TextInput = ({ parentId }) => {
       let ref = cache.identify({id: parentId, __typename: "TodoList"})
       console.log(ref)
       console.log(cache)
-      try {
       cache.modify({
         id: cache.identify({id: parentId, __typename: "TodoList"}),
         fields: {
@@ -84,9 +83,6 @@ const TextInput = ({ parentId }) => {
           }
         }
       })
-      } catch (e) {
-        console.log(e)
-      }
     }
   })
 
