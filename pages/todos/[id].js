@@ -17,7 +17,7 @@ import Link from 'next/link'
 
 const TodoFetcher = props => {
   const { loading, error, data } = useQuery(TODOS_QUERY, {
-    fetchPolicy: 'cache-only',
+    fetchPolicy: 'cache-first',
     variables: { id: props.id, status: 'ACTIVE' }
   })
   if (loading || !data) return <Loading />
