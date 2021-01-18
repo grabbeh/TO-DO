@@ -105,7 +105,7 @@ const resolvers = {
         ...todo,
         id,
         sk: id,
-        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
         GSI1sk: `TODO#${id}#STATUS#${status}`,
         GSI3pk: `USER#mbg@outlook.com#TODO`,
         GSI3sk: ksuid
@@ -126,7 +126,7 @@ const resolvers = {
         ...todo,
         pk: id,
         sk: id,
-        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}#STATUS#${status}`,
+        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
         GSI1sk: `TODO#${id}#STATUS#${status}`,
         GSI3pk: dbResult.Item.GSI3pk,
         GSI3sk: dbResult.Item.GSI3sk
@@ -150,17 +150,17 @@ const resolvers = {
   },
   TodoList: {
     todos: async (todoList, a) => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#${a.status}`
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
-        beginsWith: 'TODO#',
+        beginsWith: `TODO#STATUS#${a.status}`,
         index: 'GSI1'
       })
       return todos.Items
     },
     totalTodos: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#ACTIVE`
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
-        beginsWith: 'TODO#',
+        beginsWith: 'TODO#STATUS#ACTIVE',
         index: 'GSI1'
       })
       return todos.Items.length
@@ -168,7 +168,7 @@ const resolvers = {
     completedTodos: async todoList => {
       let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#ACTIVE`
       let todos = await TodoTable.query(pk, {
-        beginsWith: 'TODO#',
+        beginsWith: 'TODO#STATUS#ACTIVE',
         index: 'GSI1'
       })
       let completed = todos.Items.filter(t => {
