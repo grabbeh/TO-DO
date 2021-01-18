@@ -21,6 +21,8 @@ const typeDefs = `
     user: String
     id: ID
     deleted: Boolean
+    totalTodos: Int
+    completedTodos: Int
   }
 
   type Comment {

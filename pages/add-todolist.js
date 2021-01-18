@@ -69,7 +69,9 @@ const TextInput = () => {
               name,
               id,
               deleted: false,
-              user: 'mbg@outlook.com'
+              user: 'mbg@outlook.com',
+              completedTodos: 0,
+              totalTodos: 0
             }
           }
         })

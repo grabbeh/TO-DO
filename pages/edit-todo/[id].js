@@ -1,6 +1,5 @@
 import { useQuery, useMutation } from '@apollo/client'
 import { Formik } from 'formik'
-import { useRouter } from 'next/router'
 import { string, object } from 'yup'
 import {
   MainContainer as Container,
@@ -37,7 +36,6 @@ const EditTodoPage = ({ data: { todo } }) => {
 }
 
 const TextInput = ({ todo }) => {
-  const router = useRouter()
   let { contact, text, priority } = todo
   const [updateTodo] = useMutation(UPDATE_TODO)
 

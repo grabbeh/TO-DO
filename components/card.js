@@ -1,7 +1,5 @@
 const Card = ({ children, className }) => (
-  <li className={`${className} bg-white rounded-lg px-3 pt-3`}>
-    {children}
-  </li>
+  <li className={`${className} bg-white rounded-lg p-2`}>{children}</li>
 )
 
 export default Card

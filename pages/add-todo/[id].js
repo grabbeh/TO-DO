@@ -55,9 +55,9 @@ const TextInput = ({ parentId }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
       cache.modify({
-        id: cache.identify({id: parentId, __typename: "TodoList"}),
+        id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {
-          todos(existingTodos = []) {
+          todos (existingTodos = []) {
             const newTodoRef = cache.writeFragment({
               data: addTodo,
               fragment: gql`
@@ -101,26 +101,26 @@ const TextInput = ({ parentId }) => {
         const id = uuidv4()
         // get parent ID from URL
         //mutation example + optimistic response
-        
+
         let todo = {
-              __typename: 'Todo',
-              user: 'mbg@outlook.com',
-              text,
-              contact,
-              priority,
-              completed: false,
-              deleted: false,
-              id,
-              todoListId: parentId
+          __typename: 'Todo',
+          user: 'mbg@outlook.com',
+          text,
+          contact,
+          priority,
+          completed: false,
+          deleted: false,
+          id,
+          todoListId: parentId
         }
         let mutation = addTodo({
           variables: { todo },
           optimisticResponse: {
             __typename: 'Mutation',
             addTodo: {
-              __typename: 'Todo',
               ...todo,
-              createdSince: 0,
+              __typename: 'Todo',
+              createdSince: 'Just now',
               commentsCount: 0
             }
           }

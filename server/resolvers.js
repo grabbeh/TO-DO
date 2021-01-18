@@ -84,7 +84,7 @@ const resolvers = {
         GSI1sk: `TODOLIST#${id}`
       }
       await TodoList.put({ ...todoList })
-      return todoList
+      return { ...todoList, totalTodos: 0, completedTodos: 0 }
     },
     updateTodoList: async (p, a, c) => {
       console.log(a)
@@ -112,7 +112,7 @@ const resolvers = {
       })
       // We don't store 'createdSince' in the DB because it's calculated on each request
       // as relative to the time of creation
-      return { ...todo, createdSince: 0, commentsCount: 0 }
+      return { ...todo, createdSince: 'Just now', commentsCount: 0 }
     },
     updateTodo: async (p, a, c) => {
       let { todo } = a
@@ -186,8 +186,9 @@ const resolvers = {
   },
   Todo: {
     createdSince: async todo => {
-      let distance = formatDistanceToNow(new Date(todo.created))
-      return distance
+      if (todo.created) {
+        return formatDistanceToNow(new Date(todo.created))
+      } else return 'Just now'
     },
     commentsCount: async todo => {
       let pk = `TODO#${todo.id}`

@@ -64,7 +64,7 @@ const Todo = ({ todo, updateTodo }) => {
         </div>
       </div>
 
-      <div className='mt-2 mb-1 '>
+      <div className='mt-2'>
         <div className='align-bottom justify-between flex-grow flex'>
           <Link href={`/edit-todo/${encodeURIComponent(todo.id)}`}>
             <a>
