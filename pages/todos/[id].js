@@ -22,6 +22,7 @@ const TodoFetcher = props => {
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
+  console.log(data)
   return <TodoPage id={props.id} data={data} />
 }
 
