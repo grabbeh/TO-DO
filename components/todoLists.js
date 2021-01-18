@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { useMutation } from '@apollo/client'
-import { Header, Button, Card } from './index'
+import { Header, Button, CardListItem as Card } from './index'
 import { UpdateTodoList as UPDATE_TODOLIST } from '../queries/index'
 import toast from 'react-hot-toast'
-import { Dustbin, Edit } from './icons'
+import { Dustbin, Edit, ArrowRight } from './icons'
 
 const TodoLists = ({ todoLists }) => {
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
@@ -19,7 +19,7 @@ const TodoLists = ({ todoLists }) => {
           />
         ))}
       </ul>
-      <div className='flex justify-end'>
+      <div className='mt-3 flex justify-end'>
         <Button>
           <Link href={`/add-todolist`}>
             <a className='cursor-pointer font-bold'>Add</a>
@@ -84,8 +84,8 @@ const TodoList = ({ todoList, updateTodoList }) => (
                   <div className='cursor-pointer'>
                     <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
                       <a>
-                        <div className='font-semibold hover:text-black text-blue-500'>
-                          TODOS
+                        <div className='font-semibold hover:text-black text-blue-500 h-5 w-5'>
+                          <ArrowRight />
                         </div>
                       </a>
                     </Link>

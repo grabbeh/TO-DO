@@ -6,7 +6,8 @@ import {
   Back,
   Subheader,
   Loading,
-  TodoForm
+  TodoForm,
+  Card
 } from '../../components/index'
 import toast from 'react-hot-toast'
 import {
@@ -29,8 +30,10 @@ const EditTodoPage = ({ data: { todo } }) => {
   return (
     <Container>
       <Back title={todo.text} />
-      <Subheader>Edit todo</Subheader>
-      <TextInput todo={todo} />
+      <Card>
+        <Subheader>Edit todo</Subheader>
+        <TextInput todo={todo} />
+      </Card>
     </Container>
   )
 }

@@ -1,11 +1,11 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  query todos($id: ID!, $status: String) {
+  query todos($id: ID!, $priority: String, $status: String) {
     todoList(id: $id) {
       name
       id
-      todos(status: $status) {
+      todos(priority: $priority, status: $status) {
         id
         todoListId
         text

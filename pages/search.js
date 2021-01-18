@@ -6,7 +6,7 @@ import {
   Back
 } from '../components/index'
 import {
-  TodosByDate as TODOSBYDATE_QUERY,
+  AllTodos as ALLTODOS_QUERY,
   UpdateTodo as UPDATE_TODO
 } from '../queries/index'
 import withApollo from '../lib/withApollo'
@@ -15,7 +15,7 @@ const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   return (
     <Container>
-      <Back title='Todos' />
+      <Back title='All todos' />
       <Latest updateTodo={updateTodo} />
       <OlderThanSevenDays updatedTodo={updateTodo} />
     </Container>
@@ -23,9 +23,9 @@ const TodoPage = () => {
 }
 
 const Latest = ({ updateTodo }) => {
-  const { loading, error, data } = useQuery(TODOSBYDATE_QUERY, {
+  const { loading, error, data } = useQuery(ALLTODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { earlierThan: 1 }
+    variables: { earlierThan: 1, priority: 'high' }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -33,15 +33,15 @@ const Latest = ({ updateTodo }) => {
     <TodoList
       title='Recently added'
       updateTodo={updateTodo}
-      todos={data.todosByDate}
+      todos={data.allTodos}
     />
   )
 }
 
 const OlderThanSevenDays = ({ updateTodo }) => {
-  const { loading, error, data } = useQuery(TODOSBYDATE_QUERY, {
+  const { loading, error, data } = useQuery(ALLTODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { olderThan: 7 }
+    variables: { olderThan: 7, priority: 'high' }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -49,7 +49,7 @@ const OlderThanSevenDays = ({ updateTodo }) => {
     <TodoList
       title='7 days or older'
       updateTodo={updateTodo}
-      todos={data.todosByDate}
+      todos={data.allTodos}
     />
   )
 }

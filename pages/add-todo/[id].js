@@ -1,6 +1,5 @@
 import { useQuery, useMutation } from '@apollo/client'
 import { Formik } from 'formik'
-import { useRouter } from 'next/router'
 import { string, object } from 'yup'
 import toast from 'react-hot-toast'
 import {
@@ -8,7 +7,8 @@ import {
   Back,
   Subheader,
   TodoForm,
-  Loading
+  Loading,
+  Card
 } from '../../components/index'
 import {
   TodoList as TODOLIST_QUERY,
@@ -42,12 +42,10 @@ const AddTodoPage = ({ id, data }) => {
 const AddTodoInput = ({ name, parentId }) => (
   <div>
     <Back title={name} />
-    <Subheader>Add todo</Subheader>
-    <ul>
-      <li>
-        <TextInput parentId={parentId} />
-      </li>
-    </ul>
+    <Card>
+      <Subheader>Add todo</Subheader>
+      <TextInput parentId={parentId} />
+    </Card>
   </div>
 )
 
@@ -57,6 +55,9 @@ const TextInput = ({ parentId }) => {
       cache.modify({
         id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {
+          totalTodos (value) {
+            return value + 1
+          },
           todos (existingTodos = []) {
             const newTodoRef = cache.writeFragment({
               data: addTodo,
@@ -114,18 +115,7 @@ const TextInput = ({ parentId }) => {
           todoListId: parentId
         }
         let mutation = addTodo({
-          variables: { todo },
-          optimisticResponse: {
-            __typename: 'Mutation',
-            addTodo: {
-              ...todo,
-              __typename: 'Todo',
-              createdSince: 'Just now',
-              commentsCount: 0
-            }
-          }
-          // for a new item, optimisticResponse needs typename and the id of the
-          // item that will be returned - so id creation has to happen client-side
+          variables: { todo }
         })
 
         toast.promise(mutation, {

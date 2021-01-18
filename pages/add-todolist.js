@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid'
 import {
   MainContainer as Container,
   TodolistForm,
-  Back
+  Back,
+  Card
 } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
 import withApollo from '../lib/withApollo'
@@ -15,7 +16,9 @@ import toast from 'react-hot-toast'
 const AddTodoListPage = () => (
   <Container>
     <Back title='Add todo list' />
-    <TextInput />
+    <Card>
+      <TextInput />
+    </Card>
   </Container>
 )
 

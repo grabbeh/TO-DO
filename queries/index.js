@@ -8,7 +8,7 @@ import AddComment from './AddComment'
 import TodoNotes from './TodoNotes'
 import Todo from './Todo'
 import TodoList from './TodoList'
-import TodosByDate from './TodosByDate'
+import AllTodos from './allTodos'
 
 export {
   AddTodo,
@@ -21,5 +21,5 @@ export {
   UpdateTodo,
   Todo,
   TodoList,
-  TodosByDate
+  AllTodos
 }

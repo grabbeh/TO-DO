@@ -1,5 +1,5 @@
 const Subheader = ({ children }) => (
-  <div className='my-3'>
+  <div className='mb-3'>
     <h1 className='font-bold text-2xl text-gray-900'>{children}</h1>
   </div>
 )

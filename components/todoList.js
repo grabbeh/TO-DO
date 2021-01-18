@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { Card } from './index'
+import { useMutation } from '@apollo/client'
+import { CardListItem as Card, Subheader } from './index'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { Dustbin, Comments, Edit, Rewind } from './icons/index'
+import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
-    {title && <div className='font-bold my-3 text-xl'>{title}</div>}
+    {title && <Subheader>{title}</Subheader>}
     <ul>
       {todos.map(todo => (
         <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
@@ -15,14 +17,46 @@ const TodoList = ({ todos, title, updateTodo }) => (
   </div>
 )
 
-const Todo = ({ todo, updateTodo }) => {
+const Todo = ({ todo }) => {
   let [completed, setCompleted] = useState(todo.completed)
+  const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
+    update (cache, { data: { updateTodo } }) {
+      console.log(updateTodo)
+      cache.modify({
+        id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
+        fields: {
+          completedTodos (value) {
+            if (updateTodo && updateTodo.completed) {
+              value++
+            } else {
+              value--
+            }
+            return value
+          }
+        }
+      })
+    }
+  })
+  const [deleteTodo] = useMutation(UPDATE_TODO, {
+    update (cache) {
+      cache.modify({
+        id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
+        fields: {
+          totalTodos (value) {
+            return value - 1
+          }
+        }
+      })
+    }
+  })
   let handleChange = () => {
     setCompleted(!completed)
-    updateTodo({
+    let updatedTodo = { ...todo, completed: !completed }
+    updateCompletionStatus({
       variables: {
-        todo: { ...todo, completed: !completed }
-      }
+        todo: updatedTodo
+      },
+      optimisticResponse: updatedTodo
     })
   }
   return (
@@ -80,7 +114,7 @@ const Todo = ({ todo, updateTodo }) => {
                 ...todo,
                 deleted: !todo.deleted
               }
-              let mutation = updateTodo({
+              let mutation = deleteTodo({
                 variables: {
                   todo: updatedTodo
                 },

@@ -13,14 +13,14 @@ import {
 } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 
-const TodoFetcher = props => {
+const TodoFetcher = ({ id }) => {
   const { loading, error, data } = useQuery(TODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { id: props.id, status: 'DELETED' }
+    variables: { id, status: 'deleted' }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  return <TodoPage id={props.id} data={data} />
+  return <TodoPage id={id} data={data} />
 }
 
 const TodoPage = ({ data, id }) => {

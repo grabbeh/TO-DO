@@ -15,15 +15,14 @@ import {
 import withApollo from '../../lib/withApollo'
 import Link from 'next/link'
 
-const TodoFetcher = props => {
+const TodoFetcher = ({ id }) => {
   const { loading, error, data } = useQuery(TODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { id: props.id, status: 'ACTIVE' }
+    variables: { id }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  console.log(data)
-  return <TodoPage id={props.id} data={data} />
+  return <TodoPage id={id} data={data} />
 }
 
 const TodoPage = ({ data, id }) => {
@@ -48,12 +47,6 @@ const TodoPage = ({ data, id }) => {
         />
       )}
       <div className='mt-2 flex justify-between'>
-        <Button>
-          <Link href={`/add-todo/${encodeURIComponent(id)}`}>
-            <a className='mt-4 cursor-pointer font-bold'>Add</a>
-          </Link>
-        </Button>
-
         <Link href={`/deleted/${encodeURIComponent(id)}`}>
           <a>
             <div className='h-8 w-8'>
@@ -61,6 +54,11 @@ const TodoPage = ({ data, id }) => {
             </div>
           </a>
         </Link>
+        <Button>
+          <Link href={`/add-todo/${encodeURIComponent(id)}`}>
+            <a className='mt-4 cursor-pointer font-bold'>Add</a>
+          </Link>
+        </Button>
       </div>
     </Container>
   )
