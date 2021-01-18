@@ -59,7 +59,7 @@ const TextInput = ({ parentId }) => {
       console.log(cache)
       try {
       cache.modify({
-        id: cache.identify({id: parentId}),
+        id: cache.identify({id: parentId, __typename: "TodoList"}),
         fields: {
           todos(existingTodos = []) {
             const newTodoRef = cache.writeFragment({
