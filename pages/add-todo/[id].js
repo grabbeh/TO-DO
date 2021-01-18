@@ -54,7 +54,7 @@ const AddTodoInput = ({ name, parentId }) => (
 const TextInput = ({ parentId }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
-      let ref = cache.identify({id: parentId})
+      let ref = cache.identify({id: parentId, __typename: "TodoList"})
       console.log(ref)
       console.log(cache)
       try {
