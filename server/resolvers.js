@@ -166,7 +166,7 @@ const resolvers = {
       return todos.Items.length
     },
     completedTodos: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}#STATUS#ACTIVE`
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         beginsWith: 'TODO#STATUS#ACTIVE',
         index: 'GSI1'
