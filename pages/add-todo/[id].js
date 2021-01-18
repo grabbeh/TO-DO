@@ -56,8 +56,9 @@ const TextInput = ({ parentId }) => {
     update (cache, { data: { addTodo } }) {
       console.log(cache)
       cache.modify({
+        id: cache.identify({id: parentId}),
         fields: {
-          todoList(existingTodos = []) {
+          todos(existingTodos = []) {
             const newTodoRef = cache.writeFragment({
               data: addTodo,
               fragment: gql`
