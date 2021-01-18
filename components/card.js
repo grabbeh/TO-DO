@@ -1,5 +1,5 @@
 const Card = ({ children, className }) => (
-  <li className={`${className} bg-yellow-300 rounded-lg px-3 pt-3`}>
+  <li className={`${className} rounded-lg px-3 pt-3`}>
     {children}
   </li>
 )
