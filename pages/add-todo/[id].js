@@ -109,9 +109,8 @@ const TextInput = ({ parentId }) => {
         const id = uuidv4()
         // get parent ID from URL
         //mutation example + optimistic response
-        let mutation = addTodo({
-          variables: {
-            todo: {
+        
+        let todo = {
               user: 'mbg@outlook.com',
               text,
               contact,
@@ -120,20 +119,14 @@ const TextInput = ({ parentId }) => {
               deleted: false,
               id,
               todoListId: parentId
-            }
-          },
+        }
+        let mutation = addTodo({
+          variables: { todo },
           optimisticResponse: {
             __typename: 'Mutation',
             addTodo: {
               __typename: 'Todo',
-              text,
-              contact,
-              priority,
-              id,
-              todoListId: parentId,
-              deleted: false,
-              completed: false,
-              user: 'mbg@outlook.com',
+              ...todo,
               createdSince: 0,
               commentsCount: 0
             }
