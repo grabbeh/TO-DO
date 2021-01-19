@@ -13,7 +13,6 @@ const TodoFetcher = () => {
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  console.log(data)
   return <TodoPage todoLists={data.todoLists} />
 }
 
