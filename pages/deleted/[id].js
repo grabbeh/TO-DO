@@ -9,14 +9,14 @@ import {
 } from '../../components/index'
 import {
   UpdateTodo as UPDATE_TODO,
-  Todos as TODOS_QUERY
+  DeletedTodos as DELETED_TODOS_QUERY
 } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 
 const TodoFetcher = ({ id }) => {
-  const { loading, error, data } = useQuery(TODOS_QUERY, {
+  const { loading, error, data } = useQuery(DELETED_TODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { id, status: 'deleted' }
+    variables: { id }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -24,18 +24,16 @@ const TodoFetcher = ({ id }) => {
 }
 
 const TodoPage = ({ data, id }) => {
-  console.log(data)
   const [updateTodo] = useMutation(UPDATE_TODO)
   let {
-    todoList: { name, todos }
+    todoList: { name, deletedTodos }
   } = data
-  todos = todos.filter(t => t.deleted)
 
   return (
     <Container>
       <Back title={`Deleted todos for ${name}`} />
-      {todos.length > 0 ? (
-        <TodoList parentId={id} updateTodo={updateTodo} todos={todos} />
+      {deletedTodos.length > 0 ? (
+        <TodoList parentId={id} updateTodo={updateTodo} todos={deletedTodos} />
       ) : (
         <Subheader>No deleted todos</Subheader>
       )}

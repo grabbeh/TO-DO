@@ -9,6 +9,7 @@ import TodoNotes from './TodoNotes'
 import Todo from './Todo'
 import TodoList from './TodoList'
 import AllTodos from './allTodos'
+import DeletedTodos from './DeletedTodos'
 
 export {
   AddTodo,
@@ -21,5 +22,6 @@ export {
   UpdateTodo,
   Todo,
   TodoList,
-  AllTodos
+  AllTodos,
+  DeletedTodos
 }

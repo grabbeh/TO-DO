@@ -46,8 +46,8 @@ const TextInput = ({ todo }) => {
     <Formik
       initialValues={{
         text,
-        priority,
-        contact
+        priority: priority || '',
+        contact: contact || ''
       }}
       validateOnChange={false}
       validationSchema={object().shape({

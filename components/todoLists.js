@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { Dustbin, Edit, ArrowRight } from './icons'
 
 const TodoLists = ({ todoLists }) => {
+  console.log(todoLists)
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
     <div>
@@ -43,7 +44,10 @@ const TodoList = ({ todoList, updateTodoList }) => (
                 </span>
               </Link>
               <div>
-                <div className='text-xl text-right font-bold'>{`${todoList.completedTodos} / ${todoList.totalTodos}`}</div>
+                <div className='text-xl text-right font-bold'>{`${
+                  todoList.completedTodosVolume
+                } / ${todoList.activeTodosVolume +
+                  todoList.completedTodosVolume} `}</div>
                 <div className='text-sm text-right'>Completed / Total </div>
               </div>
             </div>

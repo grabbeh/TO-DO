@@ -5,19 +5,7 @@ export default gql`
     todoList(id: $id) {
       name
       id
-      activeTodos {
-        id
-        todoListId
-        text
-        contact
-        priority
-        user
-        completed
-        deleted
-        createdSince
-        commentsCount
-      }
-      completedTodos {
+      deletedTodos {
         id
         todoListId
         text

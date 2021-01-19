@@ -27,23 +27,19 @@ const TodoFetcher = ({ id }) => {
 
 const TodoPage = ({ data, id }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
-  let {
-    todoList: { name, todos }
-  } = data
-  todos = todos.filter(t => !t.deleted)
-  let nonCompleted = todos.filter(t => !t.completed)
-  let completed = todos.filter(t => t.completed)
+  let { todoList } = data
+  let { name, completedTodos, activeTodos } = todoList
 
   return (
     <Container>
       <Back title={name} />
-      <TodoList parentId={id} updateTodo={updateTodo} todos={nonCompleted} />
-      {completed.length > 0 && (
+      <TodoList parentId={id} updateTodo={updateTodo} todos={activeTodos} />
+      {completedTodos.length > 0 && (
         <TodoList
           title='Completed'
           parentId={id}
           updateTodo={updateTodo}
-          todos={completed}
+          todos={completedTodos}
         />
       )}
       <div className='mt-2 flex justify-between'>

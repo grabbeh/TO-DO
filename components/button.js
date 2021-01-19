@@ -1,8 +1,8 @@
-const Button = ({ children, ...rest }) => (
+const Button = ({ children, bg = 'bg-white', ...rest }) => (
   <button
     {...rest}
     type='submit'
-    className='rounded bg-white text-xl px-5 py-1 font-bold flex-shrink-0'
+    className={`${bg} rounded bg-white text-xl px-5 py-1 font-bold flex-shrink-0`}
   >
     {children}
   </button>

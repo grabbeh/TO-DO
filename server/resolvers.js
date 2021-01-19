@@ -135,39 +135,55 @@ const resolvers = {
         ...comment,
         id,
         sk: id,
-        GSI2pk: `TODO#${todoId}#COMMENT#${id}`,
+        GSI2pk: `TODO#${todoId}#COMMENT`,
         GSI2sk: ksuid.string
       })
       return { ...comment, createdAt: 'Just now' }
     }
   },
   TodoList: {
-    todos: async (todoList, a) => {
-      console.log(a)
-      let options = {
-        index: 'GSI1',
-        filters: { attr: 'deleted', eq: false }
-      }
-      if (a.status === 'deleted') {
-        options = {
-          ...options,
-          filters: { attr: 'deleted', eq: true }
-        }
-      }
-
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
-      let todos = await TodoTable.query(pk, options)
-      return todos.Items
-    },
-    totalTodos: async todoList => {
+    activeTodos: async (todoList, a) => {
       let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
-        filters: { attr: 'deleted', eq: false }
+        filters: [
+          { attr: 'completed', eq: false },
+          { attr: 'deleted', eq: false }
+        ]
+      })
+      return todos.Items
+    },
+    completedTodos: async todoList => {
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+      let todos = await TodoTable.query(pk, {
+        index: 'GSI1',
+        filters: [
+          { attr: 'deleted', eq: false },
+          { attr: 'completed', eq: true }
+        ]
+      })
+      return todos.Items
+    },
+    deletedTodos: async todoList => {
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+      let todos = await TodoTable.query(pk, {
+        index: 'GSI1',
+        filters: { attr: 'deleted', eq: true }
+      })
+      return todos.Items
+    },
+    activeTodosVolume: async todoList => {
+      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+      let todos = await TodoTable.query(pk, {
+        index: 'GSI1',
+        filters: [
+          { attr: 'completed', eq: false },
+          { attr: 'deleted', eq: false }
+        ]
       })
       return todos.Items.length
     },
-    completedTodos: async todoList => {
+    completedTodosVolume: async todoList => {
       let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',

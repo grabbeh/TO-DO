@@ -7,6 +7,7 @@ import {
   Loading,
   MainContainer as Container,
   Back,
+  Card,
   Subheader
 } from '../../components/index'
 import {
@@ -29,8 +30,10 @@ const EditTodoListPage = ({ todoList }) => {
   return (
     <Container>
       <Back title={todoList.name} />
-      <Subheader>Edit todo list</Subheader>
-      <EditTextInput todoList={todoList} />
+      <Card>
+        <Subheader>Edit todo list</Subheader>
+        <EditTextInput todoList={todoList} />
+      </Card>
     </Container>
   )
 }

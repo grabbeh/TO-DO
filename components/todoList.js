@@ -6,26 +6,59 @@ import Link from 'next/link'
 import { Dustbin, Comments, Edit, Rewind } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 
-const TodoList = ({ todos, title, updateTodo }) => (
-  <div>
-    {title && <Subheader>{title}</Subheader>}
-    <ul>
-      {todos.map(todo => (
-        <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
-      ))}
-    </ul>
-  </div>
-)
+const TodoList = ({ todos, title, updateTodo }) => {
+  return (
+    <div>
+      {title && <Subheader>{title}</Subheader>}
+      <ul>
+        {todos.map(todo => (
+          <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 const Todo = ({ todo }) => {
   let [completed, setCompleted] = useState(todo.completed)
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       cache.modify({
-        id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
+        id: cache.identify({
+          id: todo.todoListId,
+          __typename: 'TodoList'
+        }),
         fields: {
-          completedTodos (value) {
-            if (updateTodo && updateTodo.completed && !updateTodo.deleted) {
+          completedTodos (existing, { readField }) {
+            let existingReference = { __ref: `Todo:${todo.id}` }
+            if (updateTodo && updateTodo.completed) {
+              return [existingReference, ...existing]
+            } else {
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
+            }
+          },
+          activeTodos (existing, { readField }) {
+            let existingReference = { __ref: `Todo:${todo.id}` }
+            if (updateTodo && !updateTodo.completed) {
+              return [existingReference, ...existing]
+            } else {
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
+            }
+          },
+          completedTodosVolume (value) {
+            if (updateTodo && updateTodo.completed) {
+              value++
+            } else {
+              value--
+            }
+            return value
+          },
+          activeTodosVolume (value) {
+            if (updateTodo && !updateTodo.completed) {
               value++
             } else {
               value--
@@ -36,13 +69,85 @@ const Todo = ({ todo }) => {
       })
     }
   })
-  const [deleteTodo] = useMutation(UPDATE_TODO, {
-    update (cache) {
+  const [updateDeletionStatus] = useMutation(UPDATE_TODO, {
+    update (cache, { data: { updateTodo } }) {
       cache.modify({
         id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
         fields: {
-          totalTodos (value) {
-            value--
+          completedTodos (existing, { readField }) {
+            // if todo exists in completed todos array and action is deleted then remove
+            if (
+              updateTodo &&
+              updateTodo.deleted &&
+              existing.some(ref => readField('id', ref) === todo.id)
+            ) {
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
+              // if todo doesn't exist in array and action isn't deleted, then we should add to array
+              // if todo is completed
+            } else if (
+              updateTodo &&
+              !updateTodo.deleted &&
+              updateTodo.completed
+            ) {
+              let existingReference = { __ref: `Todo:${todo.id}` }
+              return [existingReference, ...existing]
+            } else {
+              // if todo doesn't exist in array and action is deleted then item is in the other array so we return
+              return existing
+            }
+          },
+          activeTodos (existing, { readField }) {
+            // if todo exists in completed todos array and action is deleted then remove
+            if (
+              updateTodo &&
+              updateTodo.deleted &&
+              existing.some(ref => readField('id', ref) === todo.id)
+            ) {
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
+              // if todo doesn't exist in array and action isn't deleted, then we should add to array
+              // if todo is incomplete
+            } else if (
+              updateTodo &&
+              !updateTodo.deleted &&
+              !updateTodo.completed
+            ) {
+              let existingReference = { __ref: `Todo:${todo.id}` }
+              return [existingReference, ...existing]
+            } else {
+              // if todo doesn't exist in array and action is deleted then item is in the other array so we return
+              return existing
+            }
+          },
+          deletedTodos (existing, { readField }) {
+            let existingReference = { __ref: `Todo:${todo.id}` }
+            // if action is deleted we add todo to array
+            if (updateTodo && updateTodo.deleted) {
+              return [existingReference, ...existing]
+            } else {
+              // else we filter out as it's being restored
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
+            }
+          },
+          totalTodosVolume (value) {
+            if (!updateTodo.deleted) {
+              value++
+            } else {
+              value--
+            }
+            return value
+          },
+          completedTodosVolume (value) {
+            if (updateTodo.completed && !updateTodo.deleted) {
+              value++
+            } else {
+              value--
+            }
             return value
           }
         }
@@ -114,7 +219,7 @@ const Todo = ({ todo }) => {
                 ...todo,
                 deleted: !todo.deleted
               }
-              let mutation = deleteTodo({
+              let mutation = updateDeletionStatus({
                 variables: {
                   todo: updatedTodo
                 },
@@ -160,6 +265,28 @@ const Rating = ({ priority }) => {
       {priority.toUpperCase()}
     </div>
   )
+}
+
+const RemoveItem = (arr, item) => {
+  let existingReference = { __ref: `Todo:${todo.id}` }
+  if (updateTodo && !updateTodo.completed) {
+    return [existingReference, ...existing]
+  } else {
+    return existing.filter(ref => {
+      return todo.id !== readField('id', ref)
+    })
+  }
+}
+
+const UpdateTodos = (id, arr, add, readField) => {
+  let existingReference = { __ref: `Todo:${id}` }
+  if (add) {
+    return [existingReference, ...arr]
+  } else {
+    return arr.filter(ref => {
+      return id !== readField('id', ref)
+    })
+  }
 }
 
 export default TodoList

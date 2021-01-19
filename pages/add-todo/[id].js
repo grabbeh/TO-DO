@@ -55,10 +55,10 @@ const TextInput = ({ parentId }) => {
       cache.modify({
         id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {
-          totalTodos (value) {
+          totalTodosVolume (value) {
             return value + 1
           },
-          todos (existingTodos = []) {
+          activeTodos (existingTodos = []) {
             const newTodoRef = cache.writeFragment({
               data: addTodo,
               fragment: gql`
@@ -74,6 +74,7 @@ const TextInput = ({ parentId }) => {
                 }
               `
             })
+            console.log(newTodoRef)
             return [...existingTodos, newTodoRef]
           }
         }

@@ -45,10 +45,12 @@ const typeDefs = `
     name: String
     user: String
     id: ID
-    todos(priority: String, status: String): [Todo]
+    activeTodos: [Todo]
+    completedTodos: [Todo]
+    deletedTodos: [Todo]
     deleted: Boolean
-    totalTodos: Int
-    completedTodos: Int
+    activeTodosVolume: Int
+    completedTodosVolume: Int
   }
 
   input TodoInput {
