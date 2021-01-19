@@ -171,7 +171,10 @@ const resolvers = {
       let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
-        filters: { attr: 'completed', eq: true }
+        filters: [
+          { attr: 'completed', eq: true },
+          { attr: 'deleted', eq: false }
+        ]
       })
       return todos.Items.length
     }

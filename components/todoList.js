@@ -21,12 +21,11 @@ const Todo = ({ todo }) => {
   let [completed, setCompleted] = useState(todo.completed)
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
-      console.log(updateTodo)
       cache.modify({
         id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
         fields: {
           completedTodos (value) {
-            if (updateTodo && updateTodo.completed) {
+            if (updateTodo && updateTodo.completed && !updateTodo.deleted) {
               value++
             } else {
               value--
@@ -43,7 +42,8 @@ const Todo = ({ todo }) => {
         id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
         fields: {
           totalTodos (value) {
-            return value - 1
+            value--
+            return value
           }
         }
       })
