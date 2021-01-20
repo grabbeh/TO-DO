@@ -40,7 +40,7 @@ const AddTodoForm = ({ handleChange, values, errors }) => (
       ))}
     </div>
     <div className='mt-3 flex justify-end'>
-      <Button bg='bg-green-500'>Go</Button>
+      <Button bg='bg-green-300'>Go</Button>
     </div>
 
     <div className='mt-1'>
