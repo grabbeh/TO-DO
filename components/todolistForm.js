@@ -7,6 +7,7 @@ const TodolistForm = ({ handleChange, values, errors }) => (
       style={{ boxSizing: 'border-box' }}
       onChange={handleChange}
       name='name'
+      label='Name'
       value={values.name}
     />
     <div className='mt-3 flex justify-end'>
