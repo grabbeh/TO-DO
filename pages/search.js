@@ -17,7 +17,7 @@ const TodoPage = () => {
     <Container>
       <Back title='All todos' />
       <Latest updateTodo={updateTodo} />
-      <OlderThanSevenDays updatedTodo={updateTodo} />
+      <OlderThanSevenDays updateTodo={updateTodo} />
     </Container>
   )
 }
@@ -25,7 +25,7 @@ const TodoPage = () => {
 const Latest = ({ updateTodo }) => {
   const { loading, error, data } = useQuery(ALLTODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { earlierThan: 1, priority: 'high' }
+    variables: { earlierThan: 1 }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -41,13 +41,13 @@ const Latest = ({ updateTodo }) => {
 const OlderThanSevenDays = ({ updateTodo }) => {
   const { loading, error, data } = useQuery(ALLTODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { olderThan: 7, priority: 'high' }
+    variables: { olderThan: 3 }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
   return (
     <TodoList
-      title='7 days or older'
+      title='3 days or older'
       updateTodo={updateTodo}
       todos={data.allTodos}
     />

@@ -30,7 +30,7 @@ const Todo = ({ todo }) => {
           }),
           fields: {
             completedTodos (existing, { readField }) {
-              if (updateTodo && updateTodo?.completed) {
+              if (updateTodo.completed) {
                 return [ref, ...existing]
               } else {
                 return existing.filter(ref => {
@@ -39,7 +39,7 @@ const Todo = ({ todo }) => {
               }
             },
             activeTodos (existing, { readField }) {
-              if (updateTodo && !updateTodo.completed) {
+              if (!updateTodo.completed) {
                 return [ref, ...existing]
               } else {
                 return existing.filter(ref => {
@@ -48,7 +48,7 @@ const Todo = ({ todo }) => {
               }
             },
             completedTodosVolume (value) {
-              if (updateTodo && updateTodo.completed) {
+              if (updateTodo.completed) {
                 value++
               } else {
                 value--
@@ -56,7 +56,7 @@ const Todo = ({ todo }) => {
               return value
             },
             activeTodosVolume (value) {
-              if (updateTodo && !updateTodo.completed) {
+              if (!updateTodo.completed) {
                 value++
               } else {
                 value--
@@ -71,84 +71,76 @@ const Todo = ({ todo }) => {
   const [updateDeletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
-      cache.modify({
-        id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
-        fields: {
-          completedTodos (existing, { readField }) {
-            // if todo exists in completed todos array and action is deleted then remove
-            if (
-              updateTodo &&
-              updateTodo.deleted &&
-              existing.some(ref => readField('id', ref) === todo.id)
-            ) {
-              return existing.filter(ref => {
-                return todo.id !== readField('id', ref)
-              })
-              // if todo doesn't exist in array and action isn't deleted, then we should add to array
-              // if todo is completed
-            } else if (
-              updateTodo &&
-              !updateTodo.deleted &&
-              updateTodo.completed
-            ) {
-              return [ref, ...existing]
-            } else {
-              // if todo doesn't exist in array and action is deleted then item is in the other array so we return
-              return existing
+      if (updateTodo) {
+        cache.modify({
+          id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
+          fields: {
+            completedTodos (existing, { readField }) {
+              // if todo exists in completed todos array and action is deleted then remove
+              if (
+                updateTodo.deleted &&
+                existing.some(ref => readField('id', ref) === todo.id)
+              ) {
+                return existing.filter(ref => {
+                  return todo.id !== readField('id', ref)
+                })
+                // if todo doesn't exist in array and action isn't deleted, then we should add to array
+                // if todo is completed
+              } else if (!updateTodo.deleted && updateTodo.completed) {
+                return [ref, ...existing]
+              } else {
+                // if todo doesn't exist in array and action is deleted then item is in the other array so we return
+                return existing
+              }
+            },
+            activeTodos (existing, { readField }) {
+              // if todo exists in completed todos array and action is deleted then remove
+              if (
+                updateTodo.deleted &&
+                existing.some(ref => readField('id', ref) === todo.id)
+              ) {
+                return existing.filter(ref => {
+                  return todo.id !== readField('id', ref)
+                })
+                // if todo doesn't exist in array and action isn't deleted, then we should add to array
+                // if todo is incomplete
+              } else if (!updateTodo.deleted && !updateTodo.completed) {
+                return [ref, ...existing]
+              } else {
+                // if todo doesn't exist in array and action is deleted then item is in the other array so we return
+                return existing
+              }
+            },
+            deletedTodos (existing, { readField }) {
+              // if action is deleted we add todo to array
+              if (updateTodo.deleted) {
+                return [ref, ...existing]
+              } else {
+                // else we filter out as it's being restored
+                return existing.filter(ref => {
+                  return todo.id !== readField('id', ref)
+                })
+              }
+            },
+            totalTodosVolume (value) {
+              if (!updateTodo.deleted) {
+                value++
+              } else {
+                value--
+              }
+              return value
+            },
+            completedTodosVolume (value) {
+              if (updateTodo.completed && !updateTodo.deleted) {
+                value++
+              } else {
+                value--
+              }
+              return value
             }
-          },
-          activeTodos (existing, { readField }) {
-            // if todo exists in completed todos array and action is deleted then remove
-            if (
-              updateTodo &&
-              updateTodo.deleted &&
-              existing.some(ref => readField('id', ref) === todo.id)
-            ) {
-              return existing.filter(ref => {
-                return todo.id !== readField('id', ref)
-              })
-              // if todo doesn't exist in array and action isn't deleted, then we should add to array
-              // if todo is incomplete
-            } else if (
-              updateTodo &&
-              !updateTodo.deleted &&
-              !updateTodo.completed
-            ) {
-              return [ref, ...existing]
-            } else {
-              // if todo doesn't exist in array and action is deleted then item is in the other array so we return
-              return existing
-            }
-          },
-          deletedTodos (existing, { readField }) {
-            // if action is deleted we add todo to array
-            if (updateTodo && updateTodo.deleted) {
-              return [ref, ...existing]
-            } else {
-              // else we filter out as it's being restored
-              return existing.filter(ref => {
-                return todo.id !== readField('id', ref)
-              })
-            }
-          },
-          totalTodosVolume (value) {
-            if (!updateTodo.deleted) {
-              value++
-            } else {
-              value--
-            }
-            return value
-          },
-          completedTodosVolume (value) {
-            if (updateTodo.completed && !updateTodo.deleted) {
-              value++
-            } else {
-              value--
-            }
-            return value
           }
-        }
-      })
+        })
+      }
     }
   })
   let handleChange = () => {
@@ -200,7 +192,7 @@ const Todo = ({ todo }) => {
         </div>
       </div>
 
-      <div className='mt-2'>
+      <div className='flex self-end mt-2'>
         <div className='align-bottom justify-between flex-grow flex'>
           <Link href={`/edit-todo/${encodeURIComponent(todo.id)}`}>
             <a>

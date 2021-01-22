@@ -4,6 +4,7 @@ import { Todo, TodoList, TodoTable, Comment } from './table.js'
 import { formatDistanceToNow, format } from 'date-fns'
 import KSUID from 'ksuid'
 import crypto from 'crypto'
+import { areIntervalsOverlappingWithOptions } from 'date-fns/fp'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -30,7 +31,8 @@ const resolvers = {
       const relevantKSUID = KSUID.fromParts(timeInMs, payload)
       let baseOptions = {
         index: 'GSI3',
-        reverse: true
+        reverse: true,
+        limit: 3
       }
       let options
       if (a.olderThan) {
