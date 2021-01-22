@@ -6,7 +6,6 @@ import toast from 'react-hot-toast'
 import { Dustbin, Edit, ArrowRight } from './icons'
 
 const TodoLists = ({ todoLists }) => {
-  console.log(todoLists)
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
     <div>

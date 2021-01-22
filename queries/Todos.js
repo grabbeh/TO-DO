@@ -5,6 +5,8 @@ export default gql`
     todoList(id: $id) {
       name
       id
+      activeTodosVolume
+      completedTodosVolume
       activeTodos {
         id
         todoListId
