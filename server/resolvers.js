@@ -148,6 +148,7 @@ const resolvers = {
       let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
+        reverse: true,
         filters: [
           { attr: 'completed', eq: false },
           { attr: 'deleted', eq: false }
@@ -159,6 +160,7 @@ const resolvers = {
       let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
+        reverse: true,
         filters: [
           { attr: 'deleted', eq: false },
           { attr: 'completed', eq: true }

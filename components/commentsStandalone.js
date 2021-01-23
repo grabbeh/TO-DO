@@ -3,7 +3,13 @@ import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import { Textarea, Button, Subheader, Card } from './index'
+import {
+  Textarea,
+  Button,
+  Subheader,
+  Card as MainCard,
+  CardListItem as Card
+} from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
 import toast from 'react-hot-toast'
 
@@ -19,8 +25,10 @@ const CommentInput = ({ todoId, comments }) => (
         </ul>
       </div>
     )}
-    <Subheader>Add comment</Subheader>
-    <TextInput todoId={todoId} />
+    <MainCard>
+      <Subheader>Add comment</Subheader>
+      <TextInput todoId={todoId} />
+    </MainCard>
   </div>
 )
 
@@ -123,7 +131,7 @@ const TextInput = ({ todoId }) => {
 const Comment = props => {
   let { comment } = props
   return (
-    <Card key={comment.id}>
+    <Card className='mb-4' key={comment.id}>
       <div className='justify-between flex'>
         <div className='flex'>
           <div className='mr-1 text-gray-500 font-semibold h-5 w-5'>
@@ -131,7 +139,9 @@ const Comment = props => {
           </div>
           <div className='text-gray-500 font-semibold'>Michael Goulbourn</div>
         </div>
-        <div className='text-xs text-gray-500'>{comment.createdAt}</div>
+        <div className='text-xs font-semibold text-gray-500'>
+          {comment.createdAt}
+        </div>
       </div>
 
       <div className='pb-3 text-xl font:semibold font-medium'>

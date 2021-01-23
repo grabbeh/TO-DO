@@ -30,9 +30,7 @@ const TodoPage = ({
       <Back title={text} />
       <div className='text-2xl font-bold mt-3'>{commentsCount}</div>
     </div>
-    <Card>
-      <Comments comments={comments} todoId={todoId} />
-    </Card>
+    <Comments comments={comments} todoId={todoId} />
   </Container>
 )
 
