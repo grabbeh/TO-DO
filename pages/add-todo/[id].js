@@ -55,7 +55,7 @@ const TextInput = ({ parentId }) => {
       cache.modify({
         id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {
-          totalTodosVolume (value) {
+          activeTodosVolume (value) {
             return value + 1
           },
           activeTodos (existingTodos = []) {
@@ -74,7 +74,6 @@ const TextInput = ({ parentId }) => {
                 }
               `
             })
-            console.log(newTodoRef)
             return [...existingTodos, newTodoRef]
           }
         }
@@ -101,9 +100,6 @@ const TextInput = ({ parentId }) => {
         })
         let { text, contact, priority } = values
         const id = uuidv4()
-        // get parent ID from URL
-        //mutation example + optimistic response
-
         let todo = {
           __typename: 'Todo',
           user: 'mbg@outlook.com',
@@ -126,7 +122,6 @@ const TextInput = ({ parentId }) => {
         })
 
         resetForm()
-        //router.back()
       }}
     >
       {props => {

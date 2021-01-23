@@ -7,7 +7,8 @@ import {
   MainContainer as Container,
   TodolistForm,
   Back,
-  Card
+  Card,
+  Subheader
 } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
 import withApollo from '../lib/withApollo'
@@ -17,6 +18,7 @@ const AddTodoListPage = () => (
   <Container>
     <Back title='Add todo list' />
     <Card>
+      <Subheader>Add todo list</Subheader>
       <TextInput />
     </Card>
   </Container>

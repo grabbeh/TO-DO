@@ -2,14 +2,14 @@ import { useQuery } from '@apollo/client'
 import {
   MainContainer as Container,
   Loading,
-  Back
+  Back,
+  Card
 } from '../../components/index'
 import { TodoNotes as TODO_NOTES_QUERY } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import Comments from '../../components/commentsStandalone'
 
-const CommentsFetcher = props => {
-  let { id } = props
+const CommentsFetcher = ({ id }) => {
   const { loading, error, data } = useQuery(TODO_NOTES_QUERY, {
     fetchPolicy: 'cache-first',
     variables: { id }
@@ -21,13 +21,18 @@ const CommentsFetcher = props => {
 
 const TodoPage = ({
   data: {
-    todo: { text, comments }
+    todo: { text, comments, commentsCount }
   },
   todoId
 }) => (
   <Container>
-    <Back title={text} />
-    <Comments comments={comments} todoId={todoId} />
+    <div className='flex justify-between'>
+      <Back title={text} />
+      <div className='text-2xl font-bold mt-3'>{commentsCount}</div>
+    </div>
+    <Card>
+      <Comments comments={comments} todoId={todoId} />
+    </Card>
   </Container>
 )
 

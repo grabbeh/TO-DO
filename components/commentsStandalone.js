@@ -5,33 +5,38 @@ import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 import { Textarea, Button, Subheader, Card } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
+import toast from 'react-hot-toast'
 
-const CommentInput = ({ todoId, comments }) => {
-  return (
-    <div>
-      {comments.length > 0 && (
-        <div>
-          <Subheader>Comments</Subheader>
-          <ul className='mb-4'>
-            {comments.map(comment => (
-              <Comment comment={comment} key={comment.id} />
-            ))}
-          </ul>
-        </div>
-      )}
-      <Subheader>Add comment</Subheader>
-      <TextInput todoId={todoId} />
-    </div>
-  )
-}
+const CommentInput = ({ todoId, comments }) => (
+  <div>
+    {comments.length > 0 && (
+      <div>
+        <Subheader>Comments</Subheader>
+        <ul className='mb-4'>
+          {comments.map(comment => (
+            <Comment comment={comment} key={comment.id} />
+          ))}
+        </ul>
+      </div>
+    )}
+    <Subheader>Add comment</Subheader>
+    <TextInput todoId={todoId} />
+  </div>
+)
 
-const TextInput = props => {
-  let { todoId } = props
+const TextInput = ({ todoId }) => {
   const [addComment] = useMutation(ADD_COMMENT, {
     update (cache, { data: { addComment } }) {
       cache.modify({
+        id: cache.identify({
+          id: todoId,
+          __typename: 'Todo'
+        }),
         fields: {
-          todo (existingTodo = []) {
+          commentsCount (value) {
+            return value + 1
+          },
+          comments (existing = []) {
             const newCommentRef = cache.writeFragment({
               data: addComment,
               fragment: gql`
@@ -40,15 +45,11 @@ const TextInput = props => {
                   text
                   todoId
                   user
+                  createdAt
                 }
               `
             })
-
-            return {
-              ...existingTodo,
-              commentsCount: existingTodo.commentsCount + 1,
-              comments: [...existingTodo.comments, newCommentRef]
-            }
+            return [newCommentRef, ...existing]
           }
         }
       })
@@ -70,29 +71,27 @@ const TextInput = props => {
         })
         let { text } = values
         const id = uuidv4()
-        //mutation example + optimistic response
-        addComment({
+        let comment = {
+          __typename: 'Comment',
+          user: 'mbg@outlook.com',
+          text,
+          todoId,
+          id,
+          createdAt: 'Just now'
+        }
+        let mutation = addComment({
           variables: {
-            comment: {
-              user: 'mbg@outlook.com',
-              text,
-              todoId,
-              id
-            }
+            comment
           },
           optimisticResponse: {
             __typename: 'Mutation',
-            addComment: {
-              __typename: 'Comment',
-              text,
-              id,
-              todoId,
-              user: 'mbg@outlook.com',
-              createdAt: 'Just now'
-            }
+            addComment: comment
           }
-          // for a new item, optimisticResponse needs typename and the id of the
-          // item that will be returned - so id creation has to happen client-side
+        })
+        toast.promise(mutation, {
+          loading: 'Loading',
+          success: data => `Successfully added comment`,
+          error: err => `This just happened: ${err.toString()}`
         })
         resetForm()
       }}
@@ -110,10 +109,7 @@ const TextInput = props => {
               }
             </div>
             <div className='flex justify-end'>
-              <Button
-                className=' bg-green-500 py-2 px-3 text-white text-xl font-bold'
-                type='submit'
-              >
+              <Button bg='bg-green-300' type='submit'>
                 Add
               </Button>
             </div>

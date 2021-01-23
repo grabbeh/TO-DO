@@ -1,6 +1,5 @@
 const typeDefs = `
   type Query {
-    todos(id: ID!): [Todo]
     todo(id: ID!): Todo
     comments(id: ID!): [Comment]
     todoLists: [TodoList]

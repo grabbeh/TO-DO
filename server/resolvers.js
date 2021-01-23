@@ -31,8 +31,7 @@ const resolvers = {
       const relevantKSUID = KSUID.fromParts(timeInMs, payload)
       let baseOptions = {
         index: 'GSI3',
-        reverse: true,
-        limit: 3
+        reverse: true
       }
       let options
       if (a.olderThan) {
@@ -132,6 +131,7 @@ const resolvers = {
     addComment: async (p, a, c) => {
       let { comment } = a
       let { id, todoId } = comment
+      delete comment['createdAt']
       const ksuid = await KSUID.random()
       await Comment.put({
         ...comment,
@@ -214,18 +214,17 @@ const resolvers = {
       } else return 'Just now'
     },
     commentsCount: async todo => {
-      let pk = `TODO#${todo.id}`
+      let pk = `TODO#${todo.id}#COMMENT`
       let comments = await TodoTable.query(pk, {
-        beginsWith: 'COMMENT#',
         index: 'GSI2'
       })
       return comments.Items.length
     },
     comments: async todo => {
-      let pk = `TODO#${todo.id}`
+      let pk = `TODO#${todo.id}#COMMENT`
       let comments = await TodoTable.query(pk, {
-        beginsWith: 'COMMENT#',
-        index: 'GSI2'
+        index: 'GSI2',
+        reverse: true
       })
       return comments.Items
     }

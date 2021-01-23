@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useMutation } from '@apollo/client'
 import { CardListItem as Card, Subheader } from './index'
 import toast from 'react-hot-toast'
@@ -18,54 +17,52 @@ const TodoList = ({ todos, title, updateTodo }) => (
 )
 
 const Todo = ({ todo }) => {
-  let [completed, setCompleted] = useState(todo.completed)
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
-      if (updateTodo) {
-        cache.modify({
-          id: cache.identify({
-            id: todo.todoListId,
-            __typename: 'TodoList'
-          }),
-          fields: {
-            completedTodos (existing, { readField }) {
-              if (updateTodo.completed) {
-                return [ref, ...existing]
-              } else {
-                return existing.filter(ref => {
-                  return todo.id !== readField('id', ref)
-                })
-              }
-            },
-            activeTodos (existing, { readField }) {
-              if (!updateTodo.completed) {
-                return [ref, ...existing]
-              } else {
-                return existing.filter(ref => {
-                  return todo.id !== readField('id', ref)
-                })
-              }
-            },
-            completedTodosVolume (value) {
-              if (updateTodo.completed) {
-                value++
-              } else {
-                value--
-              }
-              return value
-            },
-            activeTodosVolume (value) {
-              if (!updateTodo.completed) {
-                value++
-              } else {
-                value--
-              }
-              return value
+
+      cache.modify({
+        id: cache.identify({
+          id: todo.todoListId,
+          __typename: 'TodoList'
+        }),
+        fields: {
+          completedTodos (existing, { readField }) {
+            if (updateTodo.completed) {
+              return [ref, ...existing]
+            } else {
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
             }
+          },
+          activeTodos (existing, { readField }) {
+            if (!updateTodo.completed) {
+              return [ref, ...existing]
+            } else {
+              return existing.filter(ref => {
+                return todo.id !== readField('id', ref)
+              })
+            }
+          },
+          completedTodosVolume (value) {
+            if (updateTodo.completed) {
+              value++
+            } else {
+              value--
+            }
+            return value
+          },
+          activeTodosVolume (value) {
+            if (!updateTodo.completed) {
+              value++
+            } else {
+              value--
+            }
+            return value
           }
-        })
-      }
+        }
+      })
     }
   })
   const [updateDeletionStatus] = useMutation(UPDATE_TODO, {
@@ -144,13 +141,11 @@ const Todo = ({ todo }) => {
     }
   })
   let handleChange = () => {
-    setCompleted(!completed)
-    let updatedTodo = { ...todo, completed: !completed }
-    updateCompletionStatus({
+    let updatedTodo = updateCompletionStatus({
       variables: {
-        todo: updatedTodo
+        todo: { ...todo, completed: !todo.completed }
       },
-      optimisticResponse: updatedTodo
+      optimisticResponse: { ...todo, completed: !todo.completed }
     })
   }
   return (
@@ -160,8 +155,20 @@ const Todo = ({ todo }) => {
           <label>
             <input
               type='checkbox'
-              checked={completed}
-              onChange={handleChange}
+              checked={todo.completed}
+              onChange={() => {
+                let mutation = updateCompletionStatus({
+                  variables: {
+                    todo: { ...todo, completed: !todo.completed }
+                  },
+                  optimisticResponse: { ...todo, completed: !todo.completed }
+                })
+                toast.promise(mutation, {
+                  loading: 'Loading',
+                  success: data => `Successfully updated todo`,
+                  error: err => `This just happened: ${err.toString()}`
+                })
+              }}
               className='mr-3 cursor-pointer form-checkbox h-5 w-5 border hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
             />
           </label>
@@ -171,7 +178,7 @@ const Todo = ({ todo }) => {
             <div className='pr-4'>
               <span
                 className={`${
-                  completed ? 'line-through' : ''
+                  todo.completed ? 'line-through' : ''
                 } flex font-bold text-gray-900 text-xl`}
               >
                 {todo.text}
