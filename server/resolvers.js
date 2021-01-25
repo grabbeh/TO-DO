@@ -4,7 +4,8 @@ import { Todo, TodoList, TodoTable, Comment } from './table.js'
 import { formatDistanceToNow, format } from 'date-fns'
 import KSUID from 'ksuid'
 import crypto from 'crypto'
-import { areIntervalsOverlappingWithOptions } from 'date-fns/fp'
+import { TodolistForm } from '../components/index.js'
+import { AddTodoList } from '../queries/index.js'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -76,21 +77,14 @@ const resolvers = {
   },
   Mutation: {
     addTodoList: async (p, a, c) => {
-      let {
-        todoList: { name, id, user }
-      } = a
-
-      let todoList = {
-        name,
-        user,
-        id,
+      let { todoList } = a
+      await TodoList.put({
+        ...todoList,
         deleted: false
-      }
-      await TodoList.put({ ...todoList })
-      return { ...todoList, totalTodos: 0, completedTodos: 0 }
+      })
+      return { ...todoList, activeTodosVolume: 0, completedTodosVolume: 0 }
     },
     updateTodoList: async (p, a, c) => {
-      console.log(a)
       let { todoList } = a
       await TodoList.update(todoList)
       return todoList
