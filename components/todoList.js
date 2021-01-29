@@ -157,18 +157,17 @@ const Todo = ({ todo }) => {
               type='checkbox'
               checked={todo.completed}
               onChange={() => {
-                updateCompletionStatus({
+                let mutation = updateCompletionStatus({
                   variables: {
                     todo: { ...todo, completed: !todo.completed }
                   },
                   optimisticResponse: { ...todo, completed: !todo.completed }
-                })
-                /*
+                })   
                 toast.promise(mutation, {
                   loading: 'Loading',
                   success: data => `Successfully updated todo`,
                   error: err => `This just happened: ${err.toString()}`
-                })*/
+                })
               }}
               className='mr-3 cursor-pointer form-checkbox h-5 w-5 border-2 hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
             />
