@@ -13,8 +13,16 @@ import CardListItem from './cardListItem'
 import Card from './card'
 import TodoList from './todoList'
 import TodoLists from './todoLists'
+import Tab from './tab'
+import TabList from './tabList'
+import TabPanels from './tabPanels'
+import Tabs from './tabs'
 
 export {
+  Tab,
+  TabList,
+  TabPanels,
+  Tabs,
   Subheader,
   Button,
   Back,

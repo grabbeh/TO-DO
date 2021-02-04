@@ -8,10 +8,14 @@ import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
-    <ul>
-      {todos.map(todo => (
-        <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
-      ))}
+    <ul className='mb-3 border-t-2 border-l-2 border-r-2'>
+      {todos.length > 0 ? (
+        todos.map(todo => (
+          <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
+        ))
+      ) : (
+        <div className='text-xl font-bold'>No todos!</div>
+      )}
     </ul>
   </div>
 )
@@ -140,6 +144,7 @@ const Todo = ({ todo }) => {
       }
     }
   })
+  /*
   let handleChange = () => {
     let updatedTodo = updateCompletionStatus({
       variables: {
@@ -147,9 +152,9 @@ const Todo = ({ todo }) => {
       },
       optimisticResponse: { ...todo, completed: !todo.completed }
     })
-  }
+  }*/
   return (
-    <Card className='mb-4' key={todo.id}>
+    <Card key={todo.id}>
       <div className='flex'>
         <div>
           <label>

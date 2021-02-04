@@ -10,7 +10,7 @@ const TodoLists = ({ todoLists }) => {
   return (
     <div>
       <Header>Lists</Header>
-      <ul className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+      <ul className='border-t-2 border-l-2 border-r-2'>
         {todoLists.map(todoList => (
           <TodoList
             updateTodoList={updateTodoList}

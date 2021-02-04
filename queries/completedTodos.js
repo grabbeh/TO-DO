@@ -1,13 +1,11 @@
 import gql from 'graphql-tag'
 
 export default gql`
-  query todoList($id: ID!) {
+  query todos($id: ID!) {
     todoList(id: $id) {
       name
       id
-      activeTodosVolume
-      completedTodosVolume
-      activeTodos {
+      completedTodos {
         id
         todoListId
         text

@@ -10,11 +10,13 @@ import Todo from './Todo'
 import TodoList from './TodoList'
 import AllTodos from './allTodos'
 import DeletedTodos from './DeletedTodos'
+import CompletedTodos from './completedTodos'
 
 export {
   AddTodo,
   AddTodoList,
   AddComment,
+  CompletedTodos,
   TodoLists,
   Todos,
   TodoNotes,
