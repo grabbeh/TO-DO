@@ -60,7 +60,7 @@ const TodoPage = ({ todoList, id }) => {
         </TabList>
         <TabPanels>
           <TodoList parentId={id} updateTodo={updateTodo} todos={activeTodos} />
-          {loading && <Loading />}
+          // {loading && <Loading />}
           {data?.todoList?.completedTodos.length > 0 && (
             <TodoList
               parentId={id}
