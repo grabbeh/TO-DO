@@ -33,6 +33,7 @@ const TodoFetcher = ({ id }) => {
 const TodoPage = ({ todoList, id }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [getCompleted, { loading, data }] = useLazyQuery(COMPLETED_TODOS)
+  console.log(loading)
   let { name, activeTodos, activeTodosVolume, completedTodosVolume } = todoList
   return (
     <Container>
@@ -59,7 +60,7 @@ const TodoPage = ({ todoList, id }) => {
         </TabList>
         <TabPanels>
           <TodoList parentId={id} updateTodo={updateTodo} todos={activeTodos} />
-          {(loading || !data) return <Loading />}
+          {loading && <Loading />}
           {data?.todoList?.completedTodos.length > 0 && (
             <TodoList
               parentId={id}
