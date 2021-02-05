@@ -14,7 +14,7 @@ class TabList extends Component {
         onSelect: () => this.context.onSelectTab(index)
       })
     })
-    return <div className='mb-3 flex'>{children}</div>
+    return <div className='pl-3 lg:pl-0 mb-3 flex'>{children}</div>
   }
 }
 

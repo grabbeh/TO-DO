@@ -8,15 +8,15 @@ import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
-    <ul className='mb-3 border-t-2 border-l-2 border-r-2'>
-      {todos.length > 0 ? (
-        todos.map(todo => (
+    {todos.length > 0 ? (
+      <ul className='mb-3 border-t-2 border-l-2 border-r-2'>
+        {todos.map(todo => (
           <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
-        ))
-      ) : (
-        <div className='text-xl font-bold'>No todos!</div>
-      )}
-    </ul>
+        ))}
+      </ul>
+    ) : (
+      <div className='text-xl font-bold'>No todos!</div>
+    )}
   </div>
 )
 
@@ -24,7 +24,6 @@ const Todo = ({ todo }) => {
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
-
       cache.modify({
         id: cache.identify({
           id: todo.todoListId,
@@ -167,7 +166,7 @@ const Todo = ({ todo }) => {
                     todo: { ...todo, completed: !todo.completed }
                   },
                   optimisticResponse: { ...todo, completed: !todo.completed }
-                })   
+                })
                 toast.promise(mutation, {
                   loading: 'Loading',
                   success: data => `Successfully updated todo`,

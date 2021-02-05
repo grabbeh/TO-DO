@@ -41,7 +41,7 @@ const TodoPage = ({ todoList, id }) => {
     <Container>
       <div className='flex justify-between'>
         <Back title={name} />
-        <div className='mt-3 text-2xl font-bold'>
+        <div className='mt-3 pr-3 lg:pr-0 text-2xl font-bold'>
           {completedTodosVolume} / {activeTodosVolume + completedTodosVolume}
         </div>
       </div>
@@ -80,11 +80,13 @@ const TodoPage = ({ todoList, id }) => {
             </div>
           </a>
         </Link>
-        <Button>
-          <Link href={`/add-todo/${encodeURIComponent(id)}`}>
-            <a className='mt-4 cursor-pointer font-bold'>Add</a>
-          </Link>
-        </Button>
+        <div className='pr-3 lg:pr-0'>
+          <Button>
+            <Link href={`/add-todo/${encodeURIComponent(id)}`}>
+              <a className='mt-4 cursor-pointer font-bold'>Add</a>
+            </Link>
+          </Button>
+        </div>
       </div>
     </Container>
   )
