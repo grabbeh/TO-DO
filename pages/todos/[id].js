@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import _ from 'lodash'
+import { useState } from 'react'
 import {
   MainContainer as Container,
   Back,
@@ -9,8 +10,10 @@ import {
   Tab,
   Tabs,
   TabList,
-  TabPanels
+  TabPanels,
+  AddTodoModal
 } from '../../components/index'
+import Modal from 'react-modal'
 import { Dustbin } from '../../components/icons'
 import {
   UpdateTodo as UPDATE_TODO,
@@ -33,6 +36,14 @@ const TodoFetcher = ({ id }) => {
 const TodoPage = ({ todoList, id }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [getCompleted, { loading, data }] = useLazyQuery(COMPLETED_TODOS)
+  const [modalIsOpen, setIsOpen] = useState(false)
+  const openModal = () => {
+    setIsOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsOpen(false)
+  }
   console.log(loading)
   let { name, activeTodos, activeTodosVolume, completedTodosVolume } = todoList
   return (
@@ -79,19 +90,19 @@ const TodoPage = ({ todoList, id }) => {
           </a>
         </Link>
         <div className='pr-3 lg:pr-0'>
-          <Button>
-            <Link href={`/add-todo/${encodeURIComponent(id)}`}>
-              <a className='mt-4 cursor-pointer font-bold'>Add</a>
-            </Link>
-          </Button>
+          <Button onClick={openModal}>Add</Button>
         </div>
+        <Modal
+          className=''
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel='Example Modal'
+        >
+          <AddTodoModal closeModal={closeModal} id={id} name={name} />
+        </Modal>
       </div>
     </Container>
   )
-}
-
-const CompletedTodosFetcher = () => {
-  const [getCompleted, { loading, data }] = useLazyQuery(COMPLETED_TODOS)
 }
 
 const Apollo = withApollo({ ssr: true })(TodoFetcher)

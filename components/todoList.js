@@ -1,5 +1,7 @@
 import { useMutation } from '@apollo/client'
-import { CardListItem as Card, Subheader } from './index'
+import { useState } from 'react'
+import Modal from 'react-modal'
+import { CardListItem as Card, Subheader, EditTodoModal } from './index'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { Dustbin, Comments, Edit, Rewind } from './icons/index'
@@ -21,6 +23,14 @@ const TodoList = ({ todos, title, updateTodo }) => (
 )
 
 const Todo = ({ todo }) => {
+  const [modalIsOpen, setIsOpen] = useState(false)
+  const openModal = () => {
+    setIsOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsOpen(false)
+  }
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
@@ -143,15 +153,7 @@ const Todo = ({ todo }) => {
       }
     }
   })
-  /*
-  let handleChange = () => {
-    let updatedTodo = updateCompletionStatus({
-      variables: {
-        todo: { ...todo, completed: !todo.completed }
-      },
-      optimisticResponse: { ...todo, completed: !todo.completed }
-    })
-  }*/
+
   return (
     <Card key={todo.id}>
       <div className='flex'>
@@ -205,13 +207,21 @@ const Todo = ({ todo }) => {
 
       <div className='flex self-end mt-2'>
         <div className='align-bottom justify-between flex-grow flex'>
-          <Link href={`/edit-todo/${encodeURIComponent(todo.id)}`}>
-            <a>
-              <div className='cursor-pointer text-blue-500 hover:text-blue-800 mr-2 h-5 w-5'>
-                <Edit />
-              </div>
-            </a>
-          </Link>
+          <div
+            onClick={openModal}
+            className='cursor-pointer text-blue-500 hover:text-blue-800 mr-2 h-5 w-5'
+          >
+            <Edit />
+          </div>
+
+          <Modal
+            className=''
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            contentLabel='Example Modal'
+          >
+            <EditTodoModal todo={todo} closeModal={closeModal} />
+          </Modal>
           <div
             className='mr-2 h-5 w-5 text-blue-500 hover:text-blue-800 cursor-pointer'
             onClick={() => {

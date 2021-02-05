@@ -17,13 +17,17 @@ import Tab from './tab'
 import TabList from './tabList'
 import TabPanels from './tabPanels'
 import Tabs from './tabs'
+import AddTodoModal from './addTodoModal'
+import EditTodoModal from './editTodoModal'
 
 export {
   Tab,
+  AddTodoModal,
   TabList,
   TabPanels,
   Tabs,
   Subheader,
+  EditTodoModal,
   Button,
   Back,
   Container,

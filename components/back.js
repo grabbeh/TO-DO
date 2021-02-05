@@ -1,17 +1,27 @@
 import { useRouter } from 'next/router'
 import { Header } from './index'
 
-const Back = ({ title }) => {
+const Back = ({ title, closeModal }) => {
   const router = useRouter()
   return (
     <div className='flex align-middle'>
-      <div
-        style={{ height: '40px' }}
-        className='rounded-full mt-3 hover:bg-gray-200 mr-3 p-2 cursor-pointer font-bold'
-        onClick={() => router.back()}
-      >
-        <Arrow />
-      </div>
+      {closeModal ? (
+        <div
+          style={{ height: '40px' }}
+          className='rounded-full mt-3 hover:bg-gray-200 mr-3 p-2 cursor-pointer font-bold'
+          onClick={() => closeModal()}
+        >
+          <Arrow />
+        </div>
+      ) : (
+        <div
+          style={{ height: '40px' }}
+          className='rounded-full mt-3 hover:bg-gray-200 mr-3 p-2 cursor-pointer font-bold'
+          onClick={() => router.back()}
+        >
+          <Arrow />
+        </div>
+      )}
       <Header>{title}</Header>
     </div>
   )
