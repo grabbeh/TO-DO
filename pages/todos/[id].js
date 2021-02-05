@@ -34,9 +34,6 @@ const TodoPage = ({ todoList, id }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [getCompleted, { loading, data }] = useLazyQuery(COMPLETED_TODOS)
   let { name, activeTodos, activeTodosVolume, completedTodosVolume } = todoList
-
-  console.log(data)
-
   return (
     <Container>
       <div className='flex justify-between'>
