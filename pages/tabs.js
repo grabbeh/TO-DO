@@ -19,7 +19,7 @@ import {
   UpdateTodo as UPDATE_TODO,
   Todos as TODOS_QUERY,
   CompletedTodos as COMPLETED_TODOS
-} from '../../queries/index'
+} from '../queries/index'
 import withApollo from '../lib/withApollo'
 import Link from 'next/link'
 
