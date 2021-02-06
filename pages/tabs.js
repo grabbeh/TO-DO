@@ -12,15 +12,15 @@ import {
   TabList,
   TabPanels,
   AddTodoModal
-} from '../../components/index'
+} from '../components/index'
 import Modal from 'react-modal'
-import { Dustbin } from '../../components/icons'
+import { Dustbin } from '../components/icons'
 import {
   UpdateTodo as UPDATE_TODO,
   Todos as TODOS_QUERY,
   CompletedTodos as COMPLETED_TODOS
 } from '../../queries/index'
-import withApollo from '../../lib/withApollo'
+import withApollo from '../lib/withApollo'
 import Link from 'next/link'
 
 const TodoFetcher = ({ id }) => {
