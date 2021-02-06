@@ -19,6 +19,18 @@ export default gql`
         createdSince
         commentsCount
       }
+      completedTodos {
+        id
+        todoListId
+        text
+        contact
+        priority
+        user
+        completed
+        deleted
+        createdSince
+        commentsCount
+      }
     }
   }
 `

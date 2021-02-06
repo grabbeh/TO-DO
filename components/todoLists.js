@@ -71,8 +71,7 @@ const TodoList = ({ todoList, updateTodoList }) => (
                     let mutation = updateTodoList({
                       variables: {
                         todoList: updatedTodoList
-                      },
-                      optimisticResponse: updatedTodoList
+                      }
                     })
                     toast.promise(mutation, {
                       loading: 'Loading',

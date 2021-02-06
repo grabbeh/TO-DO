@@ -11,17 +11,15 @@ import {
 import toast from 'react-hot-toast'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 
-const EditTodoModal = ({ todo, closeModal }) => {
-  return (
-    <Container>
-      <Back closeModal={closeModal} title={todo.text} />
-      <Card>
-        <Subheader>Edit todo</Subheader>
-        <TextInput todo={todo} />
-      </Card>
-    </Container>
-  )
-}
+const EditTodoModal = ({ todo, closeModal }) => (
+  <div>
+    <Back closeModal={closeModal} title={todo.text} />
+    <Card>
+      <Subheader>Edit todo</Subheader>
+      <TextInput todo={todo} />
+    </Card>
+  </div>
+)
 
 const TextInput = ({ todo }) => {
   let { contact, text, priority } = todo
@@ -45,17 +43,15 @@ const TextInput = ({ todo }) => {
           priority: false
         })
         let { text, contact, priority } = values
-        let updatedTodo = {
-          ...todo,
-          text,
-          contact,
-          priority
-        }
         let mutation = updateTodo({
           variables: {
-            todo: updatedTodo
-          },
-          optimisticResponse: updatedTodo
+            todo: {
+              ...todo,
+              text,
+              contact,
+              priority
+            }
+          }
         })
 
         toast.promise(mutation, {

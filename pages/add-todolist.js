@@ -63,16 +63,20 @@ const TextInput = () => {
         })
         let { name } = values
         const id = uuidv4()
+        let todoList = {
+          __typename: 'Todolist',
+          user: 'mbg@outlook.com',
+          name,
+          id
+        }
         let mutation = addTodoList({
           variables: {
-            todoList: { user: 'mbg@outlook.com', name, id }
+            todoList
           },
           optimisticResponse: {
             __typename: 'Mutation',
             addTodoList: {
-              __typename: 'TodoList',
-              name,
-              id,
+              ...todoList,
               deleted: false,
               user: 'mbg@outlook.com',
               completedTodos: 0,

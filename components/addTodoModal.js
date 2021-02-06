@@ -13,13 +13,13 @@ const AddTodoModal = ({ id, name, closeModal }) => {
       <Back closeModal={closeModal} title={name} />
       <Card>
         <Subheader>Add todo</Subheader>
-        <TextInput parentId={id} />
+        <TextInput closeModal={closeModal} parentId={id} />
       </Card>
     </div>
   )
 }
 
-const TextInput = ({ parentId }) => {
+const TextInput = ({ parentId, closeModal }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
       cache.modify({
@@ -36,15 +36,17 @@ const TextInput = ({ parentId }) => {
                   id
                   todoListId
                   text
+                  contact
+                  priority
+                  user
                   completed
                   deleted
-                  user
                   createdSince
                   commentsCount
                 }
               `
             })
-            return [...existingTodos, newTodoRef]
+            return [newTodoRef, ...existingTodos]
           }
         }
       })
@@ -82,16 +84,25 @@ const TextInput = ({ parentId }) => {
           todoListId: parentId
         }
         let mutation = addTodo({
-          variables: { todo }
+          variables: { todo },
+          optimisticResponse: {
+            __typename: 'Mutation',
+            addTodo: {
+              ...todo,
+              commentsCount: 0,
+              createdSince: 'Just now'
+            }
+          }
         })
 
         toast.promise(mutation, {
           loading: 'Loading',
-          success: data => `Successfully saved todo`,
+          success: data => `Todo added!`,
           error: err => `This just happened: ${err.toString()}`
         })
 
         resetForm()
+        closeModal()
       }}
     >
       {props => {

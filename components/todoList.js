@@ -10,15 +10,11 @@ import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
-    {todos.length > 0 ? (
-      <ul className='mb-3 border-t-2 border-l-2 border-r-2'>
-        {todos.map(todo => (
-          <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
-        ))}
-      </ul>
-    ) : (
-      <div className='text-xl font-bold'>No todos!</div>
-    )}
+    <ul className='mb-3 border-t-2 lg:border-l-2 lg:border-r-2'>
+      {todos.map(todo => (
+        <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
+      ))}
+    </ul>
   </div>
 )
 
@@ -167,7 +163,10 @@ const Todo = ({ todo }) => {
                   variables: {
                     todo: { ...todo, completed: !todo.completed }
                   },
-                  optimisticResponse: { ...todo, completed: !todo.completed }
+                  optimisticResponse: {
+                    type: 'Mutation',
+                    updateTodo: { ...todo, completed: !todo.completed }
+                  }
                 })
                 toast.promise(mutation, {
                   loading: 'Loading',
@@ -215,7 +214,7 @@ const Todo = ({ todo }) => {
           </div>
 
           <Modal
-            className=''
+            className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
             isOpen={modalIsOpen}
             onRequestClose={closeModal}
             contentLabel='Example Modal'
@@ -233,7 +232,10 @@ const Todo = ({ todo }) => {
                 variables: {
                   todo: updatedTodo
                 },
-                optimisticResponse: updatedTodo
+                optimisticResponse: {
+                  __typename: 'Mutation',
+                  updateTodo: updatedTodo
+                }
               })
               toast.promise(mutation, {
                 loading: 'Loading',

@@ -60,15 +60,46 @@ const TodoPage = ({ todoList, id }) => {
           {completedTodosVolume} / {activeTodosVolume + completedTodosVolume}
         </div>
       </div>
-      <TodoList parentId={id} updateTodo={updateTodo} todos={activeTodos} />
-      {completedTodos.length > 0 && (
-        <TodoList
-          title='Completed'
-          parentId={id}
-          updateTodo={updateTodo}
-          todos={completedTodos}
-        />
-      )}
+      <Tabs>
+        <TabList>
+          <Tab>Active</Tab>
+          <Tab>
+            <div
+              onClick={() => {
+                getCompleted({
+                  variables: { id }
+                })
+              }}
+            >
+              Completed
+            </div>
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <div>
+            <TodoList
+              parentId={id}
+              updateTodo={updateTodo}
+              todos={activeTodos}
+            />
+            <TodoList
+              title='Completed'
+              parentId={id}
+              updateTodo={updateTodo}
+              todos={completedTodos}
+            />
+          </div>
+
+          {data?.todoList?.completedTodos.length > 0 && (
+            <TodoList
+              parentId={id}
+              updateTodo={updateTodo}
+              todos={data.todoList.completedTodos}
+            />
+          )}
+        </TabPanels>
+      </Tabs>
+
       <div className='mt-2 flex justify-between'>
         <Link href={`/deleted/${encodeURIComponent(id)}`}>
           <a>
@@ -77,11 +108,11 @@ const TodoPage = ({ todoList, id }) => {
             </div>
           </a>
         </Link>
-        <div className='fixed right-3 bottom-3'>
+        <div className='pr-3 lg:pr-0'>
           <Button onClick={openModal}>Add</Button>
         </div>
         <Modal
-          className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
+          className=''
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           contentLabel='Example Modal'
