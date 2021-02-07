@@ -7,10 +7,6 @@ import {
   Button,
   Loading,
   TodoList,
-  Tab,
-  Tabs,
-  TabList,
-  TabPanels,
   AddTodoModal
 } from '../../components/index'
 import Modal from 'react-modal'
@@ -35,7 +31,6 @@ const TodoFetcher = ({ id }) => {
 
 const TodoPage = ({ todoList, id }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
-  const [getCompleted, { loading, data }] = useLazyQuery(COMPLETED_TODOS)
   const [modalIsOpen, setIsOpen] = useState(false)
   const openModal = () => {
     setIsOpen(true)
@@ -44,7 +39,7 @@ const TodoPage = ({ todoList, id }) => {
   const closeModal = () => {
     setIsOpen(false)
   }
-  console.log(loading)
+
   let {
     name,
     activeTodos,
@@ -69,7 +64,7 @@ const TodoPage = ({ todoList, id }) => {
           todos={completedTodos}
         />
       )}
-      <div className='mt-2 flex justify-between'>
+      <div className='pl-2 lg:pl-0 mt-2 flex justify-between'>
         <Link href={`/deleted/${encodeURIComponent(id)}`}>
           <a>
             <div className='h-8 w-8'>

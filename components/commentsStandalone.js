@@ -117,9 +117,7 @@ const TextInput = ({ todoId }) => {
               }
             </div>
             <div className='flex justify-end'>
-              <Button bg='bg-green-300' type='submit'>
-                Add
-              </Button>
+              <Button type='submit'>Add</Button>
             </div>
           </Form>
         )

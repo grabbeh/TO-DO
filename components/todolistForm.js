@@ -11,7 +11,7 @@ const TodolistForm = ({ handleChange, values, errors }) => (
       value={values.name}
     />
     <div className='mt-3 flex justify-end'>
-      <Button bg='bg-green-300'>Go</Button>
+      <Button>Go</Button>
     </div>
     <div className='mt-1'>
       {

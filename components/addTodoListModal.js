@@ -11,20 +11,19 @@ import {
   Subheader
 } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
-import withApollo from '../lib/withApollo'
 import toast from 'react-hot-toast'
 
-const AddTodoListPage = () => (
-  <Container>
-    <Back title='Add todo list' />
+const AddTodoListModal = ({ closeModal }) => (
+  <div>
+    <Back closeModal={closeModal} title='Add todo list' />
     <Card>
       <Subheader>Add todo list</Subheader>
-      <TextInput />
+      <TextInput closeModal={closeModal} />
     </Card>
-  </Container>
+  </div>
 )
 
-const TextInput = () => {
+const TextInput = ({ closeModal }) => {
   const [addTodoList] = useMutation(ADD_TODOLIST, {
     update (cache, { data: { addTodoList } }) {
       cache.modify({
@@ -79,8 +78,8 @@ const TextInput = () => {
               ...todoList,
               deleted: false,
               user: 'mbg@outlook.com',
-              completedTodos: 0,
-              totalTodos: 0
+              activeTodosVolume: 0,
+              completedTodosVolume: 0
             }
           }
         })
@@ -90,6 +89,7 @@ const TextInput = () => {
           error: err => `This just happened: ${err.toString()}`
         })
         resetForm()
+        closeModal()
       }}
     >
       {props => {
@@ -99,6 +99,4 @@ const TextInput = () => {
   )
 }
 
-const Apollo = withApollo({ ssr: true })(AddTodoListPage)
-
-export default Apollo
+export default AddTodoListModal

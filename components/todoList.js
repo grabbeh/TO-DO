@@ -170,7 +170,7 @@ const Todo = ({ todo }) => {
                 })
                 toast.promise(mutation, {
                   loading: 'Loading',
-                  success: data => `Successfully updated todo`,
+                  success: data => `Todo updated`,
                   error: err => `This just happened: ${err.toString()}`
                 })
               }}
@@ -184,13 +184,11 @@ const Todo = ({ todo }) => {
               <span
                 className={`${
                   todo.completed ? 'line-through' : ''
-                } flex font-bold text-gray-900 text-xl`}
+                } flex font-semibold text-gray-900 text-xl`}
               >
                 {todo.text}
               </span>
-              <div className='text-gray-500 text-xl font-semibold'>
-                {todo.contact}
-              </div>
+              <div className='text-gray-500 text-lg'>{todo.contact}</div>
             </div>
             <div>
               <div className='flex justify-end flex-shrink'>
@@ -201,65 +199,64 @@ const Todo = ({ todo }) => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+          <div className='flex self-end mt-2'>
+            <div className='align-bottom justify-between flex-grow flex'>
+              <div
+                onClick={openModal}
+                className='cursor-pointer text-blue-500 hover:text-blue-800 mr-2 h-5 w-5'
+              >
+                <Edit />
+              </div>
 
-      <div className='flex self-end mt-2'>
-        <div className='align-bottom justify-between flex-grow flex'>
-          <div
-            onClick={openModal}
-            className='cursor-pointer text-blue-500 hover:text-blue-800 mr-2 h-5 w-5'
-          >
-            <Edit />
-          </div>
-
-          <Modal
-            className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
-            isOpen={modalIsOpen}
-            onRequestClose={closeModal}
-            contentLabel='Example Modal'
-          >
-            <EditTodoModal todo={todo} closeModal={closeModal} />
-          </Modal>
-          <div
-            className='mr-2 h-5 w-5 text-blue-500 hover:text-blue-800 cursor-pointer'
-            onClick={() => {
-              let updatedTodo = {
-                ...todo,
-                deleted: !todo.deleted
-              }
-              let mutation = updateDeletionStatus({
-                variables: {
-                  todo: updatedTodo
-                },
-                optimisticResponse: {
-                  __typename: 'Mutation',
-                  updateTodo: updatedTodo
-                }
-              })
-              toast.promise(mutation, {
-                loading: 'Loading',
-                success: data => `Successfully updated todo`,
-                error: err => `This just happened: ${err.toString()}`
-              })
-            }}
-          >
-            {todo.deleted ? <Rewind /> : <Dustbin />}
-          </div>
-          <div>
-            <div className='cursor-pointer'>
-              <Link href={`/notes/${encodeURIComponent(todo.id)}`}>
-                <a>
-                  <div className='flex hover:text-blue-800 text-blue-500'>
-                    <div className='h-5 w-5'>
-                      <Comments />
-                    </div>
-                    <div className=' ml-1 text-md font-bold'>
-                      {todo.commentsCount}
-                    </div>
-                  </div>
-                </a>
-              </Link>
+              <Modal
+                className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel='Example Modal'
+              >
+                <EditTodoModal todo={todo} closeModal={closeModal} />
+              </Modal>
+              <div
+                className='mr-2 h-5 w-5 text-blue-500 hover:text-blue-800 cursor-pointer'
+                onClick={() => {
+                  let updatedTodo = {
+                    ...todo,
+                    deleted: !todo.deleted
+                  }
+                  let mutation = updateDeletionStatus({
+                    variables: {
+                      todo: updatedTodo
+                    },
+                    optimisticResponse: {
+                      __typename: 'Mutation',
+                      updateTodo: updatedTodo
+                    }
+                  })
+                  toast.promise(mutation, {
+                    loading: 'Loading',
+                    success: data => `Todo updated`,
+                    error: err => `This just happened: ${err.toString()}`
+                  })
+                }}
+              >
+                {todo.deleted ? <Rewind /> : <Dustbin />}
+              </div>
+              <div>
+                <div className='cursor-pointer'>
+                  <Link href={`/notes/${encodeURIComponent(todo.id)}`}>
+                    <a>
+                      <div className='flex hover:text-blue-800 text-blue-500'>
+                        <div className='h-5 w-5'>
+                          <Comments />
+                        </div>
+                        <div className=' ml-1 text-md font-bold'>
+                          {todo.commentsCount}
+                        </div>
+                      </div>
+                    </a>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>

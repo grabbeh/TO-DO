@@ -19,10 +19,14 @@ import TabPanels from './tabPanels'
 import Tabs from './tabs'
 import AddTodoModal from './addTodoModal'
 import EditTodoModal from './editTodoModal'
+import AddTodoListModal from './addTodoListModal'
+import EditTodoListModal from './editTodoListModal'
 
 export {
   Tab,
+  AddTodoListModal,
   AddTodoModal,
+  EditTodoListModal,
   TabList,
   TabPanels,
   Tabs,
