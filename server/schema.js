@@ -20,8 +20,8 @@ const typeDefs = `
     user: String
     id: ID
     deleted: Boolean
-    totalTodos: Int
-    completedTodos: Int
+    activeTodosVolume: Int
+    completedTodosVolume: Int
   }
 
   type Comment {
