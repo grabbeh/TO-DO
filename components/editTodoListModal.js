@@ -30,12 +30,12 @@ const EditTodoListModal = ({ closeModal, todoList }) => (
     <Back closeModal={closeModal} title={todoList.name} />
     <Card>
       <Subheader>Edit todo list</Subheader>
-      <EditTextInput todoList={todoList} />
+      <EditTextInput closeModal={closeModal} todoList={todoList} />
     </Card>
   </div>
 )
 
-const EditTextInput = ({ todoList }) => {
+const EditTextInput = ({ closeModal, todoList }) => {
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
     <Formik
