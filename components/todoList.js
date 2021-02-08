@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Modal from 'react-modal'
 import { CardListItem as Card, Subheader, EditTodoModal } from './index'
 import toast from 'react-hot-toast'
@@ -27,6 +27,11 @@ const Todo = ({ todo }) => {
   const closeModal = () => {
     setIsOpen(false)
   }
+
+  useEffect(() => {
+    document.body.style.overflow = 'unset'
+    if (modalIsOpen) document.body.style.overflow = 'hidden'
+  }, [modalIsOpen])
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }

@@ -1,6 +1,6 @@
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import _ from 'lodash'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   MainContainer as Container,
   Back,
@@ -39,6 +39,11 @@ const TodoPage = ({ todoList, id }) => {
   const closeModal = () => {
     setIsOpen(false)
   }
+
+  useEffect(() => {
+    document.body.style.overflow = 'unset'
+    if (modalIsOpen) document.body.style.overflow = 'hidden'
+  }, [modalIsOpen])
 
   let {
     name,
