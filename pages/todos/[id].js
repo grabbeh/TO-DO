@@ -76,6 +76,7 @@ const TodoPage = ({ todoList, id }) => {
           <Button onClick={openModal}>Add</Button>
         </div>
         <Modal
+          closeTimeoutMS={500}
           className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
           isOpen={modalIsOpen}
           onRequestClose={closeModal}

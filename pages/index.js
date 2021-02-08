@@ -39,6 +39,7 @@ const TodoPage = ({ todoLists }) => {
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
           contentLabel='Example Modal'
+          closeTimeoutMS={500}
         >
           <AddTodoListModal closeModal={closeModal} />
         </Modal>

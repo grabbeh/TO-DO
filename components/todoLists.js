@@ -67,6 +67,7 @@ const TodoList = ({ todoList, updateTodoList }) => {
                     isOpen={modalIsOpen}
                     onRequestClose={closeModal}
                     contentLabel='Example Modal'
+                    closeTimeoutMS={500}
                   >
                     <EditTodoListModal
                       todoList={todoList}

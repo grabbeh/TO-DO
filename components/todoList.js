@@ -213,6 +213,7 @@ const Todo = ({ todo }) => {
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel='Example Modal'
+                closeTimeoutMS={500}
               >
                 <EditTodoModal todo={todo} closeModal={closeModal} />
               </Modal>
