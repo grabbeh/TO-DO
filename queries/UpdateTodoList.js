@@ -7,6 +7,8 @@ export default gql`
       id
       user
       deleted
+      activeTodosVolume
+      completedTodosVolume
     }
   }
 `
