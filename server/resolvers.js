@@ -86,6 +86,8 @@ const resolvers = {
     },
     updateTodoList: async (p, a, c) => {
       let { todoList } = a
+      delete todoList['activeTodosVolume']
+      delete todoList['completedTodosVolume']
       await TodoList.update(todoList)
       return todoList
     },
