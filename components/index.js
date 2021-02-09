@@ -21,12 +21,16 @@ import AddTodoModal from './addTodoModal'
 import EditTodoModal from './editTodoModal'
 import AddTodoListModal from './addTodoListModal'
 import EditTodoListModal from './editTodoListModal'
+import OptionsModal from './optionsModal'
+import OptionsBox from './optionsBox'
 
 export {
   Tab,
   AddTodoListModal,
   AddTodoModal,
+  OptionsBox,
   EditTodoListModal,
+  OptionsModal,
   TabList,
   TabPanels,
   Tabs,

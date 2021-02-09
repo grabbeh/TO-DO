@@ -15,16 +15,6 @@ import {
   UpdateTodoList as UPDATE_TODOLIST
 } from '../queries/index'
 
-const TodoFetcher = props => {
-  const { loading, error, data } = useQuery(TODO_LIST_QUERY, {
-    fetchPolicy: 'cache-first',
-    variables: { id: props.id }
-  })
-  if (loading || !data) return <Loading />
-  if (error) return 'Error'
-  return <EditTodoListPage todoList={data.todoList} />
-}
-
 const EditTodoListModal = ({ closeModal, todoList }) => (
   <div>
     <Back closeModal={closeModal} title={todoList.name} />

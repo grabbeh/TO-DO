@@ -1,10 +1,8 @@
 import { useMutation } from '@apollo/client'
-import { useState, useEffect } from 'react'
-import Modal from 'react-modal'
-import { CardListItem as Card, Subheader, EditTodoModal } from './index'
+import { CardListItem as Card, Subheader, OptionsBox } from './index'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
-import { Dustbin, Comments, Edit, Rewind } from './icons/index'
+import { Comments } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 
 const TodoList = ({ todos, title, updateTodo }) => (
@@ -19,19 +17,6 @@ const TodoList = ({ todos, title, updateTodo }) => (
 )
 
 const Todo = ({ todo }) => {
-  const [modalIsOpen, setIsOpen] = useState(false)
-  const openModal = () => {
-    setIsOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsOpen(false)
-  }
-
-  useEffect(() => {
-    document.body.style.overflow = 'unset'
-    if (modalIsOpen) document.body.style.overflow = 'hidden'
-  }, [modalIsOpen])
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
@@ -77,81 +62,6 @@ const Todo = ({ todo }) => {
           }
         }
       })
-    }
-  })
-  const [updateDeletionStatus] = useMutation(UPDATE_TODO, {
-    update (cache, { data: { updateTodo } }) {
-      let ref = { __ref: `Todo:${todo.id}` }
-      if (updateTodo) {
-        cache.modify({
-          id: cache.identify({ id: todo.todoListId, __typename: 'TodoList' }),
-          fields: {
-            completedTodos (existing, { readField }) {
-              // if todo exists in completed todos array and action is deleted then remove
-              if (
-                updateTodo.deleted &&
-                existing.some(ref => readField('id', ref) === todo.id)
-              ) {
-                return existing.filter(ref => {
-                  return todo.id !== readField('id', ref)
-                })
-                // if todo doesn't exist in array and action isn't deleted, then we should add to array
-                // if todo is completed
-              } else if (!updateTodo.deleted && updateTodo.completed) {
-                return [ref, ...existing]
-              } else {
-                // if todo doesn't exist in array and action is deleted then item is in the other array so we return
-                return existing
-              }
-            },
-            activeTodos (existing, { readField }) {
-              // if todo exists in completed todos array and action is deleted then remove
-              if (
-                updateTodo.deleted &&
-                existing.some(ref => readField('id', ref) === todo.id)
-              ) {
-                return existing.filter(ref => {
-                  return todo.id !== readField('id', ref)
-                })
-                // if todo doesn't exist in array and action isn't deleted, then we should add to array
-                // if todo is incomplete
-              } else if (!updateTodo.deleted && !updateTodo.completed) {
-                return [ref, ...existing]
-              } else {
-                // if todo doesn't exist in array and action is deleted then item is in the other array so we return
-                return existing
-              }
-            },
-            deletedTodos (existing, { readField }) {
-              // if action is deleted we add todo to array
-              if (updateTodo.deleted) {
-                return [ref, ...existing]
-              } else {
-                // else we filter out as it's being restored
-                return existing.filter(ref => {
-                  return todo.id !== readField('id', ref)
-                })
-              }
-            },
-            totalTodosVolume (value) {
-              if (!updateTodo.deleted) {
-                value++
-              } else {
-                value--
-              }
-              return value
-            },
-            completedTodosVolume (value) {
-              if (updateTodo.completed && !updateTodo.deleted) {
-                value++
-              } else {
-                value--
-              }
-              return value
-            }
-          }
-        })
-      }
     }
   })
 
@@ -206,47 +116,7 @@ const Todo = ({ todo }) => {
           </div>
           <div className='flex self-end mt-2'>
             <div className='align-bottom justify-between flex-grow flex'>
-              <div
-                onClick={openModal}
-                className='cursor-pointer text-blue-500 hover:text-blue-800 mr-2 h-5 w-5'
-              >
-                <Edit />
-              </div>
-
-              <Modal
-                className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel='Example Modal'
-                closeTimeoutMS={500}
-              >
-                <EditTodoModal todo={todo} closeModal={closeModal} />
-              </Modal>
-              <div
-                className='mr-2 h-5 w-5 text-blue-500 hover:text-blue-800 cursor-pointer'
-                onClick={() => {
-                  let updatedTodo = {
-                    ...todo,
-                    deleted: !todo.deleted
-                  }
-                  let mutation = updateDeletionStatus({
-                    variables: {
-                      todo: updatedTodo
-                    },
-                    optimisticResponse: {
-                      __typename: 'Mutation',
-                      updateTodo: updatedTodo
-                    }
-                  })
-                  toast.promise(mutation, {
-                    loading: 'Loading',
-                    success: data => `Todo updated`,
-                    error: err => `This just happened: ${err.toString()}`
-                  })
-                }}
-              >
-                {todo.deleted ? <Rewind /> : <Dustbin />}
-              </div>
+              <OptionsBox todo={todo} />
               <div>
                 <div className='cursor-pointer'>
                   <Link href={`/notes/${encodeURIComponent(todo.id)}`}>
