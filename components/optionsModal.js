@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 
 const OptionsModal = ({ todo }) => {
   return (
-    <div className='my-3'>
+    <div className='my-2'>
       <EditRow todo={todo} />
       <DeleteRow todo={todo} />
     </div>
