@@ -21,16 +21,22 @@ import AddTodoModal from './addTodoModal'
 import EditTodoModal from './editTodoModal'
 import AddTodoListModal from './addTodoListModal'
 import EditTodoListModal from './editTodoListModal'
-import OptionsModal from './optionsModal'
-import OptionsBox from './optionsBox'
+import TodoOptionsModal from './todoOptionsModal'
+import TodoOptionsBox from './todoOptionsBox'
+import TodoListOptionsModal from './todoListOptionsModal'
+import TodoListOptionsBox from './todoListOptionsBox'
+import SearchPanel from './searchPanel'
 
 export {
+  SearchPanel,
   Tab,
   AddTodoListModal,
   AddTodoModal,
-  OptionsBox,
+  TodoListOptionsBox,
+  TodoListOptionsModal,
+  TodoOptionsBox,
   EditTodoListModal,
-  OptionsModal,
+  TodoOptionsModal,
   TabList,
   TabPanels,
   Tabs,

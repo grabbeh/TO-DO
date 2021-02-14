@@ -1,14 +1,14 @@
 import { useMutation } from '@apollo/client'
-import { CardListItem as Card, Subheader, OptionsBox } from './index'
-import toast from 'react-hot-toast'
+import { CardListItem as Card, Subheader, TodoOptionsBox } from './index'
 import Link from 'next/link'
 import { Comments } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
+import activateToast from '../utils/toast'
 
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
-    <ul className='mb-3 border-t-2 lg:border-l-2 lg:border-r-2'>
+    <ul className='mb-3 border-t-2 md:border-l-2 md:border-r-2'>
       {todos.map(todo => (
         <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
       ))}
@@ -83,11 +83,7 @@ const Todo = ({ todo }) => {
                     updateTodo: { ...todo, completed: !todo.completed }
                   }
                 })
-                toast.promise(mutation, {
-                  loading: 'Loading',
-                  success: data => `Todo updated`,
-                  error: err => `This just happened: ${err.toString()}`
-                })
+                activateToast(mutation, 'Todo updated')
               }}
               className='mr-3 cursor-pointer form-checkbox h-5 w-5 border-2 hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
             />
@@ -116,7 +112,7 @@ const Todo = ({ todo }) => {
           </div>
           <div className='flex self-end mt-2'>
             <div className='align-bottom justify-between flex-grow flex'>
-              <OptionsBox todo={todo} />
+              <TodoOptionsBox todo={todo} />
               <div>
                 <div className='cursor-pointer'>
                   <Link href={`/notes/${encodeURIComponent(todo.id)}`}>

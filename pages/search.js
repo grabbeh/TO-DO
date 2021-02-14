@@ -17,7 +17,7 @@ const TodoPage = () => {
     <Container>
       <Back title='All todos' />
       <Latest updateTodo={updateTodo} />
-      <OlderThanSevenDays updateTodo={updateTodo} />
+      <OlderThanSevenDays />
     </Container>
   )
 }
@@ -38,19 +38,26 @@ const Latest = ({ updateTodo }) => {
   )
 }
 
-const OlderThanSevenDays = ({ updateTodo }) => {
+const OlderThanSevenDays = () => {
+  return (
+    <SearchResults
+      title='Older than 3 days and high priority'
+      olderThan={3}
+      priority='high'
+    />
+  )
+}
+
+const SearchResults = ({ olderThan, earlierThan, priority, title }) => {
+  const [updateTodo] = useMutation(UPDATE_TODO)
   const { loading, error, data } = useQuery(ALLTODOS_QUERY, {
     fetchPolicy: 'cache-first',
-    variables: { olderThan: 3 }
+    variables: { olderThan, earlierThan, priority }
   })
   if (loading || !data) return <Loading />
   if (error) return 'Error'
   return (
-    <TodoList
-      title='3 days or older'
-      updateTodo={updateTodo}
-      todos={data.allTodos}
-    />
+    <TodoList title={title} updateTodo={updateTodo} todos={data.allTodos} />
   )
 }
 

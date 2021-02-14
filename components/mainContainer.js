@@ -6,7 +6,6 @@ const Container = ({ children }) => (
       position='top-right'
       toastOptions={{
         style: {
-          margin: '40px',
           background: '#363636',
           color: '#fff',
           zIndex: 1,
@@ -14,7 +13,7 @@ const Container = ({ children }) => (
         }
       }}
     />
-    <div className='relative w-full lg:w-2/5'>{children}</div>
+    <div className='relative w-full md:w-3/5 lg:w-2/5'>{children}</div>
   </div>
 )
 

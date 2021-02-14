@@ -1,19 +1,29 @@
-USER#[USER]#TODOLIST#[LISTID]
 
 
-PK              SK              GSI1PK                      GSISK           GSI2PK                      GSI2SK
-USER#[USER]     TODOLIST#[ID]   USER#[USER]#TODOLIST#[ID]   #TODOLIST[ID]   
-TODO#[ID]       TODO#[ID]       USER#[USER]#TODOLIST#[ID]   #TODO#[ID]      
-COMMENT[ID]     COMMENT[COMMENT]                                            USER#[USER]#TODO#[ID]       COMMENT#[ID]
+
+
+PK              SK              GSI1PK                      GSISK           GSI2PK           GSI2SK          GSI3PK             GSI3SK
+USER#[USER]     TODOLIST#[ID]   USER#[USER]#TODOLIST#[ID]   KSUID  
+TODO#[ID]       TODO#[ID]             
+COMMENT[ID]     COMMENT[COMMENT]                                            #TODO#[ID]       COMMENT#[ID]
+                                                                                                            #USER#TODO#ID       KSUID
+proposed
+
+
 
 SECONDARY INDEX
 
+Todolists for user in data order
 PK                          SK
-USER#[USER]#TODOLIST#[ID]   #TODO[ID]
-                            #TODOLIST[ID]
+USER#[USER]#TODOLIST#[ID]   KSUID
 
-
+Comments for todo                    
 PK
 TODO#[ID]                   #COMMENT#
+
+
+GSI3: Todos for user in data order
+PK
+USER#[USER]#TODO#[ID]       KSUID
 
 

@@ -56,7 +56,7 @@ const TodoPage = ({ todoList, id }) => {
     <Container>
       <div className='flex justify-between'>
         <Back title={name} />
-        <div className='mt-3 pr-3 lg:pr-0 text-2xl font-bold'>
+        <div className='mt-3 pr-3 lg:pr-0 text-lg font-semibold'>
           {completedTodosVolume} / {activeTodosVolume + completedTodosVolume}
         </div>
       </div>

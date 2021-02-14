@@ -5,19 +5,20 @@ import {
   Loading,
   TodoLists,
   Button,
-  AddTodoListModal
+  AddTodoListModal,
+  SearchPanel
 } from '../components/index'
 import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
 import withApollo from '../lib/withApollo'
 import Modal from 'react-modal'
 
 const TodoFetcher = () => {
-  const { loading, error, data } = useQuery(TODO_LISTS_QUERY, {
-    fetchPolicy: 'cache-first'
-  })
-  if (loading || !data) return <Loading />
-  if (error) return 'Error'
-  return <TodoPage todoLists={data.todoLists} />
+  const { loading: listLoading, error: listError, data: listData } = useQuery(
+    TODO_LISTS_QUERY
+  )
+  if (listLoading || !listData) return <Loading />
+  if (listError) return 'Error'
+  return <TodoPage todoLists={listData.todoLists} />
 }
 
 const TodoPage = ({ todoLists }) => {

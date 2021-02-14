@@ -4,8 +4,6 @@ import { Todo, TodoList, TodoTable, Comment } from './table.js'
 import { formatDistanceToNow, format } from 'date-fns'
 import KSUID from 'ksuid'
 import crypto from 'crypto'
-import { TodolistForm } from '../components/index.js'
-import { AddTodoList } from '../queries/index.js'
 
 const resolvers = {
   Date: new GraphQLScalarType({
@@ -32,8 +30,13 @@ const resolvers = {
       const relevantKSUID = KSUID.fromParts(timeInMs, payload)
       let baseOptions = {
         index: 'GSI3',
-        reverse: true
+        reverse: true,
+        filters: [
+          { attr: 'completed', eq: false },
+          { attr: 'deleted', eq: false }
+        ]
       }
+
       let options
       if (a.olderThan) {
         options = {
@@ -49,22 +52,26 @@ const resolvers = {
       if (a.priority) {
         options = {
           ...options,
-          filters: { attr: 'priority', eq: a.priority }
+          filters: [
+            ...baseOptions.filters,
+            { attr: 'priority', eq: a.priority }
+          ]
         }
       }
-      let todos = await Todo.query(`USER#mbg@outlook.com#TODO`, options)
+      let todos = await Todo.query(`USER#${c.user.id}#TODO`, options)
       return todos.Items
     },
     todoList: async (p, a, c) => {
       // get queries are auto prefixed with stated prefix
       let todoList = await TodoList.get({
-        pk: `mbg@outlook.com`,
+        pk: `${c.user.id}`,
         sk: `${a.id}`
       })
       return todoList.Item
     },
-    todoLists: async () => {
-      let todoLists = await TodoList.query('USER#mbg@outlook.com', {
+    todoLists: async (p, a, c) => {
+      console.log(c)
+      let todoLists = await TodoList.query(`USER#${c.user.id}`, {
         beginsWith: 'TODOLIST#'
       })
       return todoLists.Items
@@ -99,9 +106,9 @@ const resolvers = {
         ...todo,
         id,
         sk: id,
-        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
+        GSI1pk: `USER#${c.user.id}#TODOLIST#${todoListId}`,
         GSI1sk: ksuid.string,
-        GSI3pk: `USER#mbg@outlook.com#TODO`,
+        GSI3pk: `USER#${c.user.id}#TODO`,
         GSI3sk: ksuid.string
       })
       return { ...todo, createdSince: 'Just now', commentsCount: 0 }
@@ -117,7 +124,7 @@ const resolvers = {
         ...todo,
         pk: id,
         sk: id,
-        GSI1pk: `USER#mbg@outlook.com#TODOLIST#${todoListId}`,
+        GSI1pk: `USER#${c.user.id}#TODOLIST#${todoListId}`,
         GSI1sk: dbResult.Item.GSI3sk,
         GSI3pk: dbResult.Item.GSI3pk,
         GSI3sk: dbResult.Item.GSI3sk
@@ -140,8 +147,8 @@ const resolvers = {
     }
   },
   TodoList: {
-    activeTodos: async (todoList, a) => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+    activeTodos: async (todoList, a, c) => {
+      let pk = `USER#${c.user.id}#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
         reverse: true,
@@ -152,8 +159,8 @@ const resolvers = {
       })
       return todos.Items
     },
-    completedTodos: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+    completedTodos: async (todoList, a, c) => {
+      let pk = `USER#${c.user.id}#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
         reverse: true,
@@ -164,8 +171,8 @@ const resolvers = {
       })
       return todos.Items
     },
-    deletedTodos: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+    deletedTodos: async (todoList, a, c) => {
+      let pk = `USER#@${c.user.id}#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
         reverse: true,
@@ -173,8 +180,8 @@ const resolvers = {
       })
       return todos.Items
     },
-    activeTodosVolume: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+    activeTodosVolume: async (todoList, a, c) => {
+      let pk = `USER#${c.user.id}#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
         reverse: true,
@@ -185,8 +192,8 @@ const resolvers = {
       })
       return todos.Items.length
     },
-    completedTodosVolume: async todoList => {
-      let pk = `USER#mbg@outlook.com#TODOLIST#${todoList.id}`
+    completedTodosVolume: async (todoList, a, c) => {
+      let pk = `USER#${c.user.id}#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {
         index: 'GSI1',
         reverse: true,

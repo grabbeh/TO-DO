@@ -6,7 +6,10 @@ dotenv.config({ path: '../../.env' })
 
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: {
+    user: { id: 'mbg@outlook.com', orgId: '1234' }
+  }
 })
 
 export const config = {

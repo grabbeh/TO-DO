@@ -3,15 +3,9 @@ import { Formik } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  MainContainer as Container,
-  TodolistForm,
-  Back,
-  Card,
-  Subheader
-} from '../components/index'
+import { TodolistForm, Back, Card, Subheader } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
-import toast from 'react-hot-toast'
+import activateToast from '../utils/toast'
 
 const AddTodoListModal = ({ closeModal }) => (
   <div>
@@ -83,11 +77,7 @@ const TextInput = ({ closeModal }) => {
             }
           }
         })
-        toast.promise(mutation, {
-          loading: 'Loading',
-          success: data => `Todo list added`,
-          error: err => `This just happened: ${err.toString()}`
-        })
+        activateToast(mutation, 'Todo list added')
         resetForm()
         closeModal()
       }}

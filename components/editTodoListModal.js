@@ -1,23 +1,12 @@
 import { useMutation, useQuery } from '@apollo/client'
 import { Formik } from 'formik'
 import { string, object } from 'yup'
-import toast from 'react-hot-toast'
-import {
-  TodolistForm,
-  Loading,
-  MainContainer as Container,
-  Back,
-  Card,
-  Subheader
-} from '../components/index'
-import {
-  TodoList as TODO_LIST_QUERY,
-  UpdateTodoList as UPDATE_TODOLIST
-} from '../queries/index'
+import activateToast from '../utils/toast'
+import { TodolistForm, Back, Card, Subheader } from '../components/index'
+import { UpdateTodoList as UPDATE_TODOLIST } from '../queries/index'
 
 const EditTodoListModal = ({ closeModal, todoList }) => (
   <div>
-    <Back closeModal={closeModal} title={todoList.name} />
     <Card>
       <Subheader>Edit todo list</Subheader>
       <EditTextInput closeModal={closeModal} todoList={todoList} />
@@ -50,11 +39,7 @@ const EditTextInput = ({ closeModal, todoList }) => {
             todoList: updatedTodoList
           }
         })
-        toast.promise(mutation, {
-          loading: 'Loading',
-          success: data => `Todo list updated`,
-          error: err => `This just happened: ${err.toString()}`
-        })
+        activateToast(mutation, 'Todo list updated')
         resetForm()
         closeModal()
       }}

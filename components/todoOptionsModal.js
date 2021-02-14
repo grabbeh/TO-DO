@@ -4,9 +4,9 @@ import Modal from 'react-modal'
 import { EditTodoModal } from './index'
 import { Dustbin, Edit, Rewind } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
-import toast from 'react-hot-toast'
+import activateToast from '../utils/toast'
 
-const OptionsModal = ({ todo }) => {
+const TodoOptionsModal = ({ todo }) => {
   return (
     <div className='my-2'>
       <EditRow todo={todo} />
@@ -15,7 +15,7 @@ const OptionsModal = ({ todo }) => {
   )
 }
 
-export default OptionsModal
+export default TodoOptionsModal
 
 const EditRow = ({ todo }) => {
   const [modalIsOpen, setIsOpen] = useState(false)
@@ -149,11 +149,7 @@ const DeleteRow = ({ todo }) => {
             updateTodo: updatedTodo
           }
         })
-        toast.promise(mutation, {
-          loading: 'Loading',
-          success: data => `Todo updated`,
-          error: err => `This just happened: ${err.toString()}`
-        })
+        activateToast(mutation, 'Todo updated')
       }}
     >
       {todo.deleted ? (

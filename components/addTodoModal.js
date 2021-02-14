@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client'
 import { Formik } from 'formik'
 import { string, object } from 'yup'
-import toast from 'react-hot-toast'
+import activateToast from '../utils/toast'
 import { Back, Subheader, TodoForm, Card } from './index'
 import { AddTodo as ADD_TODO } from '../queries/index'
 import gql from 'graphql-tag'
@@ -94,13 +94,7 @@ const TextInput = ({ parentId, closeModal }) => {
             }
           }
         })
-
-        toast.promise(mutation, {
-          loading: 'Loading',
-          success: data => `Todo added!`,
-          error: err => `This just happened: ${err.toString()}`
-        })
-
+        activateToast(mutation, 'Todo added')
         resetForm()
         closeModal()
       }}

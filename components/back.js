@@ -8,7 +8,7 @@ const Back = ({ title, closeModal }) => {
       {closeModal ? (
         <div
           style={{ height: '40px' }}
-          className='rounded-full mt-3 hover:bg-gray-200 mr-1 p-2 cursor-pointer font-bold'
+          className='rounded-full mt-3 hover:bg-gray-200 mr-1 p-2 cursor-pointer font-semibold'
           onClick={() => closeModal()}
         >
           <Arrow />
@@ -16,7 +16,7 @@ const Back = ({ title, closeModal }) => {
       ) : (
         <div
           style={{ height: '40px' }}
-          className='rounded-full mt-3 hover:bg-gray-200 mr-1 p-2 cursor-pointer font-bold'
+          className='rounded-full mt-3 hover:bg-gray-200 mr-1 p-2 cursor-pointer font-semibold'
           onClick={() => router.back()}
         >
           <Arrow />

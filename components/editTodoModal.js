@@ -8,7 +8,7 @@ import {
   TodoForm,
   Card
 } from './index'
-import toast from 'react-hot-toast'
+import activateToast from '../utils/toast'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 
 const EditTodoModal = ({ todo, closeModal }) => (
@@ -53,12 +53,7 @@ const TextInput = ({ todo }) => {
             }
           }
         })
-
-        toast.promise(mutation, {
-          loading: 'Loading',
-          success: data => `Successfully edited todo`,
-          error: err => `This just happened: ${err.toString()}`
-        })
+        activateToast(mutation, 'Todo edited')
       }}
     >
       {props => {

@@ -1,9 +1,9 @@
 import Modal from 'react-modal'
 import { useState } from 'react'
-import { OptionsModal } from './index'
+import { TodoListOptionsModal } from './index'
 import { Cog } from './icons/index'
 
-const OptionsBox = ({ todo }) => {
+const TodoListOptionsBox = ({ todoList }) => {
   const [modalIsOpen, setIsOpen] = useState(false)
   const openModal = () => {
     setIsOpen(true)
@@ -13,7 +13,7 @@ const OptionsBox = ({ todo }) => {
     setIsOpen(false)
   }
   return (
-    <div className='static'>
+    <div>
       <div onClick={openModal}>
         <div className='flex hover:text-blue-800 text-blue-500'>
           <div className='h-5 w-5'>
@@ -28,10 +28,10 @@ const OptionsBox = ({ todo }) => {
         contentLabel='Example Modal'
         closeTimeoutMS={500}
       >
-        <OptionsModal closeModal={closeModal} todo={todo} />
+        <TodoListOptionsModal closeModal={closeModal} todoList={todoList} />
       </Modal>
     </div>
   )
 }
 
-export default OptionsBox
+export default TodoListOptionsBox
