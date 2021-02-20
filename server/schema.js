@@ -64,6 +64,7 @@ const typeDefs = `
     commentsCount: Int
     priority: String
     contact: String
+    todoListName: String
   }
 
   scalar Date
@@ -73,6 +74,7 @@ const typeDefs = `
     user: String!
     text: String!
     todoListId: String!
+    todoListName: String!
     completed: Boolean!
     deleted: Boolean!
     comments: [Comment]

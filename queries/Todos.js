@@ -18,6 +18,7 @@ export default gql`
         deleted
         createdSince
         commentsCount
+        todoListName
       }
       completedTodos {
         id
@@ -30,6 +31,7 @@ export default gql`
         deleted
         createdSince
         commentsCount
+        todoListName
       }
     }
   }

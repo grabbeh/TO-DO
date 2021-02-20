@@ -70,7 +70,6 @@ const resolvers = {
       return todoList.Item
     },
     todoLists: async (p, a, c) => {
-      console.log(c)
       let todoLists = await TodoList.query(`USER#${c.user.id}`, {
         beginsWith: 'TODOLIST#'
       })
@@ -120,6 +119,7 @@ const resolvers = {
       delete todo['createdSince']
       delete todo['commentsCount']
       delete todo['comments']
+      delete todo['todoListName']
       await Todo.update({
         ...todo,
         pk: id,
@@ -213,6 +213,13 @@ const resolvers = {
     }
   },
   Todo: {
+    todoListName: async (todo, a, c) => {
+      let result = await TodoList.get({
+        user: c.user.id,
+        id: todo.todoListId
+      })
+      return result.Item.name
+    },
     createdSince: async todo => {
       if (todo.created) {
         return formatDistanceToNow(new Date(todo.created))

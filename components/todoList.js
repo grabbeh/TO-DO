@@ -8,7 +8,7 @@ import activateToast from '../utils/toast'
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
-    <ul className='mb-3 border-t-2 md:border-l-2 md:border-r-2'>
+    <ul className='mb-3'>
       {todos.map(todo => (
         <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
       ))}
@@ -67,6 +67,7 @@ const Todo = ({ todo }) => {
 
   return (
     <Card key={todo.id}>
+      <div className='ml-8 text-gray-400'>{todo.todoListName}</div>
       <div className='flex'>
         <div>
           <label>

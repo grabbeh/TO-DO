@@ -1,14 +1,17 @@
-import { useQuery } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import { useState } from 'react'
 import {
-  MainContainer as Container,
   Loading,
   TodoLists,
   Button,
   AddTodoListModal,
-  SearchPanel
+  TodoList
 } from '../components/index'
-import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
+import {
+  TodoLists as TODO_LISTS_QUERY,
+  AllTodos as ALLTODOS_QUERY,
+  UpdateTodo as UPDATE_TODO
+} from '../queries/index'
 import withApollo from '../lib/withApollo'
 import Modal from 'react-modal'
 
@@ -16,12 +19,21 @@ const TodoFetcher = () => {
   const { loading: listLoading, error: listError, data: listData } = useQuery(
     TODO_LISTS_QUERY
   )
-  if (listLoading || !listData) return <Loading />
-  if (listError) return 'Error'
-  return <TodoPage todoLists={listData.todoLists} />
+  const {
+    loading: todosLoading,
+    error: todosError,
+    data: todosData
+  } = useQuery(ALLTODOS_QUERY, {
+    fetchPolicy: 'cache-first',
+    variables: { olderThan: 1 }
+  })
+  if (listLoading || !listData || todosLoading || !todosData) return <Loading />
+  if (listError || todosError) return 'Error'
+  return <TodoPage todos={todosData.allTodos} todoLists={listData.todoLists} />
 }
 
-const TodoPage = ({ todoLists }) => {
+const TodoPage = ({ todoLists, todos }) => {
+  const [updateTodo] = useMutation(UPDATE_TODO)
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -31,8 +43,11 @@ const TodoPage = ({ todoLists }) => {
     setModalIsOpen(false)
   }
   return (
-    <Container>
+    <div className='bg-gray-100 flex flex-wrap'>
       <TodoLists todoLists={todoLists} />
+      <div className='flex justify-center m-auto'>
+        <TodoList title='Oldest 5' updateTodo={updateTodo} todos={todos} />
+      </div>
       <div className='fixed bottom-3 right-3 mt-3 flex justify-end'>
         <Button onClick={openModal}>Add</Button>
         <Modal
@@ -45,7 +60,7 @@ const TodoPage = ({ todoLists }) => {
           <AddTodoListModal closeModal={closeModal} />
         </Modal>
       </div>
-    </Container>
+    </div>
   )
 }
 

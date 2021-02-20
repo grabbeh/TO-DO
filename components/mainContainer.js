@@ -1,7 +1,7 @@
 import { Toaster } from 'react-hot-toast'
 
 const Container = ({ children }) => (
-  <div className='pb-5 h-full min-h-screen font:sans flex justify-center'>
+  <div className='pb-5 bg-gray-100 h-full min-h-screen font:sans flex justify-center'>
     <Toaster
       position='top-right'
       toastOptions={{

@@ -3,9 +3,9 @@ import { Header, CardListItem as Card, TodoListOptionsBox } from './index'
 
 const TodoLists = ({ todoLists }) => {
   return (
-    <div>
+    <div className='bg-blue-500'>
       <Header>Lists</Header>
-      <ul className='border-t-2 md:border-l-2 md:border-r-2'>
+      <ul>
         {todoLists.map(todoList => (
           <TodoList key={todoList.id} todoList={todoList} />
         ))}
@@ -17,7 +17,7 @@ const TodoLists = ({ todoLists }) => {
 const TodoList = ({ todoList }) => (
   <React.Fragment>
     {!todoList.deleted && (
-      <Card key={todoList.id}>
+      <div className='p-2' key={todoList.id}>
         <div className='flex'>
           <div className='flex-grow'>
             <div className='flex justify-between'>
@@ -26,16 +26,18 @@ const TodoList = ({ todoList }) => (
                   {todoList.name}
                 </span>
               </Link>
-              <div className='leading-8 px-2 text-sm text-right font-semibold rounded bg-blue-100 text-blue-700'>
-                {todoList.activeTodosVolume}
+              <div className='flex'>
+                <div className='leading-8 px-2 text-sm text-right font-semibold rounded bg-blue-100 text-blue-700'>
+                  {todoList.activeTodosVolume}
+                </div>
+                <div>
+                  <TodoListOptionsBox todoList={todoList} />
+                </div>
               </div>
-            </div>
-            <div className='mt-2 mb-1'>
-              <TodoListOptionsBox todoList={todoList} />
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     )}
   </React.Fragment>
 )

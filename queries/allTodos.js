@@ -23,6 +23,7 @@ export default gql`
       deleted
       createdSince
       commentsCount
+      todoListName
     }
   }
 `
