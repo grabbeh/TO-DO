@@ -63,6 +63,12 @@ const resolvers = {
           ]
         }
       }
+      if (a.pinned) {
+        options = {
+          ...options,
+          filters: [...baseOptions.filters, { attr: 'pinned', eq: true }]
+        }
+      }
       let todos = await Todo.query(`USER#${c.user.id}#TODO`, options)
       return todos.Items
     },

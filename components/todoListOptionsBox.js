@@ -13,7 +13,7 @@ const TodoListOptionsBox = ({ todoList }) => {
     setIsOpen(false)
   }
   return (
-    <div>
+    <div className='mt-1 relative'>
       <div onClick={openModal}>
         <div className='flex cursor-pointer hover:text-white text-gray-300'>
           <div className='h-5 w-5'>
@@ -22,7 +22,7 @@ const TodoListOptionsBox = ({ todoList }) => {
         </div>
       </div>
       <Modal
-        className='bg-white outline-none bottom-0 left-0 absolute rounded-t-lg border-2 px-2'
+        className='bg-white outline-none rounded-t-lg border-2 px-2'
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel='Example Modal'

@@ -19,6 +19,7 @@ export default gql`
         createdSince
         commentsCount
         todoListName
+        pinned
       }
       completedTodos {
         id

@@ -13,9 +13,9 @@ const TodoLists = ({ todoLists }) => {
     setModalIsOpen(false)
   }
   return (
-    <div className='px-2 sticky h-screen top-0 bg-blue-700 w-full md:w-48'>
+    <div className='px-2 md:sticky w-full md:w-48  h-full md:h-screen top-0 bg-blue-700'>
       <h1 className='text-white text-2xl my-2 font-semibold'>Lists</h1>
-      <ul>
+      <ul className='divide-y-2'>
         {todoLists.map(todoList => (
           <TodoList key={todoList.id} todoList={todoList} />
         ))}
@@ -44,12 +44,12 @@ const TodoList = ({ todoList }) => (
           <div className='flex-grow'>
             <div className='flex justify-between'>
               <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
-                <span className='cursor-pointer flex  text-white text-md'>
+                <span className='cursor-pointer flex text-lg text-white'>
                   {todoList.name}
                 </span>
               </Link>
               <div className='flex'>
-                <div className='px-2 text-sm text-right font-semibold  text-gray-300'>
+                <div className='px-2 text-md text-right font-semibold text-gray-300'>
                   {todoList.activeTodosVolume}
                 </div>
                 <div>

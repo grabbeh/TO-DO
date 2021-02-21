@@ -11,6 +11,7 @@ export default gql`
       todoListId
       completed
       deleted
+      pinned
     }
   }
 `

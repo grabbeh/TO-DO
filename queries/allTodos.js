@@ -6,12 +6,14 @@ export default gql`
     $earlierThan: Int
     $priority: String
     $status: String
+    $pinned: Boolean
   ) {
     allTodos(
       olderThan: $olderThan
       earlierThan: $earlierThan
       priority: $priority
       status: $status
+      pinned: $pinned
     ) {
       id
       todoListId
@@ -24,6 +26,7 @@ export default gql`
       createdSince
       commentsCount
       todoListName
+      pinned
     }
   }
 `

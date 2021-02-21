@@ -49,6 +49,7 @@ const Todo = new Entity({
     contact: { type: 'string' },
     completed: { type: 'boolean', default: false },
     deleted: { type: 'boolean', default: false },
+    pinned: { type: 'boolean', default: false },
     position: { type: 'number' },
     GSI1pk: { type: 'string' },
     GSI1sk: { type: 'string' },

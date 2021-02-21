@@ -1,5 +1,10 @@
 import { useMutation } from '@apollo/client'
-import { CardListItem as Card, Subheader, TodoOptionsBox } from './index'
+import {
+  CardListItem as Card,
+  Subheader,
+  TodoOptionsBox,
+  PinTodo
+} from './index'
 import Link from 'next/link'
 import { Comments } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
@@ -67,11 +72,17 @@ const Todo = ({ todo }) => {
 
   return (
     <Card key={todo.id}>
-      <Link href={`/todos/${encodeURIComponent(todo.todoListId)}`}>
-        <a>
-          <div className='ml-8 text-gray-400'>{todo.todoListName}</div>
-        </a>
-      </Link>
+      <div className='flex justify-between'>
+        <Link href={`/todos/${encodeURIComponent(todo.todoListId)}`}>
+          <a>
+            <div className='ml-8 text-gray-400'>{todo.todoListName}</div>
+          </a>
+        </Link>
+        <div className='flex justify-end'>
+          <PinTodo todo={todo} />
+        </div>
+      </div>
+
       <div className='flex'>
         <div>
           <label>

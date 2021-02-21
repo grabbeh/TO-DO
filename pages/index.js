@@ -1,6 +1,16 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
 import { useEffect } from 'react'
-import { Loading, TodoLists, TodoList, SearchForm } from '../components/index'
+import {
+  Loading,
+  TodoLists,
+  TodoList,
+  SearchForm,
+  Tab,
+  Tabs,
+  TabList,
+  TabPanels,
+  PinnedTodos
+} from '../components/index'
 import {
   TodoLists as TODO_LISTS_QUERY,
   AllTodos as ALLTODOS_QUERY,
@@ -26,27 +36,49 @@ const TodoPage = ({ todoLists }) => {
   ] = useLazyQuery(ALLTODOS_QUERY)
 
   useEffect(() => {
-    console.log('Triggered')
     getTodos()
   }, [getTodos])
-  if (todosLoading || !todosData) return <Loading />
 
   return (
     <div className='flex w-full bg-pink-200 flex-wrap'>
-      <div className='flex flex-shrink'>
-        <TodoLists todoLists={todoLists} />
+      <TodoLists todoLists={todoLists} />
+      <div className='l-0 md:ml-6 mt-3 flex flex-grow'>
+        <Tabs>
+          <TabList>
+            <Tab>
+              <div
+                onClick={() => {
+                  getTodos()
+                }}
+              >
+                Oldest todos
+              </div>
+            </Tab>
+            <Tab>
+              <div
+                onClick={() => {
+                  getTodos({ variables: { pinned: true } })
+                }}
+              >
+                Pinned todos
+              </div>
+            </Tab>
+          </TabList>
+          <TabPanels>
+            {todosLoading || !todosData ? (
+              <Loading />
+            ) : (
+              <TodoList updateTodo={updateTodo} todos={todosData.allTodos} />
+            )}
+            {todosLoading || !todosData ? (
+              <Loading />
+            ) : (
+              <TodoList updateTodo={updateTodo} todos={todosData.allTodos} />
+            )}
+          </TabPanels>
+        </Tabs>
       </div>
-
-      <div className='flex flex-grow ml-6'>
-        <TodoList
-          title='Oldest'
-          updateTodo={updateTodo}
-          todos={todosData.allTodos}
-        />
-      </div>
-      <div className='flex justify-end'>
-        <SearchForm getTodos={getTodos} />
-      </div>
+      <SearchForm getTodos={getTodos} />
     </div>
   )
 }

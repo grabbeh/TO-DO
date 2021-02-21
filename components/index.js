@@ -27,8 +27,12 @@ import TodoListOptionsModal from './todoListOptionsModal'
 import TodoListOptionsBox from './todoListOptionsBox'
 import SearchPanel from './searchPanel'
 import SearchForm from './searchForm'
+import PinTodo from './pinTodo'
+import PinnedTodos from './pinnedTodos'
 
 export {
+  PinTodo,
+  PinnedTodos,
   SearchForm,
   SearchPanel,
   Tab,

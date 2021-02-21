@@ -4,7 +4,7 @@ const typeDefs = `
     comments(id: ID!): [Comment]
     todoLists: [TodoList]
     todoList(id: ID!): TodoList
-    allTodos(olderThan: Int, earlierThan: Int, status: String, priority: String): [Todo]
+    allTodos(olderThan: Int, pinned: Boolean, earlierThan: Int, status: String, priority: String): [Todo]
   }
 
   type Mutation {
@@ -60,6 +60,7 @@ const typeDefs = `
     todoListId: String
     comments: [CommentInput]
     deleted: Boolean
+    pinned: Boolean
     createdSince: String
     commentsCount: Int
     priority: String
@@ -76,6 +77,7 @@ const typeDefs = `
     todoListId: String!
     todoListName: String!
     completed: Boolean!
+    pinned: Boolean
     deleted: Boolean!
     comments: [Comment]
     createdSince: String
