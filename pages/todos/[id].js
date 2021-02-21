@@ -13,8 +13,7 @@ import Modal from 'react-modal'
 import { Dustbin } from '../../components/icons'
 import {
   UpdateTodo as UPDATE_TODO,
-  Todos as TODOS_QUERY,
-  CompletedTodos as COMPLETED_TODOS
+  Todos as TODOS_QUERY
 } from '../../queries/index'
 import withApollo from '../../lib/withApollo'
 import Link from 'next/link'

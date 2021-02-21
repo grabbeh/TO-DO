@@ -43,7 +43,7 @@ const EditRow = ({ todoList }) => {
       </div>
 
       <Modal
-        className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 py-2 px-2'
+        className='bg-white outline-none left-0 bottom-0 m-auto absolute rounded-t-lg border-2 py-2 px-2'
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel='Example Modal'

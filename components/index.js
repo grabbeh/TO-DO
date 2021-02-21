@@ -26,8 +26,10 @@ import TodoOptionsBox from './todoOptionsBox'
 import TodoListOptionsModal from './todoListOptionsModal'
 import TodoListOptionsBox from './todoListOptionsBox'
 import SearchPanel from './searchPanel'
+import SearchForm from './searchForm'
 
 export {
+  SearchForm,
   SearchPanel,
   Tab,
   AddTodoListModal,

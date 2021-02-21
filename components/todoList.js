@@ -8,7 +8,7 @@ import activateToast from '../utils/toast'
 const TodoList = ({ todos, title, updateTodo }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
-    <ul className='mb-3'>
+    <ul className='rounded-lg divide-y-2 mb-3'>
       {todos.map(todo => (
         <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
       ))}
@@ -67,7 +67,11 @@ const Todo = ({ todo }) => {
 
   return (
     <Card key={todo.id}>
-      <div className='ml-8 text-gray-400'>{todo.todoListName}</div>
+      <Link href={`/todos/${encodeURIComponent(todo.todoListId)}`}>
+        <a>
+          <div className='ml-8 text-gray-400'>{todo.todoListName}</div>
+        </a>
+      </Link>
       <div className='flex'>
         <div>
           <label>

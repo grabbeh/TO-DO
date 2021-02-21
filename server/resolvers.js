@@ -24,31 +24,36 @@ const resolvers = {
   }),
   Query: {
     allTodos: async (p, a, c) => {
-      const timeInMs =
-        Date.now() - 86400 * 1000 * (a.olderThan || a.earlierThan)
-      const payload = crypto.randomBytes(16)
-      const relevantKSUID = KSUID.fromParts(timeInMs, payload)
+      let timeInMs, payload, relevantKSUID
+      if (a.olderThan || a.earlierThan) {
+        timeInMs = Date.now() - 86400 * 1000 * (a.olderThan || a.earlierThan)
+        payload = crypto.randomBytes(16)
+        relevantKSUID = KSUID.fromParts(timeInMs, payload)
+      }
+
       let baseOptions = {
         index: 'GSI3',
-        reverse: true,
         filters: [
           { attr: 'completed', eq: false },
           { attr: 'deleted', eq: false }
         ]
       }
 
-      let options
+      let options = baseOptions
       if (a.olderThan) {
         options = {
           ...baseOptions,
           lt: relevantKSUID.string
         }
-      } else {
+      }
+
+      if (a.earlierThan) {
         options = {
           ...baseOptions,
           gt: relevantKSUID.string
         }
       }
+
       if (a.priority) {
         options = {
           ...options,
