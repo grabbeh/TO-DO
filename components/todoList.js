@@ -75,7 +75,7 @@ const Todo = ({ todo }) => {
       <div className='flex justify-between'>
         <Link href={`/todos/${encodeURIComponent(todo.todoListId)}`}>
           <a>
-            <div className='ml-8 text-gray-400'>{todo.todoListName}</div>
+            <div className='ml-8 text-sm text-gray-400'>{todo.todoListName}</div>
           </a>
         </Link>
         <div className='flex justify-end'>
