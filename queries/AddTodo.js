@@ -11,6 +11,7 @@ export default gql`
       user
       completed
       deleted
+      pinned
       createdSince
       commentsCount
     }
