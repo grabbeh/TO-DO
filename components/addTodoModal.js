@@ -80,6 +80,7 @@ const TextInput = ({ parentId, closeModal }) => {
           priority,
           completed: false,
           deleted: false,
+          pinned: false,
           id,
           todoListId: parentId
         }
