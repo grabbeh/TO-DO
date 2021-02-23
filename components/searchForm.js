@@ -3,7 +3,7 @@ import capitalise from '../utils/capitalise'
 import { Subheader, Input, Button } from './index'
 
 const SearchForm = ({ getTodos }) => (
-  <div className='sticky md:h-screen h-full w-full md:w-48 top-0 bg-green-300 p-2'>
+  <div className='sticky md:h-screen h-full flex-none w-full md:w-64 top-0 bg-green-300 p-2'>
     <Subheader>Filter</Subheader>
     <SearchInput getTodos={getTodos} />
     <div

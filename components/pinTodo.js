@@ -94,7 +94,17 @@ const PinTodo = ({ todo }) => {
         activateToast(mutation, 'Todo pinned')
       }}
     >
-      <div>{todo.pinned ? <AiFillPushpin /> : <AiOutlinePushpin />}</div>
+      <div>
+        {todo.pinned ? (
+          <div className='text-red-600'>
+            <AiFillPushpin />
+          </div>
+        ) : (
+          <div className='text-gray-500'>
+            <AiOutlinePushpin />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

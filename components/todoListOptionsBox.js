@@ -1,7 +1,7 @@
 import Modal from 'react-modal'
 import { useState } from 'react'
 import { TodoListOptionsModal } from './index'
-import { Cog } from './icons/index'
+import { VerticalDots } from './icons/index'
 
 const TodoListOptionsBox = ({ todoList }) => {
   const [modalIsOpen, setIsOpen] = useState(false)
@@ -17,7 +17,7 @@ const TodoListOptionsBox = ({ todoList }) => {
       <div onClick={openModal}>
         <div className='flex cursor-pointer hover:text-white text-gray-300'>
           <div className='h-5 w-5'>
-            <Cog />
+            <VerticalDots />
           </div>
         </div>
       </div>

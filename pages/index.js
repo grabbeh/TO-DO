@@ -42,7 +42,7 @@ const TodoPage = ({ todoLists }) => {
   return (
     <div className='flex w-full bg-pink-200 flex-wrap'>
       <TodoLists todoLists={todoLists} />
-      <div className='l-0 md:ml-6 mt-3 flex flex-grow'>
+      <div className='l-0 md:mx-20 mt-3 flex-grow'>
         <Tabs>
           <TabList>
             <Tab>
