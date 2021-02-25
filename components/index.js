@@ -29,9 +29,11 @@ import SearchPanel from './searchPanel'
 import SearchForm from './searchForm'
 import PinTodo from './pinTodo'
 import PinnedTodos from './pinnedTodos'
+import Comments from './comments'
 
 export {
   PinTodo,
+  Comments,
   PinnedTodos,
   SearchForm,
   SearchPanel,

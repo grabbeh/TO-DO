@@ -1,20 +1,20 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Loading,
   TodoLists,
   TodoList,
-  SearchForm,
   Tab,
   Tabs,
   TabList,
   TabPanels,
-  PinnedTodos
+  Comments
 } from '../components/index'
 import {
   TodoLists as TODO_LISTS_QUERY,
   AllTodos as ALLTODOS_QUERY,
-  UpdateTodo as UPDATE_TODO
+  UpdateTodo as UPDATE_TODO,
+  TodoNotes as TODO_NOTES_QUERY
 } from '../queries/index'
 import withApollo from '../lib/withApollo'
 
@@ -22,7 +22,6 @@ const TodoFetcher = () => {
   const { loading: listLoading, error: listError, data: listData } = useQuery(
     TODO_LISTS_QUERY
   )
-
   if (listLoading || !listData) return <Loading />
   if (listError) return 'Error'
   return <TodoPage todoLists={listData.todoLists} />
@@ -30,10 +29,16 @@ const TodoFetcher = () => {
 
 const TodoPage = ({ todoLists }) => {
   const [updateTodo] = useMutation(UPDATE_TODO)
+  const [activeTodo, setActiveTodo] = useState()
   const [
     getTodos,
     { loading: todosLoading, error: todosError, data: todosData }
   ] = useLazyQuery(ALLTODOS_QUERY)
+
+  const [
+    getComments,
+    { loading: commentsLoading, error: commentsError, data: commentsData }
+  ] = useLazyQuery(TODO_NOTES_QUERY)
 
   useEffect(() => {
     getTodos()
@@ -68,7 +73,12 @@ const TodoPage = ({ todoLists }) => {
             {todosLoading || !todosData ? (
               <Loading />
             ) : (
-              <TodoList updateTodo={updateTodo} todos={todosData.allTodos} />
+              <TodoList
+                setActiveTodo={setActiveTodo}
+                getComments={getComments}
+                updateTodo={updateTodo}
+                todos={todosData.allTodos}
+              />
             )}
             {todosLoading || !todosData ? (
               <Loading />
@@ -78,7 +88,9 @@ const TodoPage = ({ todoLists }) => {
           </TabPanels>
         </Tabs>
       </div>
-      <SearchForm getTodos={getTodos} />
+      {commentsData && (
+        <Comments todo={activeTodo} comments={commentsData.todo.comments} />
+      )}
     </div>
   )
 }

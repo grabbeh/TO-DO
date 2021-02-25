@@ -10,18 +10,24 @@ import { Comments } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 import activateToast from '../utils/toast'
 
-const TodoList = ({ todos, title, updateTodo }) => (
+const TodoList = ({ todos, title, updateTodo, setActiveTodo, getComments }) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
     <ul className='rounded-lg divide-y-2 mb-3'>
       {todos.map(todo => (
-        <Todo key={todo.id} updateTodo={updateTodo} todo={todo} />
+        <Todo
+          key={todo.id}
+          getComments={getComments}
+          updateTodo={updateTodo}
+          todo={todo}
+          setActiveTodo={setActiveTodo}
+        />
       ))}
     </ul>
   </div>
 )
 
-const Todo = ({ todo }) => {
+const Todo = ({ todo, getComments, setActiveTodo }) => {
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
@@ -75,7 +81,9 @@ const Todo = ({ todo }) => {
       <div className='flex justify-between'>
         <Link href={`/todos/${encodeURIComponent(todo.todoListId)}`}>
           <a>
-            <div className='ml-8 text-sm text-gray-400'>{todo.todoListName}</div>
+            <div className='ml-8 text-sm text-gray-400'>
+              {todo.todoListName}
+            </div>
           </a>
         </Link>
         <div className='flex justify-end'>
@@ -131,18 +139,20 @@ const Todo = ({ todo }) => {
               <TodoOptionsBox todo={todo} />
               <div>
                 <div className='cursor-pointer'>
-                  <Link href={`/notes/${encodeURIComponent(todo.id)}`}>
-                    <a>
-                      <div className='flex hover:text-blue-800 text-blue-500'>
-                        <div className='h-5 w-5'>
-                          <Comments />
-                        </div>
-                        <div className=' ml-1 text-md font-bold'>
-                          {todo.commentsCount}
-                        </div>
-                      </div>
-                    </a>
-                  </Link>
+                  <div
+                    onClick={() => {
+                      getComments({ variables: { id: todo.id } })
+                      setActiveTodo(todo)
+                    }}
+                    className='flex hover:text-blue-800 text-blue-500'
+                  >
+                    <div className='h-5 w-5'>
+                      <Comments />
+                    </div>
+                    <div className=' ml-1 text-md font-bold'>
+                      {todo.commentsCount}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

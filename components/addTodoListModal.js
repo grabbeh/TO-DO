@@ -71,7 +71,6 @@ const TextInput = ({ closeModal }) => {
             addTodoList: {
               ...todoList,
               deleted: false,
-              user: 'mbg@outlook.com',
               activeTodosVolume: 0,
               completedTodosVolume: 0
             }

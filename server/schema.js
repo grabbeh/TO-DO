@@ -60,7 +60,7 @@ const typeDefs = `
     todoListId: String
     comments: [CommentInput]
     deleted: Boolean
-    pinned: Boolean
+    pinned: Boolean!
     createdSince: String
     commentsCount: Int
     priority: String
@@ -77,7 +77,7 @@ const typeDefs = `
     todoListId: String!
     todoListName: String!
     completed: Boolean!
-    pinned: Boolean
+    pinned: Boolean!
     deleted: Boolean!
     comments: [Comment]
     createdSince: String

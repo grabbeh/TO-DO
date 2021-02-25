@@ -13,28 +13,33 @@ import {
 import { AddComment as ADD_COMMENT } from '../queries/index'
 import toast from 'react-hot-toast'
 
-const CommentInput = ({ todoId, comments }) => (
-  <div>
-    {comments.length > 0 && (
-      <div>
-        <Subheader>Comments</Subheader>
-        <ul className='mb-4'>
-          {comments.map(comment => (
-            <Comment comment={comment} key={comment.id} />
-          ))}
-        </ul>
-      </div>
-    )}
-    <MainCard>
-      <Subheader>Add comment</Subheader>
-      <TextInput todoId={todoId} />
-    </MainCard>
-  </div>
-)
+const CommentInput = ({ todo, comments }) => {
+  console.log(todo)
+  console.log(comments)
+  return (
+    <div className='sticky md:h-screen h-full flex-none w-full md:w-64 top-0 bg-green-300 p-2'>
+      {comments.length > 0 && (
+        <div>
+          <Subheader>Comments</Subheader>
+          <ul className='mb-4'>
+            {comments.map(comment => (
+              <Comment comment={comment} key={comment.id} />
+            ))}
+          </ul>
+        </div>
+      )}
+      <MainCard>
+        <Subheader>Add comment</Subheader>
+        <TextInput todoId={todo.id} />
+      </MainCard>
+    </div>
+  )
+}
 
 const TextInput = ({ todoId }) => {
   const [addComment] = useMutation(ADD_COMMENT, {
     update (cache, { data: { addComment } }) {
+      console.log(addComment)
       cache.modify({
         id: cache.identify({
           id: todoId,

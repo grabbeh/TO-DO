@@ -7,21 +7,20 @@ import { AddTodo as ADD_TODO } from '../queries/index'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
 
-const AddTodoModal = ({ id, name, closeModal }) => {
-  return (
-    <div>
-      <Back closeModal={closeModal} title={name} />
-      <Card>
-        <Subheader>Add todo</Subheader>
-        <TextInput closeModal={closeModal} parentId={id} />
-      </Card>
-    </div>
-  )
-}
+const AddTodoModal = ({ id, name, closeModal }) => (
+  <div>
+    <Back closeModal={closeModal} title={name} />
+    <Card>
+      <Subheader>Add todo</Subheader>
+      <TextInput closeModal={closeModal} parentId={id} />
+    </Card>
+  </div>
+)
 
 const TextInput = ({ parentId, closeModal }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
+      console.log(addTodo)
       cache.modify({
         id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {
@@ -35,6 +34,7 @@ const TextInput = ({ parentId, closeModal }) => {
                 fragment NewTodo on Todo {
                   id
                   todoListId
+                  todoListName
                   text
                   contact
                   priority
@@ -79,6 +79,7 @@ const TextInput = ({ parentId, closeModal }) => {
           text,
           contact,
           priority,
+          todoListName: '...',
           completed: false,
           deleted: false,
           pinned: false,

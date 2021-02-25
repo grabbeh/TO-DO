@@ -111,6 +111,7 @@ const resolvers = {
     addTodo: async (p, a, c) => {
       let { todo } = a
       let { id, todoListId } = todo
+      delete todo['todoListName']
       const ksuid = await KSUID.random()
       await Todo.put({
         ...todo,
