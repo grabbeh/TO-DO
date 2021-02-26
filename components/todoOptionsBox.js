@@ -15,7 +15,7 @@ const OptionsBox = ({ todo }) => {
   return (
     <div>
       <div onClick={openModal}>
-        <div className='flex hover:text-blue-800 text-blue-500'>
+        <div className='cursor-pointer flex hover:text-blue-800 text-blue-500'>
           <div className='h-5 w-5'>
             <Cog />
           </div>
