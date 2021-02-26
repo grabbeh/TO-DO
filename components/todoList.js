@@ -6,7 +6,7 @@ import {
   PinTodo
 } from './index'
 import Link from 'next/link'
-import { Comments } from './icons/index'
+import { Comments, User } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 import activateToast from '../utils/toast'
 
@@ -119,11 +119,16 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
               <span
                 className={`${
                   todo.completed ? 'line-through' : ''
-                } flex font-semibold text-gray-900 text-xl`}
+                } flex font-semibold text-gray-900 text-lg`}
               >
                 {todo.text}
               </span>
-              <div className='text-gray-500 text-lg'>{todo.contact}</div>
+              <div className='flex'>
+                <div className='text-gray-500 mr-1 mt-1 h-4 w-4'>
+                  <User />
+                </div>
+                <div className='text-gray-500 text-base'>{todo.contact}</div>
+              </div>
             </div>
             <div>
               <div className='flex justify-end flex-shrink'>

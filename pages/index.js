@@ -46,47 +46,18 @@ const TodoPage = ({ todoLists }) => {
 
   return (
     <div className='flex w-full bg-pink-200 flex-wrap'>
-      <TodoLists todoLists={todoLists} />
-      <div className='l-0 md:mx-20 mt-3 flex-grow'>
-        <Tabs>
-          <TabList>
-            <Tab>
-              <div
-                onClick={() => {
-                  getTodos()
-                }}
-              >
-                Oldest todos
-              </div>
-            </Tab>
-            <Tab>
-              <div
-                onClick={() => {
-                  getTodos({ variables: { pinned: true } })
-                }}
-              >
-                Pinned todos
-              </div>
-            </Tab>
-          </TabList>
-          <TabPanels>
-            {todosLoading || !todosData ? (
-              <Loading />
-            ) : (
-              <TodoList
-                setActiveTodo={setActiveTodo}
-                getComments={getComments}
-                updateTodo={updateTodo}
-                todos={todosData.allTodos}
-              />
-            )}
-            {todosLoading || !todosData ? (
-              <Loading />
-            ) : (
-              <TodoList updateTodo={updateTodo} todos={todosData.allTodos} />
-            )}
-          </TabPanels>
-        </Tabs>
+      <TodoLists getTodos={getTodos} todoLists={todoLists} />
+      <div className='l-0 md:mx-8 mt-3 flex-grow'>
+        {todosLoading || !todosData ? (
+          <Loading />
+        ) : (
+          <TodoList
+            setActiveTodo={setActiveTodo}
+            getComments={getComments}
+            updateTodo={updateTodo}
+            todos={todosData.allTodos}
+          />
+        )}
       </div>
       {commentsData && (
         <Comments todo={activeTodo} comments={commentsData.todo.comments} />

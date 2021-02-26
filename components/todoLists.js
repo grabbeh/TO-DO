@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, TodoListOptionsBox, AddTodoListModal } from './index'
 import Modal from 'react-modal'
 
-const TodoLists = ({ todoLists }) => {
+const TodoLists = ({ todoLists, getTodos }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -16,6 +16,26 @@ const TodoLists = ({ todoLists }) => {
     <div className='px-2 md:sticky w-full md:w-56 flex-none h-full md:h-screen top-0 bg-blue-700'>
       <h1 className='text-white text-xl my-2 font-semibold'>Lists</h1>
       <ul className='mb-2'>
+        <div
+          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          onClick={() => {
+            getTodos()
+          }}
+        >
+          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'>
+            Oldest
+          </span>
+        </div>
+        <div
+          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          onClick={() => {
+            getTodos({ variables: { pinned: true } })
+          }}
+        >
+          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'>
+            Pinned
+          </span>
+        </div>
         {todoLists.map(todoList => (
           <TodoList key={todoList.id} todoList={todoList} />
         ))}

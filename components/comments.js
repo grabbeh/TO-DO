@@ -3,25 +3,18 @@ import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  Textarea,
-  Button,
-  Subheader,
-  Card as MainCard,
-  CardListItem as Card
-} from './index'
+import { Textarea, Button, Subheader, Card as MainCard } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
+import { User } from '../components/icons/index'
 import toast from 'react-hot-toast'
 
 const CommentInput = ({ todo, comments }) => {
-  console.log(todo)
-  console.log(comments)
   return (
-    <div className='sticky md:h-screen h-full flex-none w-full md:w-64 top-0 bg-green-300 p-2'>
+    <div className='bg-white sticky md:h-screen h-full flex-none w-full md:w-80 top-0 '>
       {comments.length > 0 && (
-        <div>
+        <div className='p-2'>
           <Subheader>Comments</Subheader>
-          <ul className='mb-4'>
+          <ul className='divide-y mb-4'>
             {comments.map(comment => (
               <Comment comment={comment} key={comment.id} />
             ))}
@@ -134,38 +127,20 @@ const TextInput = ({ todoId }) => {
 const Comment = props => {
   let { comment } = props
   return (
-    <Card className='mb-4' key={comment.id}>
+    <li className='py-2' key={comment.id}>
       <div className='justify-between flex'>
         <div className='flex'>
-          <div className='mr-1 text-gray-500 font-semibold h-5 w-5'>
+          <div className='mr-1 text-gray-500 h-3 w-3'>
             <User />
           </div>
-          <div className='text-gray-500 font-semibold'>Michael Goulbourn</div>
+          <div className='text-gray-500 text-xs'>Michael Goulbourn</div>
         </div>
-        <div className='text-xs font-semibold text-gray-500'>
-          {comment.createdAt}
-        </div>
+        <div className='text-xs text-gray-500'>{comment.createdAt}</div>
       </div>
 
-      <div className='pb-3 text-xl font:semibold font-medium'>
-        {comment.text}
-      </div>
-    </Card>
+      <div className='text-md'>{comment.text}</div>
+    </li>
   )
 }
-
-const User = () => (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    viewBox='0 0 20 20'
-    fill='currentColor'
-  >
-    <path
-      fillRule='evenodd'
-      d='M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z'
-      clipRule='evenodd'
-    />
-  </svg>
-)
 
 export default CommentInput
