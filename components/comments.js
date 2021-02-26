@@ -14,7 +14,7 @@ const CommentInput = ({ todo, comments }) => {
       {comments.length > 0 && (
         <div className='p-2'>
           <Subheader>Comments</Subheader>
-          <ul className='divide-y mb-4'>
+          <ul className='divide-y'>
             {comments.map(comment => (
               <Comment comment={comment} key={comment.id} />
             ))}
@@ -105,7 +105,7 @@ const TextInput = ({ todoId }) => {
       {props => {
         const { values, errors, handleChange } = props
         return (
-          <Form className='mb-4'>
+          <Form>
             <Textarea onChange={handleChange} name='text' value={values.text} />
             <div className='mt-1'>
               {

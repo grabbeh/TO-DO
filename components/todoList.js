@@ -139,7 +139,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
               </div>
             </div>
           </div>
-          <div className='flex self-end mt-2'>
+          <div className='flex self-end'>
             <div className='align-bottom justify-between flex-grow flex'>
               <TodoOptionsBox todo={todo} />
               <div>
