@@ -66,7 +66,7 @@ const DeleteRow = ({ todo }) => {
             completedTodos (existing, { readField }) {
               // if todo exists in completed todos array and action is deleted then remove
               if (
-                updateTodo.deleted &&
+                updateTodo.status === 'DELETED' &&
                 existing.some(ref => readField('id', ref) === todo.id)
               ) {
                 return existing.filter(ref => {
@@ -74,7 +74,7 @@ const DeleteRow = ({ todo }) => {
                 })
                 // if todo doesn't exist in array and action isn't deleted, then we should add to array
                 // if todo is completed
-              } else if (!updateTodo.deleted && updateTodo.completed) {
+              } else if (updateTodo.status !== 'DELETED') {
                 return [ref, ...existing]
               } else {
                 // if todo doesn't exist in array and action is deleted then item is in the other array so we return
@@ -84,7 +84,7 @@ const DeleteRow = ({ todo }) => {
             activeTodos (existing, { readField }) {
               // if todo exists in completed todos array and action is deleted then remove
               if (
-                updateTodo.deleted &&
+                updateTodo.status === 'DELETED' &&
                 existing.some(ref => readField('id', ref) === todo.id)
               ) {
                 return existing.filter(ref => {
@@ -92,26 +92,15 @@ const DeleteRow = ({ todo }) => {
                 })
                 // if todo doesn't exist in array and action isn't deleted, then we should add to array
                 // if todo is incomplete
-              } else if (!updateTodo.deleted && !updateTodo.completed) {
+              } else if (updateTodo.status !== 'DELETED') {
                 return [ref, ...existing]
               } else {
                 // if todo doesn't exist in array and action is deleted then item is in the other array so we return
                 return existing
               }
             },
-            deletedTodos (existing, { readField }) {
-              // if action is deleted we add todo to array
-              if (updateTodo.deleted) {
-                return [ref, ...existing]
-              } else {
-                // else we filter out as it's being restored
-                return existing.filter(ref => {
-                  return todo.id !== readField('id', ref)
-                })
-              }
-            },
             totalTodosVolume (value) {
-              if (!updateTodo.deleted) {
+              if (updateTodo.status === 'DELETED') {
                 value++
               } else {
                 value--
@@ -119,7 +108,7 @@ const DeleteRow = ({ todo }) => {
               return value
             },
             completedTodosVolume (value) {
-              if (updateTodo.completed && !updateTodo.deleted) {
+              if (updateTodo.status === 'COMPLETED') {
                 value++
               } else {
                 value--
@@ -138,7 +127,7 @@ const DeleteRow = ({ todo }) => {
       onClick={() => {
         let updatedTodo = {
           ...todo,
-          deleted: !todo.deleted
+          status: todo.status === 'DELETED' ? 'COMPLETED' : 'ACTIVE'
         }
         let mutation = updateDeletionStatus({
           variables: {
@@ -152,7 +141,7 @@ const DeleteRow = ({ todo }) => {
         activateToast(mutation, 'Todo updated')
       }}
     >
-      {todo.deleted ? (
+      {todo.status === 'DELETED' ? (
         <div className='flex justify-center'>
           <div className='mr-3 h-6 w-6'>
             <Rewind />

@@ -5,6 +5,7 @@ export default gql`
     addTodoList(todoList: $todoList) {
       name
       id
+      org
       user
       deleted
       activeTodosVolume

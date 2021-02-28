@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client'
 import { Formik } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
-import { v4 as uuidv4 } from 'uuid'
 import { TodolistForm, Back, Card, Subheader } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
 import activateToast from '../utils/toast'
@@ -55,12 +54,9 @@ const TextInput = ({ closeModal }) => {
           name: false
         })
         let { name } = values
-        const id = uuidv4()
         let todoList = {
           __typename: 'Todolist',
-          user: 'mbg@outlook.com',
-          name,
-          id
+          name
         }
         let mutation = addTodoList({
           variables: {
@@ -70,6 +66,9 @@ const TextInput = ({ closeModal }) => {
             __typename: 'Mutation',
             addTodoList: {
               ...todoList,
+              id: '',
+              user: '',
+              org: '',
               deleted: false,
               activeTodosVolume: 0,
               completedTodosVolume: 0

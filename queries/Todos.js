@@ -14,8 +14,7 @@ export default gql`
         contact
         priority
         user
-        completed
-        deleted
+        status
         createdSince
         commentsCount
         todoListName

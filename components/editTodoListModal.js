@@ -7,6 +7,7 @@ import { UpdateTodoList as UPDATE_TODOLIST } from '../queries/index'
 
 const EditTodoListModal = ({ closeModal, todoList }) => (
   <div>
+    <Back closeModal={closeModal} title={todoList.name} />
     <Card>
       <Subheader>Edit todo list</Subheader>
       <EditTextInput closeModal={closeModal} todoList={todoList} />

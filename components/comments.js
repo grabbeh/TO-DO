@@ -2,32 +2,29 @@ import { useMutation } from '@apollo/client'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
-import { v4 as uuidv4 } from 'uuid'
 import { Textarea, Button, Subheader, Card as MainCard } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
 import { User } from '../components/icons/index'
 import toast from 'react-hot-toast'
 
-const CommentInput = ({ todo, comments }) => {
-  return (
-    <div className='bg-white sticky md:h-screen h-full flex-none w-full md:w-80 top-0 '>
-      {comments.length > 0 && (
-        <div className='p-2'>
-          <Subheader>Comments</Subheader>
-          <ul className='divide-y'>
-            {comments.map(comment => (
-              <Comment comment={comment} key={comment.id} />
-            ))}
-          </ul>
-        </div>
-      )}
-      <MainCard>
-        <Subheader>Add comment</Subheader>
-        <TextInput todoId={todo.id} />
-      </MainCard>
-    </div>
-  )
-}
+const CommentInput = ({ todo, comments }) => (
+  <div className='bg-white sticky md:h-screen h-full flex-none w-full md:w-80 top-0 '>
+    {comments.length > 0 && (
+      <div className='p-2'>
+        <Subheader>Comments</Subheader>
+        <ul className='divide-y'>
+          {comments.map(comment => (
+            <Comment comment={comment} key={comment.id} />
+          ))}
+        </ul>
+      </div>
+    )}
+    <MainCard>
+      <Subheader>Add comment</Subheader>
+      <TextInput todoId={todo.id} />
+    </MainCard>
+  </div>
+)
 
 const TextInput = ({ todoId }) => {
   const [addComment] = useMutation(ADD_COMMENT, {
@@ -76,14 +73,12 @@ const TextInput = ({ todoId }) => {
           text: false
         })
         let { text } = values
-        const id = uuidv4()
+
         let comment = {
           __typename: 'Comment',
-          user: 'mbg@outlook.com',
+          user: 'MBG@OUTLOOK.COM',
           text,
-          todoId,
-          id,
-          createdAt: 'Just now'
+          todoId
         }
         let mutation = addComment({
           variables: {
@@ -91,7 +86,7 @@ const TextInput = ({ todoId }) => {
           },
           optimisticResponse: {
             __typename: 'Mutation',
-            addComment: comment
+            addComment: { ...comment, id: '', createdAt: 'Just now' }
           }
         })
         toast.promise(mutation, {

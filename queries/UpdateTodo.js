@@ -9,8 +9,7 @@ export default gql`
       id
       user
       todoListId
-      completed
-      deleted
+      status
       pinned
     }
   }

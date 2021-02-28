@@ -71,7 +71,7 @@ const TextInput = props => {
         //mutation example + optimistic response
         addComment({
           variables: {
-            comment: { user: 'mbg@outlook.com', text, todoId, id }
+            comment: { user: 'MBG@OUTLOOK.COM', text, todoId, id }
           },
           optimisticResponse: {
             __typename: 'Mutation',
@@ -80,7 +80,7 @@ const TextInput = props => {
               text,
               id,
               todoId,
-              user: 'mbg@outlook.com'
+              user: 'MBG@OUTLOOK.COM'
             }
           }
           // for a new item, optimisticResponse needs typename and the id of the

@@ -8,7 +8,7 @@ const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   context: {
-    user: { id: 'mbg@outlook.com', orgId: '1234' }
+    user: { id: 'MBG@OUTLOOK.COM', org: 'ZOPA' }
   }
 })
 

@@ -8,9 +8,9 @@ export default gql`
       priority
       id
       todoListId
+      todoListName
       user
-      completed
-      deleted
+      status
       pinned
       createdSince
       commentsCount

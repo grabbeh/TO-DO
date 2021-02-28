@@ -5,7 +5,6 @@ import activateToast from '../utils/toast'
 import { Back, Subheader, TodoForm, Card } from './index'
 import { AddTodo as ADD_TODO } from '../queries/index'
 import gql from 'graphql-tag'
-import { v4 as uuidv4 } from 'uuid'
 
 const AddTodoModal = ({ id, name, closeModal }) => (
   <div>
@@ -21,11 +20,16 @@ const TextInput = ({ parentId, closeModal }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
       console.log(addTodo)
+      console.log(cache)
       cache.modify({
-        id: cache.identify({ id: parentId, __typename: 'TodoList' }),
+        //id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {
           activeTodosVolume (value) {
             return value + 1
+          },
+          allTodos (value) {
+            console.log('allTodos value')
+            console.log(value)
           },
           activeTodos (existingTodos = []) {
             const newTodoRef = cache.writeFragment({
@@ -35,12 +39,11 @@ const TextInput = ({ parentId, closeModal }) => {
                   id
                   todoListId
                   todoListName
+                  status
                   text
                   contact
                   priority
                   user
-                  completed
-                  deleted
                   pinned
                   createdSince
                   commentsCount
@@ -72,18 +75,13 @@ const TextInput = ({ parentId, closeModal }) => {
           priority: false
         })
         let { text, contact, priority } = values
-        const id = uuidv4()
         let todo = {
           __typename: 'Todo',
-          user: 'mbg@outlook.com',
           text,
           contact,
           priority,
-          todoListName: '...',
-          completed: false,
-          deleted: false,
+          status: 'ACTIVE',
           pinned: false,
-          id,
           todoListId: parentId
         }
         let mutation = addTodo({
@@ -92,6 +90,8 @@ const TextInput = ({ parentId, closeModal }) => {
             __typename: 'Mutation',
             addTodo: {
               ...todo,
+              id: '',
+              todoListName: '',
               commentsCount: 0,
               createdSince: 'Just now'
             }

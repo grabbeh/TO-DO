@@ -7,6 +7,8 @@ export default gql`
     $priority: String
     $status: String
     $pinned: Boolean
+    $todoListId: String
+    $cursor: String
   ) {
     allTodos(
       olderThan: $olderThan
@@ -14,6 +16,8 @@ export default gql`
       priority: $priority
       status: $status
       pinned: $pinned
+      todoListId: $todoListId
+      cursor: $cursor
     ) {
       id
       todoListId
@@ -21,8 +25,7 @@ export default gql`
       contact
       priority
       user
-      completed
-      deleted
+      status
       createdSince
       commentsCount
       todoListName

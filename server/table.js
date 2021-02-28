@@ -27,8 +27,9 @@ const TodoTable = new Table({
 const TodoList = new Entity({
   name: 'TodoList',
   attributes: {
-    user: { partitionKey: true, prefix: 'USER#', default: 'mbg@outlook.com' },
+    org: { partitionKey: true, prefix: 'ORG#' },
     id: { sortKey: true, prefix: 'TODOLIST#' },
+    user: { type: 'string' },
     name: { type: 'string' },
     deleted: { type: 'boolean', default: false },
     GSI1pk: { type: 'string' },
@@ -40,17 +41,17 @@ const TodoList = new Entity({
 const Todo = new Entity({
   name: 'Todo',
   attributes: {
-    id: { partitionKey: true, prefix: 'TODO#' },
+    org: { partitionKey: true, prefix: 'ORG#' },
     sk: { sortKey: true, prefix: 'TODO#' },
+    user: ['sk', 0, { type: 'string' }],
+    status: { type: 'string' },
+    id: ['sk', 1],
     todoListId: { type: 'string' },
-    user: { type: 'string' },
+    todoListName: { type: 'string' },
     text: { type: 'string' },
     priority: { type: 'string' },
     contact: { type: 'string' },
-    completed: { type: 'boolean', default: false },
-    deleted: { type: 'boolean', default: false },
     pinned: { type: 'boolean', default: false },
-    position: { type: 'number' },
     GSI1pk: { type: 'string' },
     GSI1sk: { type: 'string' },
     GSI3pk: { type: 'string' },

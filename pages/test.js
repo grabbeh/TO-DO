@@ -99,7 +99,7 @@ const TextInput = ({ parentId }) => {
         const id = uuidv4()
         let todo = {
           __typename: 'Todo',
-          user: 'mbg@outlook.com',
+          user: 'MBG@OUTLOOK.COM',
           text,
           contact,
           priority,

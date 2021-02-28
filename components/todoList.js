@@ -3,14 +3,23 @@ import {
   CardListItem as Card,
   Subheader,
   TodoOptionsBox,
-  PinTodo
+  PinTodo,
+  Loading
 } from './index'
 import Link from 'next/link'
 import { Comments, User } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 import activateToast from '../utils/toast'
 
-const TodoList = ({ todos, title, updateTodo, setActiveTodo, getComments }) => (
+const TodoList = ({
+  todos,
+  title,
+  updateTodo,
+  setActiveTodo,
+  getComments,
+  fetchMore,
+  loading
+}) => (
   <div>
     {title && <Subheader>{title}</Subheader>}
     <ul className='rounded-lg divide-y-2 mb-3'>
@@ -24,6 +33,14 @@ const TodoList = ({ todos, title, updateTodo, setActiveTodo, getComments }) => (
         />
       ))}
     </ul>
+    <div
+      className='bg-red-500 p-2 my-5 cursor-pointer text-center font-semibold'
+      onClick={() => {
+        fetchMore({ variables: { cursor: todos[todos.length - 1].id } })
+      }}
+    >
+      {loading ? <Loading /> : 'More'}
+    </div>
   </div>
 )
 
@@ -38,7 +55,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
         }),
         fields: {
           completedTodos (existing, { readField }) {
-            if (updateTodo.completed) {
+            if (updateTodo.status === 'COMPLETED') {
               return [ref, ...existing]
             } else {
               return existing.filter(ref => {
@@ -47,7 +64,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
             }
           },
           activeTodos (existing, { readField }) {
-            if (!updateTodo.completed) {
+            if (updateTodo.status !== 'COMPLETED') {
               return [ref, ...existing]
             } else {
               return existing.filter(ref => {
@@ -56,7 +73,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
             }
           },
           completedTodosVolume (value) {
-            if (updateTodo.completed) {
+            if (updateTodo.status === 'COMPLETED') {
               value++
             } else {
               value--
@@ -64,7 +81,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
             return value
           },
           activeTodosVolume (value) {
-            if (!updateTodo.completed) {
+            if (updateTodo.status !== 'COMPLETED') {
               value++
             } else {
               value--
@@ -96,15 +113,21 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
           <label>
             <input
               type='checkbox'
-              checked={todo.completed}
+              checked={todo.status === 'COMPLETED'}
               onChange={() => {
                 let mutation = updateCompletionStatus({
                   variables: {
-                    todo: { ...todo, completed: !todo.completed }
+                    todo: {
+                      ...todo,
+                      status: todo.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE'
+                    }
                   },
                   optimisticResponse: {
                     type: 'Mutation',
-                    updateTodo: { ...todo, completed: !todo.completed }
+                    updateTodo: {
+                      ...todo,
+                      status: todo.status === 'ACTIVE' ? 'COMPLETED' : 'ACTIVE'
+                    }
                   }
                 })
                 activateToast(mutation, 'Todo updated')
@@ -118,7 +141,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
             <div className='pr-4'>
               <span
                 className={`${
-                  todo.completed ? 'line-through' : ''
+                  todo.status === 'COMPLETED' ? 'line-through' : ''
                 } flex font-semibold text-gray-900 text-lg`}
               >
                 {todo.text}
@@ -181,7 +204,7 @@ const Rating = ({ priority }) => {
 
 const RemoveItem = (arr, item) => {
   let existingReference = { __ref: `Todo:${todo.id}` }
-  if (updateTodo && !updateTodo.completed) {
+  if (updateTodo && updateTodo.status !== 'COMPLETED') {
     return [existingReference, ...existing]
   } else {
     return existing.filter(ref => {

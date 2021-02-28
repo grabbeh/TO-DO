@@ -1,9 +1,20 @@
-import Link from 'next/link'
 import { useState } from 'react'
-import { Button, TodoListOptionsBox, AddTodoListModal } from './index'
+import { useQuery } from '@apollo/client'
+import {
+  Button,
+  TodoListOptionsBox,
+  AddTodoListModal,
+  AddTodoModal,
+  Loading
+} from './index'
+import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
+import { Plus } from './icons/index'
 import Modal from 'react-modal'
 
-const TodoLists = ({ todoLists, getTodos }) => {
+const TodoLists = ({ getTodos }) => {
+  const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
+  if (loading || !data) return <Loading />
+  if (error) return 'Error'
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -36,8 +47,8 @@ const TodoLists = ({ todoLists, getTodos }) => {
             Pinned
           </span>
         </div>
-        {todoLists.map(todoList => (
-          <TodoList key={todoList.id} todoList={todoList} />
+        {data.todoLists.map(todoList => (
+          <TodoList key={todoList.id} getTodos={getTodos} todoList={todoList} />
         ))}
       </ul>
       <div className='fixed bottom-2 mt-3 flex justify-end'>
@@ -56,35 +67,68 @@ const TodoLists = ({ todoLists, getTodos }) => {
   )
 }
 
-const TodoList = ({ todoList }) => (
-  <React.Fragment>
-    {!todoList.deleted && (
-      <div
-        className='cursor-pointer py-1 px-1 hover:bg-blue-600'
-        key={todoList.id}
-      >
-        <div className='flex'>
-          <div className='flex-grow'>
-            <div className='flex justify-between'>
-              <Link href={`/todos/${encodeURIComponent(todoList.id)}`}>
-                <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'>
+const TodoList = ({ todoList, getTodos }) => {
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const openModal = () => {
+    setModalIsOpen(true)
+  }
+
+  const closeModal = () => {
+    setModalIsOpen(false)
+  }
+  return (
+    <React.Fragment>
+      {!todoList.deleted && (
+        <div
+          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          key={todoList.id}
+        >
+          <div className='flex'>
+            <div className='flex-grow'>
+              <div className='flex justify-between'>
+                <span
+                  onClick={() => {
+                    getTodos({ variables: { todoListId: todoList.id } })
+                  }}
+                  className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'
+                >
                   {todoList.name}
                 </span>
-              </Link>
-              <div className='flex'>
-                <div className='px-2 text-md text-right font-semibold hover:text-white text-gray-300'>
-                  {todoList.activeTodosVolume}
-                </div>
-                <div>
-                  <TodoListOptionsBox todoList={todoList} />
+
+                <div className='flex'>
+                  <div
+                    className='cursor-pointer h-5 w-5 hover:text-white text-gray-300'
+                    onClick={openModal}
+                  >
+                    <Plus />
+                  </div>
+                  <Modal
+                    closeTimeoutMS={500}
+                    className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    contentLabel='Example Modal'
+                  >
+                    <AddTodoModal
+                      closeModal={closeModal}
+                      id={todoList.id}
+                      name={todoList.name}
+                    />
+                  </Modal>
+                  <div className='px-2 text-md text-right font-semibold hover:text-white text-gray-300'>
+                    {todoList.activeTodosVolume}
+                  </div>
+                  <div>
+                    <TodoListOptionsBox todoList={todoList} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    )}
-  </React.Fragment>
-)
+      )}
+    </React.Fragment>
+  )
+}
 
 export default TodoLists

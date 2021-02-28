@@ -6,6 +6,7 @@ export default gql`
       name
       id
       user
+      org
       deleted
       activeTodosVolume
       completedTodosVolume
