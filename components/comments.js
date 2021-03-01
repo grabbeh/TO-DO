@@ -12,7 +12,7 @@ const CommentInput = ({ todo, comments }) => (
     {comments.length > 0 && (
       <div className='p-2'>
         <Subheader>Comments</Subheader>
-        <ul className='divide-y'>
+        <ul className='divide-y-2'>
           {comments.map(comment => (
             <Comment comment={comment} key={comment.id} />
           ))}
