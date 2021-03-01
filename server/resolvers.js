@@ -199,18 +199,18 @@ const resolvers = {
       return todo
     },
     addComment: async (p, a, c) => {
-      let { comment } = a
-      let { id, todoId } = comment
-      delete comment['createdAt']
+      const { comment } = a
+      const { todoId } = comment
       const ksuid = await KSUID.random()
+      const id = ksuid.string
       await Comment.put({
         ...comment,
         id,
         sk: id,
         GSI2pk: `TODO#${todoId}#COMMENT`,
-        GSI2sk: ksuid.string
+        GSI2sk: id
       })
-      return { ...comment, createdAt: 'Just now' }
+      return { ...comment, createdAt: 'Just now', id }
     }
   },
   TodoList: {
