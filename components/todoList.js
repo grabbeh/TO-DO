@@ -19,30 +19,32 @@ const TodoList = ({
   getComments,
   fetchMore,
   loading
-}) => (
-  <div>
-    {title && <Subheader>{title}</Subheader>}
-    <ul className='rounded-lg divide-y-2 mb-3'>
-      {todos.map(todo => (
-        <Todo
-          key={todo.id}
-          getComments={getComments}
-          updateTodo={updateTodo}
-          todo={todo}
-          setActiveTodo={setActiveTodo}
-        />
-      ))}
-    </ul>
-    <div
-      className='bg-red-500 p-2 my-5 cursor-pointer text-center font-semibold'
-      onClick={() => {
-        fetchMore({ variables: { cursor: todos[todos.length - 1].id } })
-      }}
-    >
-      {loading ? <Loading /> : 'More'}
+}) => {
+  return (
+    <div>
+      {title && <Subheader>{title}</Subheader>}
+      <ul className='rounded-lg divide-y-2 mb-3'>
+        {todos.map(todo => (
+          <Todo
+            key={todo.id}
+            getComments={getComments}
+            updateTodo={updateTodo}
+            todo={todo}
+            setActiveTodo={setActiveTodo}
+          />
+        ))}
+      </ul>
+      <div
+        className='bg-white p-2 my-5 cursor-pointer text-center font-semibold'
+        onClick={() => {
+          fetchMore({ variables: { cursor: todos[todos.length - 1].id } })
+        }}
+      >
+        {loading ? <Loading /> : 'More'}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 const Todo = ({ todo, getComments, setActiveTodo }) => {
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
