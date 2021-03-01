@@ -36,9 +36,7 @@ const typeDefs = `
   input CommentInput {
     text: String
     user: String
-    id: ID!
     todoId: String
-    createdAt: String
   }
 
   type TodoList {
