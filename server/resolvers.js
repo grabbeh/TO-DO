@@ -203,14 +203,16 @@ const resolvers = {
       const { todoId } = comment
       const ksuid = await KSUID.random()
       const id = ksuid.string
+      const user = c.user.id
       await Comment.put({
         ...comment,
         id,
+        user,
         sk: id,
         GSI2pk: `TODO#${todoId}#COMMENT`,
         GSI2sk: id
       })
-      return { ...comment, createdAt: 'Just now', id }
+      return { ...comment, createdAt: 'Just now', id, user }
     }
   },
   TodoList: {
