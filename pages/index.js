@@ -11,6 +11,7 @@ import withApollo from '../lib/withApollo'
 const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [activeTodo, setActiveTodo] = useState()
+  const [showSideBar, setShowSideBar] = useState(false)
   const [
     getTodos,
     { loading: todosLoading, error: todosError, data: todosData, fetchMore }
@@ -26,8 +27,9 @@ const TodoPage = () => {
 
   return (
     <div className='flex w-full bg-pink-200 flex-wrap'>
-      <TodoLists getTodos={getTodos} />
+      <TodoLists showSideBar={showSideBar} getTodos={getTodos} />
       <div className='l-0 md:mx-8 mt-8 flex-grow'>
+        <div onClick={() => {setShowSideBar(!showSideBar)}}>Show</div>
         {todosLoading || !todosData ? (
           <Loading />
         ) : (
