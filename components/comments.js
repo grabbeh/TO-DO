@@ -8,7 +8,7 @@ import { User } from '../components/icons/index'
 import toast from 'react-hot-toast'
 
 const CommentInput = ({ todo, comments }) => (
-  <div className='bg-white ml-8 md:ml-0 fixed md:flex md:inline-block sticky md:h-screen h-full flex-none w-full md:w-80 top-0 '>
+  <div className='bg-white sticky md:h-screen h-full flex-none w-full md:w-80 top-0 '>
     {comments.length > 0 && (
       <div className='p-2'>
         <Subheader>Comments</Subheader>
@@ -76,7 +76,6 @@ const TextInput = ({ todoId }) => {
 
         let comment = {
           __typename: 'Comment',
-          user: 'MBG@OUTLOOK.COM',
           text,
           todoId
         }
