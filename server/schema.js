@@ -35,7 +35,6 @@ const typeDefs = `
 
   input CommentInput {
     text: String
-    user: String
     todoId: String
   }
 
