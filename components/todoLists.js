@@ -86,7 +86,7 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
   )
 }
 
-const TodoList = ({ todoList, getTodos }) => {
+const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
