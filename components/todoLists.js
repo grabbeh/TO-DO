@@ -11,7 +11,7 @@ import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
 import { Plus } from './icons/index'
 import Modal from 'react-modal'
 
-const TodoLists = ({ getTodos, showLists }) => {
+const TodoLists = ({ getTodos, showSideBar }) => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   if (error) return 'Error'
