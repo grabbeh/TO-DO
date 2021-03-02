@@ -11,7 +11,7 @@ import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
 import { Plus } from './icons/index'
 import Modal from 'react-modal'
 
-const TodoLists = ({ getTodos }) => {
+const TodoLists = ({ getTodos, showLists }) => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -24,7 +24,7 @@ const TodoLists = ({ getTodos }) => {
     setModalIsOpen(false)
   }
   return (
-    <div className='hidden md:inline-block px-2 md:sticky w-full md:w-56 flex-none h-full md:h-screen top-0 bg-blue-700'>
+    <div className={`${showSideBar ? 'inline-block : hidden} md:inline-block px-2 md:sticky w-full md:w-56 flex-none h-full md:h-screen top-0 bg-blue-700`}>
       <h1 className='text-white text-xl my-2 font-semibold'>Lists</h1>
       <ul className='mb-2'>
         <div
