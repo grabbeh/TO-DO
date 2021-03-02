@@ -7,11 +7,12 @@ import {
   AddTodoModal,
   Loading
 } from './index'
+import { Cross } from './icons/index'
 import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
 import { Plus } from './icons/index'
 import Modal from 'react-modal'
 
-const TodoLists = ({ getTodos, showSideBar }) => {
+const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -24,8 +25,21 @@ const TodoLists = ({ getTodos, showSideBar }) => {
     setModalIsOpen(false)
   }
   return (
-    <div className={`${showSideBar ? 'inline-block' : 'hidden'} md:inline-block px-2 md:sticky w-full md:w-56 flex-none h-full md:h-screen top-0 bg-blue-700`}>
-      <h1 className='text-white text-xl my-2 font-semibold'>Lists</h1>
+    <div
+      className={`${
+        showSideBar ? 'inline-block absolute' : 'hidden'
+      } md:inline-block mr-8 md:mr-0 px-2 md:sticky w-full md:w-56 flex-none h-full md:h-screen top-0 bg-blue-700`}
+    >
+      <div className='flex justify-between'>
+        <h1 className='text-white text-xl my-2 font-semibold'>Lists</h1>
+        <div
+          className='h-8 w-8 cursor-pointer hover:text-white text-gray-200 md:hidden'
+          onClick={() => setShowSideBar(false)}
+        >
+          <Cross />
+        </div>
+      </div>
+
       <ul className='mb-2'>
         <div
           className='cursor-pointer py-1 px-1 hover:bg-blue-600'
@@ -33,7 +47,7 @@ const TodoLists = ({ getTodos, showSideBar }) => {
             getTodos()
           }}
         >
-          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'>
+          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
             Oldest
           </span>
         </div>
@@ -43,7 +57,7 @@ const TodoLists = ({ getTodos, showSideBar }) => {
             getTodos({ variables: { pinned: true } })
           }}
         >
-          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'>
+          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
             Pinned
           </span>
         </div>
@@ -94,10 +108,9 @@ const TodoList = ({ todoList, getTodos }) => {
                 >
                   {todoList.name}
                 </span>
-
                 <div className='flex'>
                   <div
-                    className='cursor-pointer h-5 w-5 hover:text-white text-gray-300'
+                    className='cursor-pointer mt-1 h-5 w-5 hover:text-white text-gray-300'
                     onClick={openModal}
                   >
                     <Plus />

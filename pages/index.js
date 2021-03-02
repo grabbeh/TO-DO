@@ -1,6 +1,7 @@
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client'
+import { useMutation, useLazyQuery } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import { Loading, TodoLists, TodoList, Comments } from '../components/index'
+import { Menu } from '../components/icons/index'
 import {
   AllTodos as ALLTODOS_QUERY,
   UpdateTodo as UPDATE_TODO,
@@ -12,6 +13,8 @@ const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [activeTodo, setActiveTodo] = useState()
   const [showSideBar, setShowSideBar] = useState(false)
+  const [showComments, setShowComments] = useState(false)
+  console.log(showComments)
   const [
     getTodos,
     { loading: todosLoading, error: todosError, data: todosData, fetchMore }
@@ -27,13 +30,25 @@ const TodoPage = () => {
 
   return (
     <div className='flex w-full bg-pink-200 flex-wrap'>
-      <TodoLists showSideBar={showSideBar} getTodos={getTodos} />
-      <div className='l-0 md:mx-8 mt-8 flex-grow'>
-        <div onClick={() => {setShowSideBar(!showSideBar)}}>Show</div>
+      <TodoLists
+        setShowSideBar={setShowSideBar}
+        showSideBar={showSideBar}
+        getTodos={getTodos}
+      />
+      <div className='l-0 md:mx-8 flex-grow'>
+        <div
+          className='cursor-pointer h-6 w-6 inline-block md:hidden'
+          onClick={() => {
+            setShowSideBar(!showSideBar)
+          }}
+        >
+          <Menu />
+        </div>
         {todosLoading || !todosData ? (
           <Loading />
         ) : (
           <TodoList
+            setShowComments={setShowComments}
             fetchMore={fetchMore}
             loading={todosLoading}
             setActiveTodo={setActiveTodo}
@@ -44,7 +59,12 @@ const TodoPage = () => {
         )}
       </div>
       {commentsData && (
-        <Comments todo={activeTodo} comments={commentsData.todo.comments} />
+        <Comments
+          showComments={showComments}
+          setShowComments={setShowComments}
+          todo={activeTodo}
+          comments={commentsData.todo.comments}
+        />
       )}
     </div>
   )

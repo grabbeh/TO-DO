@@ -4,14 +4,29 @@ import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { Textarea, Button, Subheader, Card as MainCard } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
-import { User } from '../components/icons/index'
+import { User, Cross } from '../components/icons/index'
 import toast from 'react-hot-toast'
 
-const CommentInput = ({ todo, comments }) => (
-  <div className='bg-white sticky md:h-screen h-full flex-none w-full md:w-80 top-0 '>
+const CommentInput = ({ todo, comments, showComments, setShowComments }) => (
+  <div
+    className={`${
+      showComments ? 'inline-block absolute' : 'hidden'
+    }  bg-white md:sticky h-full flex-none w-full md:w-80 top-0`}
+  >
     {comments.length > 0 && (
       <div className='p-2'>
-        <Subheader>Comments</Subheader>
+        <div className='flex justify-between'>
+          <div>
+            <Subheader>{todo.text} </Subheader>
+            <div>Comments</div>
+          </div>
+          <div
+            className='h-8 w-8 cursor-pointer hover:text-black text-gray-500'
+            onClick={() => setShowComments(false)}
+          >
+            <Cross />
+          </div>
+        </div>
         <ul className='divide-y-2'>
           {comments.map(comment => (
             <Comment comment={comment} key={comment.id} />
@@ -100,7 +115,12 @@ const TextInput = ({ todoId }) => {
         const { values, errors, handleChange } = props
         return (
           <Form>
-            <Textarea onChange={handleChange} name='text' value={values.text} />
+            <Textarea
+              className='text-base'
+              onChange={handleChange}
+              name='text'
+              value={values.text}
+            />
             <div className='mt-1'>
               {
                 <div>
@@ -118,20 +138,20 @@ const TextInput = ({ todoId }) => {
   )
 }
 
-const Comment = ({comment}) =>  (
-    <li className='py-2' key={comment.id}>
-      <div className='justify-between flex'>
-        <div className='flex'>
-          <div className='mr-1 text-gray-500 h-3 w-3'>
-            <User />
-          </div>
-          <div className='text-gray-500 text-xs'>Michael Goulbourn</div>
+const Comment = ({ comment }) => (
+  <li className='py-2' key={comment.id}>
+    <div className='justify-between flex'>
+      <div className='flex'>
+        <div className='mr-1 text-gray-500 h-3 w-3'>
+          <User />
         </div>
-        <div className='text-xs text-gray-500'>{comment.createdAt}</div>
+        <div className='text-gray-500 text-xs'>Michael Goulbourn</div>
       </div>
+      <div className='text-xs text-gray-500'>{comment.createdAt}</div>
+    </div>
 
-      <div className='text-md'>{comment.text}</div>
-    </li>
-  )
+    <div className='text-md'>{comment.text}</div>
+  </li>
+)
 
 export default CommentInput

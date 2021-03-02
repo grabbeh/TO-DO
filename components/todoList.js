@@ -18,7 +18,8 @@ const TodoList = ({
   setActiveTodo,
   getComments,
   fetchMore,
-  loading
+  loading,
+  setShowComments
 }) => {
   return (
     <div>
@@ -26,6 +27,7 @@ const TodoList = ({
       <ul className='rounded-lg divide-y-2 mb-3'>
         {todos.map(todo => (
           <Todo
+            setShowComments={setShowComments}
             key={todo.id}
             getComments={getComments}
             updateTodo={updateTodo}
@@ -46,7 +48,7 @@ const TodoList = ({
   )
 }
 
-const Todo = ({ todo, getComments, setActiveTodo }) => {
+const Todo = ({ todo, setShowComments, getComments, setActiveTodo }) => {
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
@@ -173,6 +175,7 @@ const Todo = ({ todo, getComments, setActiveTodo }) => {
                     onClick={() => {
                       getComments({ variables: { id: todo.id } })
                       setActiveTodo(todo)
+                      setShowComments(true)
                     }}
                     className='flex hover:text-blue-800 text-blue-500'
                   >
