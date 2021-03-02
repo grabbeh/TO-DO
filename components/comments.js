@@ -119,9 +119,7 @@ const TextInput = ({ todoId }) => {
   )
 }
 
-const Comment = props => {
-  let { comment } = props
-  return (
+const Comment = ({comment}) =>  (
     <li className='py-2' key={comment.id}>
       <div className='justify-between flex'>
         <div className='flex'>
@@ -136,6 +134,5 @@ const Comment = props => {
       <div className='text-md'>{comment.text}</div>
     </li>
   )
-}
 
 export default CommentInput
