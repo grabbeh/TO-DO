@@ -29,7 +29,7 @@ const TodoPage = () => {
   }, [getTodos])
 
   return (
-    <div className='flex w-full bg-pink-200 flex-wrap'>
+    <div className='flex w-full bg-red-500 flex-wrap'>
       <TodoLists
         setShowSideBar={setShowSideBar}
         showSideBar={showSideBar}
