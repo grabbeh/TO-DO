@@ -62,7 +62,12 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
           </span>
         </div>
         {data.todoLists.map(todoList => (
-          <TodoList key={todoList.id} getTodos={getTodos} todoList={todoList} />
+          <TodoList
+            key={todoList.id}
+            setShowSideBar={setShowSideBar}
+            getTodos={getTodos}
+            todoList={todoList}
+          />
         ))}
       </ul>
       <div className='fixed bottom-2 mt-3 flex justify-end'>
@@ -103,6 +108,7 @@ const TodoList = ({ todoList, getTodos }) => {
                 <span
                   onClick={() => {
                     getTodos({ variables: { todoListId: todoList.id } })
+                    setShowSideBar(false)
                   }}
                   className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'
                 >
