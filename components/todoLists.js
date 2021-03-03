@@ -28,7 +28,7 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
     <div
       className={`${
         showSideBar ? 'inline-block absolute' : 'hidden'
-      } md:inline-block mr-8 md:mr-0 px-2 md:sticky w-full md:w-56 flex-none h-full md:h-screen top-0 bg-blue-700`}
+      } md:inline-block mr-8 md:mr-0 px-2 md:sticky w-full md:w-56  flex-none h-full md:h-screen  min-h-screen top-0 bg-blue-700`}
     >
       <div className='flex justify-between'>
         <h1 className='text-white text-xl my-2 font-semibold'>Lists</h1>
@@ -44,7 +44,8 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
         <div
           className='cursor-pointer py-1 px-1 hover:bg-blue-600'
           onClick={() => {
-            getTodos()
+            getTodos({ variables: { oldest: true } })
+            setShowSideBar(false)
           }}
         >
           <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
@@ -54,7 +55,19 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
         <div
           className='cursor-pointer py-1 px-1 hover:bg-blue-600'
           onClick={() => {
+            getTodos({ variables: { newest: true } })
+            setShowSideBar(false)
+          }}
+        >
+          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
+            Newest
+          </span>
+        </div>
+        <div
+          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          onClick={() => {
             getTodos({ variables: { pinned: true } })
+            setShowSideBar(false)
           }}
         >
           <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
@@ -71,7 +84,7 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
         ))}
       </ul>
       <div className='fixed bottom-2 mt-3 flex justify-end'>
-        <Button onClick={openModal}>Add</Button>
+        <Button onClick={openModal}>New todolist</Button>
         <Modal
           className='bg-white outline-none bottom-0 left-0 absolute rounded-t-lg border-2 px-2'
           isOpen={modalIsOpen}
@@ -110,7 +123,7 @@ const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
                     getTodos({ variables: { todoListId: todoList.id } })
                     setShowSideBar(false)
                   }}
-                  className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-300'
+                  className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'
                 >
                   {todoList.name}
                 </span>

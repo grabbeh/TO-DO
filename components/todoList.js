@@ -4,7 +4,8 @@ import {
   Subheader,
   TodoOptionsBox,
   PinTodo,
-  Loading
+  Loading,
+  Button
 } from './index'
 import Link from 'next/link'
 import { Comments, User } from './icons/index'
@@ -36,14 +37,14 @@ const TodoList = ({
           />
         ))}
       </ul>
-      <div
-        className='bg-white p-2 my-5 cursor-pointer text-center font-semibold'
+      <Button
+        className='mx-5 md:mx-0 bg-white p-2 my-5 cursor-pointer text-center font-semibold'
         onClick={() => {
           fetchMore({ variables: { cursor: todos[todos.length - 1].id } })
         }}
       >
         {loading ? <Loading /> : 'More'}
-      </div>
+      </Button>
     </div>
   )
 }

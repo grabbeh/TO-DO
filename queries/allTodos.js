@@ -2,6 +2,8 @@ import gql from 'graphql-tag'
 
 export default gql`
   query allTodos(
+    $oldest: Boolean
+    $newest: Boolean
     $olderThan: Int
     $earlierThan: Int
     $priority: String
@@ -11,6 +13,8 @@ export default gql`
     $cursor: String
   ) {
     allTodos(
+      oldest: $oldest
+      newest: $newest
       olderThan: $olderThan
       earlierThan: $earlierThan
       priority: $priority

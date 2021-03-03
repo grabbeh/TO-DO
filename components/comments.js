@@ -44,7 +44,6 @@ const CommentInput = ({ todo, comments, showComments, setShowComments }) => (
 const TextInput = ({ todoId }) => {
   const [addComment] = useMutation(ADD_COMMENT, {
     update (cache, { data: { addComment } }) {
-      console.log(addComment)
       cache.modify({
         id: cache.identify({
           id: todoId,

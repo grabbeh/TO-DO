@@ -28,7 +28,6 @@ const resolvers = {
         let pk = `ORG#${c.user.org}#TODOLIST#${a.todoListId}`
         let options = {
           index: 'GSI1',
-          reverse: true,
           beginsWith: 'ACTIVE#',
           limit: 2
         }
@@ -60,6 +59,14 @@ const resolvers = {
         }
 
         let options = baseOptions
+
+        if (a.newest) {
+          options = {
+            ...baseOptions,
+            reverse: true
+          }
+        }
+
         if (a.olderThan) {
           options = {
             ...baseOptions,

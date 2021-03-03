@@ -47,12 +47,8 @@ const PinTodo = ({ todo }) => {
       let d = data?.allTodos || []
       let copy = _.clone(d)
       let updated
-
       if (_.find(copy, { id: todo.id })) {
-        console.log('In array')
         updated = copy.filter(i => {
-          console.log(i.id)
-          console.log(todo.id)
           return i.id !== todo.id
         })
         client.writeQuery({
