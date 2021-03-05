@@ -3,7 +3,7 @@ import { Toaster } from 'react-hot-toast'
 const Container = ({ children }) => (
   <div className='pb-5 bg-yellow-200 h-full min-h-screen font:sans flex justify-center'>
     <Toaster
-      position='top-right'
+      position='top-center'
       toastOptions={{
         style: {
           background: '#363636',

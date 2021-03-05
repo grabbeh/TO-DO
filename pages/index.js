@@ -5,8 +5,6 @@ import {
   TodoLists,
   TodoList,
   Comments,
-  Button,
-  AddTodoModal,
   Subheader
 } from '../components/index'
 import { Menu } from '../components/icons/index'
@@ -16,7 +14,6 @@ import {
   TodoNotes as TODO_NOTES_QUERY
 } from '../queries/index'
 import withApollo from '../lib/withApollo'
-import Modal from 'react-modal'
 
 const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
@@ -24,14 +21,7 @@ const TodoPage = () => {
   const [activeTodoList, setActiveTodoList] = useState()
   const [showSideBar, setShowSideBar] = useState(false)
   const [showComments, setShowComments] = useState(false)
-  const [modalIsOpen, setModalIsOpen] = useState(false)
-  const openModal = () => {
-    setModalIsOpen(true)
-  }
 
-  const closeModal = () => {
-    setModalIsOpen(false)
-  }
   const [
     getTodos,
     { loading: todosLoading, error: todosError, data: todosData, fetchMore }
