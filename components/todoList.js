@@ -25,7 +25,7 @@ const TodoList = ({
   return (
     <div>
       {title && <Subheader>{title}</Subheader>}
-      <ul className='rounded-lg divide-y-2 mb-3'>
+      <ul className='border-t-2 border-b-2 divide-y-2 mb-3'>
         {todos.map(todo => (
           <Todo
             setShowComments={setShowComments}
@@ -37,14 +37,16 @@ const TodoList = ({
           />
         ))}
       </ul>
-      <Button
-        className='mx-5 md:mx-0 bg-white p-2 my-5 cursor-pointer text-center font-semibold'
-        onClick={() => {
-          fetchMore({ variables: { cursor: todos[todos.length - 1].id } })
-        }}
-      >
-        {loading ? <Loading /> : 'More'}
-      </Button>
+      <div className='mb-5 pl-3'>
+        <Button
+          className='mx-5 md:mx-0 bg-white p-2 my-5 cursor-pointer text-center font-semibold'
+          onClick={() => {
+            fetchMore({ variables: { cursor: todos[todos.length - 1].id } })
+          }}
+        >
+          {loading ? <Loading /> : 'More'}
+        </Button>
+      </div>
     </div>
   )
 }

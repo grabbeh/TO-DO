@@ -9,7 +9,7 @@ export default gql`
     $priority: String
     $status: String
     $pinned: Boolean
-    $todoListId: String
+    $id: String
     $cursor: String
   ) {
     allTodos(
@@ -20,7 +20,7 @@ export default gql`
       priority: $priority
       status: $status
       pinned: $pinned
-      todoListId: $todoListId
+      id: $id
       cursor: $cursor
     ) {
       id
@@ -34,6 +34,9 @@ export default gql`
       commentsCount
       todoListName
       pinned
+    }
+    todoList(id: $id) {
+      name
     }
   }
 `

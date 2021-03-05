@@ -24,8 +24,8 @@ const resolvers = {
   }),
   Query: {
     allTodos: async (p, a, c) => {
-      if (a.todoListId) {
-        let pk = `ORG#${c.user.org}#TODOLIST#${a.todoListId}`
+      if (a.id) {
+        let pk = `ORG#${c.user.org}#TODOLIST#${a.id}`
         let options = {
           index: 'GSI1',
           beginsWith: 'ACTIVE#',
@@ -37,7 +37,7 @@ const resolvers = {
             startKey: {
               pk: `ORG#${c.user.org}`,
               sk: `TODO#${c.user.id}#${a.cursor}`,
-              GSI1pk: `ORG#${c.user.org}#TODOLIST#${a.todoListId}`,
+              GSI1pk: `ORG#${c.user.org}#TODOLIST#${a.id}`,
               GSI1sk: `ACTIVE#${a.cursor}`
             }
           }
@@ -108,16 +108,20 @@ const resolvers = {
           }
         }
         let todos = await TodoTable.query(`ORG#${c.user.org}`, options)
+
         return todos.Items
       }
     },
     todoList: async (p, a, c) => {
-      // get queries are auto prefixed with stated prefix
-      let todoList = await TodoList.get({
-        pk: c.user.id,
-        sk: a.id
-      })
-      return todoList.Item
+      if (a.id) {
+        let todoList = await TodoList.get({
+          pk: c.user.org,
+          sk: a.id
+        })
+        return todoList.Item
+      } else {
+        return null
+      }
     },
     todoLists: async (p, a, c) => {
       let todoLists = await TodoList.query(`ORG#${c.user.org}`, {
@@ -223,33 +227,6 @@ const resolvers = {
     }
   },
   TodoList: {
-    activeTodos: async (todoList, a, c) => {
-      let pk = `ORG#${c.user.org}#TODOLIST#${todoList.id}`
-      let todos = await TodoTable.query(pk, {
-        index: 'GSI1',
-        reverse: true,
-        beginsWith: 'ACTIVE#'
-      })
-      return todos.Items
-    },
-    completedTodos: async (todoList, a, c) => {
-      let pk = `ORG#${c.user.org}#TODOLIST#${todoList.id}`
-      let todos = await TodoTable.query(pk, {
-        index: 'GSI1',
-        reverse: true,
-        beginsWith: 'COMPLETED#'
-      })
-      return todos.Items
-    },
-    deletedTodos: async (todoList, a, c) => {
-      let pk = `ORG@${c.user.org}#TODOLIST#${todoList.id}`
-      let todos = await TodoTable.query(pk, {
-        index: 'GSI1',
-        reverse: true,
-        beginsWith: 'DELETED#'
-      })
-      return todos.Items
-    },
     activeTodosVolume: async (todoList, a, c) => {
       let pk = `ORG#${c.user.org}#TODOLIST#${todoList.id}`
       let todos = await TodoTable.query(pk, {

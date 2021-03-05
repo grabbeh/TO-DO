@@ -21,6 +21,7 @@ import Modal from 'react-modal'
 const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [activeTodo, setActiveTodo] = useState()
+  const [activeTodoList, setActiveTodoList] = useState()
   const [showSideBar, setShowSideBar] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -42,16 +43,18 @@ const TodoPage = () => {
   ] = useLazyQuery(TODO_NOTES_QUERY)
   useEffect(() => {
     getTodos()
+    setActiveTodoList('Oldest')
   }, [getTodos])
 
   return (
-    <div className='flex w-full bg-pink-200 flex-wrap'>
+    <div className='flex w-full  flex-wrap'>
       <TodoLists
         setShowSideBar={setShowSideBar}
+        setActiveTodoList={setActiveTodoList}
         showSideBar={showSideBar}
         getTodos={getTodos}
       />
-      <div className='l-0 md:mx-8 h-full min-h-screen flex-grow'>
+      <div className='l-0 h-full min-h-screen flex-grow'>
         <div
           className='cursor-pointer h-6 w-6 inline-block md:hidden'
           onClick={() => {
@@ -64,27 +67,11 @@ const TodoPage = () => {
           <Loading />
         ) : (
           <div>
-            <div className='my-3 flex justify-between'>
-              <Subheader>{todosData.allTodos[0].todoListName}</Subheader>
-              <Button
-                className='cursor-pointer mt-1 h-5 w-5 hover:text-white text-gray-300'
-                onClick={openModal}
-              >
-                Add todo
-              </Button>
-              <Modal
-                closeTimeoutMS={500}
-                className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                contentLabel='Example Modal'
-              >
-                <AddTodoModal
-                  closeModal={closeModal}
-                  id={todosData.allTodos[0].todoListId}
-                  name={todosData.allTodos[0].todoListName}
-                />
-              </Modal>
+            <div className='px-3 flex justify-between'>
+              <Subheader>
+                {(todosData?.todoList?.name && todosData.todoList.name) ||
+                  activeTodoList}
+              </Subheader>
             </div>
             <TodoList
               setShowComments={setShowComments}

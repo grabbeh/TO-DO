@@ -12,7 +12,12 @@ import { TodoLists as TODO_LISTS_QUERY } from '../queries/index'
 import { Plus } from './icons/index'
 import Modal from 'react-modal'
 
-const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
+const TodoLists = ({
+  getTodos,
+  setActiveTodoList,
+  showSideBar,
+  setShowSideBar
+}) => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -28,10 +33,10 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
     <div
       className={`${
         showSideBar ? 'inline-block absolute' : 'hidden'
-      } md:inline-block mr-8 md:mr-0 px-2 md:sticky w-full md:w-56  flex-none h-full md:h-screen  min-h-screen top-0 bg-blue-700`}
+      } md:inline-block mr-8 md:mr-0 md:sticky w-full md:w-56 flex-none h-full md:h-screen min-h-screen top-0 bg-purple-900`}
     >
-      <div className='flex justify-between'>
-        <h1 className='text-white text-xl my-2 font-semibold'>Lists</h1>
+      <div className='px-2 border-b-2 flex justify-between'>
+        <h1 className='text-white text-xl my-2'>Lists</h1>
         <div
           className='h-8 w-8 cursor-pointer hover:text-white text-gray-200 md:hidden'
           onClick={() => setShowSideBar(false)}
@@ -40,37 +45,40 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
         </div>
       </div>
 
-      <ul className='mb-2'>
+      <ul className='px-2 mb-2'>
         <div
-          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          className='cursor-pointer py-1 px-1 hover:bg-purple-800'
           onClick={() => {
             getTodos({ variables: { oldest: true } })
             setShowSideBar(false)
+            setActiveTodoList('Oldest')
           }}
         >
-          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
+          <span className='cursor-pointer flex text-md hover:text-white text-gray-200'>
             Oldest
           </span>
         </div>
         <div
-          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          className='cursor-pointer py-1 px-1 hover:bg-purple-800'
           onClick={() => {
             getTodos({ variables: { newest: true } })
             setShowSideBar(false)
+            setActiveTodoList('Newest')
           }}
         >
-          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
+          <span className='cursor-pointer flex text-md hover:text-white text-gray-200'>
             Newest
           </span>
         </div>
         <div
-          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          className='cursor-pointer py-1 px-1 hover:bg-purple-800'
           onClick={() => {
             getTodos({ variables: { pinned: true } })
             setShowSideBar(false)
+            setActiveTodoList('Pinned')
           }}
         >
-          <span className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'>
+          <span className='cursor-pointer flex  text-md hover:text-white text-gray-200'>
             Pinned
           </span>
         </div>
@@ -83,7 +91,7 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
           />
         ))}
       </ul>
-      <div className='fixed bottom-2 mt-3 flex justify-end'>
+      <div className='left-3 fixed bottom-2 mt-3 flex justify-end'>
         <Button onClick={openModal}>New todolist</Button>
         <Modal
           className='bg-white outline-none bottom-0 left-0 absolute rounded-t-lg border-2 px-2'
@@ -112,7 +120,7 @@ const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
     <React.Fragment>
       {!todoList.deleted && (
         <div
-          className='cursor-pointer py-1 px-1 hover:bg-blue-600'
+          className='cursor-pointer py-1 px-1 hover:bg-purple-800'
           key={todoList.id}
         >
           <div className='flex'>
@@ -120,10 +128,10 @@ const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
               <div className='flex justify-between'>
                 <span
                   onClick={() => {
-                    getTodos({ variables: { todoListId: todoList.id } })
+                    getTodos({ variables: { id: todoList.id } })
                     setShowSideBar(false)
                   }}
-                  className='cursor-pointer flex font-semibold text-md hover:text-white text-gray-200'
+                  className='cursor-pointer flex  text-md hover:text-white text-gray-200'
                 >
                   {todoList.name}
                 </span>
@@ -147,7 +155,7 @@ const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
                       name={todoList.name}
                     />
                   </Modal>
-                  <div className='px-2 text-md text-right font-semibold hover:text-white text-gray-300'>
+                  <div className='px-2 text-md text-right  hover:text-white text-gray-300'>
                     {todoList.activeTodosVolume}
                   </div>
                   <div>

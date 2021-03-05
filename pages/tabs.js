@@ -44,7 +44,7 @@ const TodoPage = ({ todoList, id }) => {
   const closeModal = () => {
     setIsOpen(false)
   }
-  console.log(loading)
+
   let {
     name,
     activeTodos,
