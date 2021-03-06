@@ -43,6 +43,7 @@ const TodoPage = () => {
         setActiveTodoList={setActiveTodoList}
         showSideBar={showSideBar}
         getTodos={getTodos}
+        activeTodoList={activeTodoList}
       />
       <div className='l-0 h-full min-h-screen flex-grow'>
         <div
@@ -58,10 +59,7 @@ const TodoPage = () => {
         ) : (
           <div>
             <div className='px-3 flex justify-between'>
-              <Subheader>
-                {(todosData?.todoList?.name && todosData.todoList.name) ||
-                  activeTodoList}
-              </Subheader>
+              <Subheader>{activeTodoList}</Subheader>
             </div>
             <TodoList
               setShowComments={setShowComments}

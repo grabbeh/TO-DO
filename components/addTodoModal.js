@@ -19,8 +19,6 @@ const AddTodoModal = ({ id, name, closeModal }) => (
 const TextInput = ({ parentId, closeModal }) => {
   const [addTodo] = useMutation(ADD_TODO, {
     update (cache, { data: { addTodo } }) {
-      console.log(addTodo)
-      console.log(cache)
       cache.modify({
         //id: cache.identify({ id: parentId, __typename: 'TodoList' }),
         fields: {

@@ -15,6 +15,7 @@ import Modal from 'react-modal'
 const TodoLists = ({
   getTodos,
   setActiveTodoList,
+  activeTodoList,
   showSideBar,
   setShowSideBar
 }) => {
@@ -54,7 +55,10 @@ const TodoLists = ({
             setActiveTodoList('Oldest')
           }}
         >
-          <span className='cursor-pointer flex text-md hover:text-white text-gray-200'>
+          <span
+            className={`${activeTodoList === 'Oldest' &&
+              'font-bold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
+          >
             Oldest
           </span>
         </div>
@@ -66,7 +70,10 @@ const TodoLists = ({
             setActiveTodoList('Newest')
           }}
         >
-          <span className='cursor-pointer flex text-md hover:text-white text-gray-200'>
+          <span
+            className={`${activeTodoList === 'Newest' &&
+              'font-bold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
+          >
             Newest
           </span>
         </div>
@@ -78,12 +85,17 @@ const TodoLists = ({
             setActiveTodoList('Pinned')
           }}
         >
-          <span className='cursor-pointer flex  text-md hover:text-white text-gray-200'>
+          <span
+            className={`${activeTodoList === 'Pinned' &&
+              'font-bold'} cursor-pointer flex  text-md hover:text-white text-gray-200`}
+          >
             Pinned
           </span>
         </div>
         {data.todoLists.map(todoList => (
           <TodoList
+            activeTodoList={activeTodoList}
+            setActiveTodoList={setActiveTodoList}
             key={todoList.id}
             setShowSideBar={setShowSideBar}
             getTodos={getTodos}
@@ -107,7 +119,13 @@ const TodoLists = ({
   )
 }
 
-const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
+const TodoList = ({
+  todoList,
+  setActiveTodoList,
+  activeTodoList,
+  setShowSideBar,
+  getTodos
+}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -130,8 +148,10 @@ const TodoList = ({ todoList, setShowSideBar, getTodos }) => {
                   onClick={() => {
                     getTodos({ variables: { id: todoList.id } })
                     setShowSideBar(false)
+                    setActiveTodoList(todoList.name)
                   }}
-                  className='cursor-pointer flex  text-md hover:text-white text-gray-200'
+                  className={`${activeTodoList === todoList.name && 'font-bold'}
+                  cursor-pointer flex text-md hover:text-white text-gray-200`}
                 >
                   {todoList.name}
                 </span>
