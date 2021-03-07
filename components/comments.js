@@ -11,7 +11,7 @@ const CommentInput = ({ todo, comments, showComments, setShowComments }) => (
   <div
     className={`${
       showComments ? 'inline-block absolute' : 'hidden'
-    }  bg-white border-l-2 md:sticky h-screen flex-none w-full md:w-80 top-0`}
+    }  bg-white border-l-2 md:sticky h-screen flex-none w-full  top-0`}
   >
     <div className='flex justify-between'>
       <div className='pl-2'>

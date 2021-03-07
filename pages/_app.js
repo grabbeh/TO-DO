@@ -1,4 +1,5 @@
 import 'tailwindcss/tailwind.css'
+import 'react-reflex/styles.css'
 import '../index.css'
 import Modal from 'react-modal'
 

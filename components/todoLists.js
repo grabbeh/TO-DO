@@ -34,7 +34,7 @@ const TodoLists = ({
     <div
       className={`${
         showSideBar ? 'inline-block absolute' : 'hidden'
-      } md:inline-block mr-8 md:mr-0 md:sticky w-full md:w-56 flex-none h-full md:h-screen min-h-screen top-0 bg-purple-900`}
+      } md:inline-block mr-8 md:mr-0 md:sticky w-full flex-none h-full md:h-full min-h-screen top-0 bg-purple-900`}
     >
       <div className='px-2 border-b-2 flex justify-between'>
         <h1 className='text-white text-xl my-2'>Lists</h1>
@@ -141,47 +141,43 @@ const TodoList = ({
           className='cursor-pointer py-1 px-1 hover:bg-purple-800'
           key={todoList.id}
         >
-          <div className='flex'>
-            <div className='flex-grow'>
-              <div className='flex justify-between'>
-                <span
-                  onClick={() => {
-                    getTodos({ variables: { id: todoList.id } })
-                    setShowSideBar(false)
-                    setActiveTodoList(todoList.name)
-                  }}
-                  className={`${activeTodoList === todoList.name && 'font-bold'}
-                  cursor-pointer flex text-md hover:text-white text-gray-200`}
-                >
-                  {todoList.name}
-                </span>
-                <div className='flex'>
-                  <div
-                    className='cursor-pointer mt-1 h-5 w-5 hover:text-white text-gray-300'
-                    onClick={openModal}
-                  >
-                    <Plus />
-                  </div>
-                  <Modal
-                    closeTimeoutMS={500}
-                    className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    contentLabel='Example Modal'
-                  >
-                    <AddTodoModal
-                      closeModal={closeModal}
-                      id={todoList.id}
-                      name={todoList.name}
-                    />
-                  </Modal>
-                  <div className='px-2 text-md text-right  hover:text-white text-gray-300'>
-                    {todoList.activeTodosVolume}
-                  </div>
-                  <div>
-                    <TodoListOptionsBox todoList={todoList} />
-                  </div>
-                </div>
+          <div className='flex justify-between'>
+            <span
+              onClick={() => {
+                getTodos({ variables: { id: todoList.id } })
+                setShowSideBar(false)
+                setActiveTodoList(todoList.name)
+              }}
+              className={`${activeTodoList === todoList.name && 'font-bold'}
+                  cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md hover:text-white text-gray-200`}
+            >
+              {todoList.name}
+            </span>
+            <div className='flex'>
+              <div
+                className='cursor-pointer mt-1 h-5 w-5 hover:text-white text-gray-300'
+                onClick={openModal}
+              >
+                <Plus />
+              </div>
+              <Modal
+                closeTimeoutMS={500}
+                className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                contentLabel='Example Modal'
+              >
+                <AddTodoModal
+                  closeModal={closeModal}
+                  id={todoList.id}
+                  name={todoList.name}
+                />
+              </Modal>
+              <div className='px-2 text-md text-right  hover:text-white text-gray-300'>
+                {todoList.activeTodosVolume}
+              </div>
+              <div>
+                <TodoListOptionsBox todoList={todoList} />
               </div>
             </div>
           </div>

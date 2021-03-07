@@ -70,8 +70,7 @@ const TextInput = ({ closeModal }) => {
               user: '',
               org: '',
               deleted: false,
-              activeTodosVolume: 0,
-              completedTodosVolume: 0
+              activeTodosVolume: 0
             }
           }
         })

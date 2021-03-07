@@ -1,7 +1,7 @@
 {
-  "name": "attest",
+  "name": "todo",
   "version": "0.0.1",
-  "description": "Contract management",
+  "description": "Over-engineered to-do app",
   "main": "index.js",
   "dependencies": {
     "@apollo/client": "^3.3.4",
@@ -36,6 +36,8 @@
     "react-icons": "^3.11.0",
     "react-modal": "^3.11.2",
     "react-no-ssr": "^1.1.0",
+    "react-reflex": "^4.0.0",
+    "react-split-pane": "^2.0.3",
     "react-svg-spinner": "^1.0.4",
     "recompose": "^0.30.0",
     "tailwindcss": "^2.0.1",

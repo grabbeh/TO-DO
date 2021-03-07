@@ -151,11 +151,11 @@ const resolvers = {
       })
       return {
         ...todoList,
+        deleted: false,
         id,
         user: c.user.id,
         org: c.user.org,
-        activeTodosVolume: 0,
-        completedTodosVolume: 0
+        activeTodosVolume: 0
       }
     },
     updateTodoList: async (p, a, c) => {
