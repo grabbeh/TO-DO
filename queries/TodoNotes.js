@@ -6,6 +6,7 @@ export default gql`
       commentsCount
       text
       id
+      todoListName
       comments {
         text
         id

@@ -108,7 +108,6 @@ const resolvers = {
           }
         }
         let todos = await TodoTable.query(`ORG#${c.user.org}`, options)
-
         return todos.Items
       }
     },
@@ -137,20 +136,22 @@ const resolvers = {
   },
   Mutation: {
     addTodoList: async (p, a, c) => {
-      let { todoList } = a
+      let {
+        todoList: { name }
+      } = a
       const ksuid = await KSUID.random()
       const id = ksuid.string
       await TodoList.put({
-        ...todoList,
+        name,
         org: c.user.org,
-        user: c.user.id,
         id,
+        user: c.user.id,
         deleted: false,
         GSI1pk: `ORG#${c.user.org}#TODOLIST#${id}`,
         GSI1sk: id
       })
       return {
-        ...todoList,
+        name,
         deleted: false,
         id,
         user: c.user.id,

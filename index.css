@@ -1,3 +1,4 @@
+/*
 .ReactModal__Content {
   opacity: 0;
   transform: translateY(300px);
@@ -12,7 +13,7 @@
 .ReactModal__Content--before-close {
   opacity: 0;
   transform: translateY(300px);
-}
+}*/
 
 .Resizer {
   background: #000;

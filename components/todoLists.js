@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@apollo/client'
+import { useRouter } from 'next/router'
 import {
   Button,
   TodoListOptionsBox,
@@ -36,7 +37,7 @@ const TodoLists = ({
         showSideBar ? 'inline-block absolute' : 'hidden'
       } md:inline-block mr-8 md:mr-0 md:sticky w-full flex-none h-full md:h-full min-h-screen top-0 bg-purple-900`}
     >
-      <div className='px-2 border-b-2 flex justify-between'>
+      <div className='px-2 border-b flex justify-between'>
         <h1 className='text-white text-xl my-2'>Lists</h1>
         <div
           className='h-8 w-8 cursor-pointer hover:text-white text-gray-200 md:hidden'
@@ -45,7 +46,6 @@ const TodoLists = ({
           <Cross />
         </div>
       </div>
-
       <ul className='px-2 mb-2'>
         <div
           className='cursor-pointer py-1 px-1 hover:bg-purple-800'
@@ -126,6 +126,7 @@ const TodoList = ({
   setShowSideBar,
   getTodos
 }) => {
+  const router = useRouter()
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -147,11 +148,14 @@ const TodoList = ({
                 getTodos({ variables: { id: todoList.id } })
                 setShowSideBar(false)
                 setActiveTodoList(todoList.name)
+                router.push(`/todos/${todoList.id}`, undefined, {
+                  shallow: true
+                })
               }}
               className={`${activeTodoList === todoList.name && 'font-bold'}
                   cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md hover:text-white text-gray-200`}
             >
-              {todoList.name}
+              # {todoList.name}
             </span>
             <div className='flex'>
               <div

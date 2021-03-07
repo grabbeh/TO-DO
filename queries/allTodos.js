@@ -35,5 +35,8 @@ export default gql`
       todoListName
       pinned
     }
+    todoList(id: $id) {
+      name
+    }
   }
 `

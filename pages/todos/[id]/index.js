@@ -8,19 +8,23 @@ import {
   TodoList,
   Comments,
   Subheader
-} from '../components/index'
-import { Menu } from '../components/icons/index'
+} from '../../../components/index'
+import { Menu } from '../../../components/icons/index'
 import {
   AllTodos as ALLTODOS_QUERY,
   UpdateTodo as UPDATE_TODO,
   TodoNotes as TODO_NOTES_QUERY
-} from '../queries/index'
-import withApollo from '../lib/withApollo'
+} from '../../../queries/index'
+import withApollo from '../../../lib/withApollo'
+import { useRouter } from 'next/router'
 
 const TodoPage = () => {
+  const router = useRouter()
+  const { id } = router.query
+
   const [updateTodo] = useMutation(UPDATE_TODO)
   const [activeTodo, setActiveTodo] = useState()
-  const [activeTodoList, setActiveTodoList] = useState('Oldest')
+  const [activeTodoList, setActiveTodoList] = useState()
   const [showSideBar, setShowSideBar] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [
@@ -33,8 +37,14 @@ const TodoPage = () => {
     { loading: commentsLoading, error: commentsError, data: commentsData }
   ] = useLazyQuery(TODO_NOTES_QUERY)
   useEffect(() => {
-    getTodos()
-  }, [getTodos])
+    getTodos({ variables: { id } })
+  }, [getTodos, id])
+
+  useEffect(() => {
+    if (todosData) {
+      setActiveTodoList(todosData.todoList.name)
+    }
+  }, [todosData])
 
   return (
     <SplitPane split='vertical'>

@@ -5,10 +5,10 @@ export default gql`
     todoLists {
       id
       name
+      org
       user
       deleted
       activeTodosVolume
-      completedTodosVolume
     }
   }
 `

@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { Comments, User } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
 import activateToast from '../utils/toast'
+import { useRouter } from 'next/router'
 
 const TodoList = ({
   todos,
@@ -52,6 +53,7 @@ const TodoList = ({
 }
 
 const Todo = ({ todo, setShowComments, getComments, setActiveTodo }) => {
+  const router = useRouter()
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
@@ -179,6 +181,13 @@ const Todo = ({ todo, setShowComments, getComments, setActiveTodo }) => {
                       getComments({ variables: { id: todo.id } })
                       setActiveTodo(todo)
                       setShowComments(true)
+                      router.push(
+                        `/todos/${todo.todoListId}/comments/${todo.id}`,
+                        undefined,
+                        {
+                          shallow: true
+                        }
+                      )
                     }}
                     className='flex hover:text-blue-800 text-blue-500'
                   >

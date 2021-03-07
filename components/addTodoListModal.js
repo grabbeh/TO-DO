@@ -4,7 +4,6 @@ import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { TodolistForm, Back, Card, Subheader } from '../components/index'
 import { AddTodoList as ADD_TODOLIST } from '../queries/index'
-import activateToast from '../utils/toast'
 
 const AddTodoListModal = ({ closeModal }) => (
   <div>
@@ -28,8 +27,10 @@ const TextInput = ({ closeModal }) => {
                 fragment NewTodoList on TodoList {
                   id
                   name
+                  org
                   deleted
                   user
+                  activeTodosVolume
                 }
               `
             })
@@ -50,15 +51,16 @@ const TextInput = ({ closeModal }) => {
         name: string().required('Please provide name')
       })}
       onSubmit={(values, { setErrors, resetForm }) => {
+        console.log(values)
         setErrors({
           name: false
         })
         let { name } = values
         let todoList = {
-          __typename: 'Todolist',
+          __typename: 'TodoList',
           name
         }
-        let mutation = addTodoList({
+        addTodoList({
           variables: {
             todoList
           },
@@ -74,7 +76,6 @@ const TextInput = ({ closeModal }) => {
             }
           }
         })
-        activateToast(mutation, 'Todo list added')
         resetForm()
         closeModal()
       }}

@@ -1,26 +1,33 @@
 import { Form } from 'formik'
 import { Input, Button } from '../components/index'
 
-const TodolistForm = ({ handleChange, values, errors }) => (
-  <Form>
-    <Input
-      style={{ boxSizing: 'border-box' }}
-      onChange={handleChange}
-      name='name'
-      label='Name'
-      value={values.name}
-    />
-    <div className='mt-3 flex justify-end'>
-      <Button>Go</Button>
-    </div>
-    <div className='mt-1'>
-      {
-        <div>
-          <div>{errors.name || errors.serverError}</div>
-        </div>
-      }
-    </div>
-  </Form>
-)
+const TodolistForm = ({ setFieldValue, handleChange, values, errors }) => {
+  console.log(values)
+  return (
+    <Form>
+      <Input
+        style={{ boxSizing: 'border-box' }}
+        onChange={e => {
+          console.log(e.target.value)
+          let val = e.target.value.replace(/\W+/g, '-').toLowerCase()
+          setFieldValue('name', val)
+        }}
+        name='name'
+        label='Name'
+        value={values.name}
+      />
+      <div className='mt-3 flex justify-end'>
+        <Button>Go</Button>
+      </div>
+      <div className='mt-1'>
+        {
+          <div>
+            <div>{errors.name || errors.serverError}</div>
+          </div>
+        }
+      </div>
+    </Form>
+  )
+}
 
 export default TodolistForm

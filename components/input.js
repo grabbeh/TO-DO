@@ -1,16 +1,7 @@
-import { Field } from 'formik'
+import slugify from 'slugify'
 
 const Input = props => {
-  const {
-    label,
-    type,
-    placeholder,
-    name,
-    onChange,
-    value,
-    completed,
-    textSize
-  } = props
+  const { label, type, placeholder, name, onChange, value } = props
 
   return (
     <div className='my-3'>

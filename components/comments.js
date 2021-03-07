@@ -7,40 +7,41 @@ import { AddComment as ADD_COMMENT } from '../queries/index'
 import { User, Cross } from '../components/icons/index'
 import toast from 'react-hot-toast'
 
-const CommentInput = ({ todo, comments, showComments, setShowComments }) => (
-  <div
-    className={`${
-      showComments ? 'inline-block absolute' : 'hidden'
-    }  bg-white border-l-2 md:sticky h-screen flex-none w-full  top-0`}
-  >
-    <div className='flex justify-between'>
-      <div className='pl-2'>
-        <div className='text-sm text-gray-500'>{todo.todoListName}</div>
-        <Subheader>{todo.text} </Subheader>
+const CommentInput = ({ todo, comments, showComments, setShowComments }) => {
+  return (
+    <div
+      className={`${
+        showComments ? 'inline-block absolute' : 'hidden'
+      }  bg-white border-l-2 md:sticky h-screen flex-none w-full top-0`}
+    >
+      <div className='flex justify-between'>
+        <div className='pl-2'>
+          <div className='text-sm text-gray-500'>{todo.todoListName}</div>
+          <Subheader>{todo.text} </Subheader>
+        </div>
+        <div
+          className='h-8 w-8 cursor-pointer hover:text-black text-gray-500'
+          onClick={() => setShowComments(false)}
+        >
+          <Cross />
+        </div>
       </div>
-      <div
-        className='h-8 w-8 cursor-pointer hover:text-black text-gray-500'
-        onClick={() => setShowComments(false)}
-      >
-        <Cross />
-      </div>
+      {comments.length > 0 && (
+        <div className='p-2'>
+          <div>Comments</div>
+          <ul className='divide-y-2'>
+            {comments.map(comment => (
+              <Comment comment={comment} key={comment.id} />
+            ))}
+          </ul>
+        </div>
+      )}
+      <MainCard>
+        <TextInput todoId={todo.id} />
+      </MainCard>
     </div>
-    {comments.length > 0 && (
-      <div className='p-2'>
-        <div>Comments</div>
-        <ul className='divide-y-2'>
-          {comments.map(comment => (
-            <Comment comment={comment} key={comment.id} />
-          ))}
-        </ul>
-      </div>
-    )}
-    <MainCard>
-      <Subheader>Add comment</Subheader>
-      <TextInput todoId={todo.id} />
-    </MainCard>
-  </div>
-)
+  )
+}
 
 const TextInput = ({ todoId }) => {
   const [addComment] = useMutation(ADD_COMMENT, {
