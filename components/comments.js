@@ -6,8 +6,11 @@ import { Textarea, Button, Subheader, Card as MainCard } from './index'
 import { AddComment as ADD_COMMENT } from '../queries/index'
 import { User, Cross } from '../components/icons/index'
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
 const CommentInput = ({ todo, comments, showComments, setShowComments }) => {
+  const router = useRouter()
+  const { id } = router.query
   return (
     <div
       className={`${
@@ -21,7 +24,12 @@ const CommentInput = ({ todo, comments, showComments, setShowComments }) => {
         </div>
         <div
           className='h-8 w-8 cursor-pointer hover:text-black text-gray-500'
-          onClick={() => setShowComments(false)}
+          onClick={() => {
+            setShowComments(false)
+            router.push(`/todos/${id}`, undefined, {
+              shallow: true
+            })
+          }}
         >
           <Cross />
         </div>

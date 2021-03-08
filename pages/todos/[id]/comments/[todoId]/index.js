@@ -56,62 +56,64 @@ const TodoPage = () => {
   }, [commentsData])
 
   return (
-    <SplitPane split='vertical'>
-      <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-        <TodoLists
-          setShowSideBar={setShowSideBar}
-          setActiveTodoList={setActiveTodoList}
-          showSideBar={showSideBar}
-          getTodos={getTodos}
-          activeTodoList={activeTodoList}
-        />
-      </Pane>
-      <Pane maxWidth='85%' minSize='25%'>
-        <div className='min-h-screen'>
-          <div
-            className='cursor-pointer h-6 w-6 inline-block md:hidden'
-            onClick={() => {
-              setShowSideBar(!showSideBar)
-            }}
-          >
-            <Menu />
-          </div>
-          {todosLoading || !todosData ? (
-            <Loading />
-          ) : (
-            <div>
-              <div className='px-3 my-2'>
-                <Subheader>{activeTodoList}</Subheader>
-              </div>
-              <TodoList
-                setShowComments={setShowComments}
-                fetchMore={fetchMore}
-                loading={todosLoading}
-                setActiveTodo={setActiveTodo}
-                getComments={getComments}
-                updateTodo={updateTodo}
-                todos={todosData.allTodos}
-              />
-            </div>
-          )}
-        </div>
-      </Pane>
-      {commentsLoading && (
-        <div className='w-1/4'>
-          <Loading />
-        </div>
-      )}
-      {commentsData && (
-        <Pane initialSize='25%'>
-          <Comments
-            showComments={showComments}
-            setShowComments={setShowComments}
-            todo={commentsData.todo}
-            comments={commentsData.todo.comments}
+    <div>
+      <SplitPane split='vertical'>
+        <Pane maxSize='35%' initialSize='20%' minSize='15%'>
+          <TodoLists
+            setShowSideBar={setShowSideBar}
+            setActiveTodoList={setActiveTodoList}
+            showSideBar={showSideBar}
+            getTodos={getTodos}
+            activeTodoList={activeTodoList}
           />
         </Pane>
-      )}
-    </SplitPane>
+        <Pane maxWidth='85%' minSize='25%'>
+          <div className='min-h-screen'>
+            <div
+              className='cursor-pointer h-6 w-6 inline-block md:hidden'
+              onClick={() => {
+                setShowSideBar(!showSideBar)
+              }}
+            >
+              <Menu />
+            </div>
+            {todosLoading || !todosData ? (
+              <Loading />
+            ) : (
+              <div>
+                <div className='px-3 my-2'>
+                  <Subheader>{activeTodoList}</Subheader>
+                </div>
+                <TodoList
+                  setShowComments={setShowComments}
+                  fetchMore={fetchMore}
+                  loading={todosLoading}
+                  setActiveTodo={setActiveTodo}
+                  getComments={getComments}
+                  updateTodo={updateTodo}
+                  todos={todosData.allTodos}
+                />
+              </div>
+            )}
+          </div>
+        </Pane>
+        {commentsLoading && (
+          <div className='w-1/4'>
+            <Loading />
+          </div>
+        )}
+        {commentsData && (
+          <Pane initialSize='25%'>
+            <Comments
+              showComments={showComments}
+              setShowComments={setShowComments}
+              todo={commentsData.todo}
+              comments={commentsData.todo.comments}
+            />
+          </Pane>
+        )}
+      </SplitPane>
+    </div>
   )
 }
 
