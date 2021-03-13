@@ -10,7 +10,7 @@ module.exports = {
     extend: {}
   },
   variants: {
-    extend: {}
+    scrollbar: ['rounded']
   },
-  plugins: [require('@tailwindcss/custom-forms')]
+  plugins: [require('@tailwindcss/custom-forms'), require('tailwind-scrollbar')]
 }

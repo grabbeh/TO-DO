@@ -15,12 +15,10 @@ import {
   UpdateTodo as UPDATE_TODO,
   TodoNotes as TODO_NOTES_QUERY
 } from '../queries/index'
-import withApollo from '../lib/withApollo'
+import withApollo, { activeCategoryVar } from '../lib/withApollo'
 
 const TodoPage = () => {
   const [updateTodo] = useMutation(UPDATE_TODO)
-  const [activeTodo, setActiveTodo] = useState()
-  const [activeTodoList, setActiveTodoList] = useState('Oldest')
   const [showSideBar, setShowSideBar] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [
@@ -41,38 +39,39 @@ const TodoPage = () => {
       <Pane maxSize='35%' initialSize='20%' minSize='15%'>
         <TodoLists
           setShowSideBar={setShowSideBar}
-          setActiveTodoList={setActiveTodoList}
           showSideBar={showSideBar}
           getTodos={getTodos}
-          activeTodoList={activeTodoList}
         />
       </Pane>
       <Pane maxWidth='85%' minSize='25%'>
-        <div className='min-h-screen'>
-          <div
-            className='cursor-pointer h-6 w-6 inline-block md:hidden'
-            onClick={() => {
-              setShowSideBar(!showSideBar)
-            }}
-          >
-            <Menu />
+        <div className='flex flex-col h-screen'>
+          <div className='flex-grow-0'>
+            <div
+              className='cursor-pointer h-6 w-6 inline-block md:hidden'
+              onClick={() => {
+                setShowSideBar(!showSideBar)
+              }}
+            >
+              <Menu />
+            </div>
+            <div className='border-b px-3 py-3'>
+              <Subheader>{activeCategoryVar()}</Subheader>
+            </div>
           </div>
           {todosLoading || !todosData ? (
             <Loading />
           ) : (
-            <div>
-              <div className='px-3 my-2'>
-                <Subheader>{activeTodoList}</Subheader>
+            <div className='flex-grow overflow-y-hidden relative'>
+              <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded '>
+                <TodoList
+                  setShowComments={setShowComments}
+                  fetchMore={fetchMore}
+                  loading={todosLoading}
+                  getComments={getComments}
+                  updateTodo={updateTodo}
+                  todos={todosData.allTodos}
+                />
               </div>
-              <TodoList
-                setShowComments={setShowComments}
-                fetchMore={fetchMore}
-                loading={todosLoading}
-                setActiveTodo={setActiveTodo}
-                getComments={getComments}
-                updateTodo={updateTodo}
-                todos={todosData.allTodos}
-              />
             </div>
           )}
         </div>
@@ -87,7 +86,6 @@ const TodoPage = () => {
           <Comments
             showComments={showComments}
             setShowComments={setShowComments}
-            todo={activeTodo}
             comments={commentsData.todo.comments}
           />
         </Pane>

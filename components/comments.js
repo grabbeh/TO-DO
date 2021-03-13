@@ -1,27 +1,35 @@
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { Formik, Form } from 'formik'
 import { string, object } from 'yup'
 import gql from 'graphql-tag'
 import { Textarea, Button, Subheader, Card as MainCard } from './index'
-import { AddComment as ADD_COMMENT } from '../queries/index'
+import {
+  AddComment as ADD_COMMENT,
+  ActiveTodo as ACTIVE_TODO
+} from '../queries/index'
 import { User, Cross } from '../components/icons/index'
-import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 
-const CommentInput = ({ todo, comments, showComments, setShowComments }) => {
+const CommentInput = ({ comments, showComments, setShowComments }) => {
   const router = useRouter()
   const { id } = router.query
+  const { data: activeTodo } = useQuery(ACTIVE_TODO)
+  console.log(activeTodo)
+
   return (
     <div
       className={`${
-        showComments ? 'inline-block absolute' : 'hidden'
-      }  bg-white border-l-2 md:sticky h-screen flex-none w-full top-0`}
+        showComments ? 'inline-block' : 'hidden'
+      }  bg-white border-l w-full md:flex md:flex-col h-screen flex-none top-0`}
     >
-      <div className='flex justify-between'>
-        <div className='pl-2'>
-          <div className='text-sm text-gray-500'>{todo.todoListName}</div>
-          <Subheader>{todo.text} </Subheader>
+      <div className='bg-white w-full flex-grow-0 border-b flex justify-between'>
+        <div className='mb-1 pl-2'>
+          <div className='text-sm text-gray-500'>
+            {activeTodo.activeTodo.todoListName}
+          </div>
+          <Subheader>{activeTodo.activeTodo.text} </Subheader>
         </div>
+
         <div
           className='h-8 w-8 cursor-pointer hover:text-black text-gray-500'
           onClick={() => {
@@ -34,19 +42,23 @@ const CommentInput = ({ todo, comments, showComments, setShowComments }) => {
           <Cross />
         </div>
       </div>
-      {comments.length > 0 && (
-        <div className='p-2'>
-          <div>Comments</div>
-          <ul className='divide-y-2'>
-            {comments.map(comment => (
-              <Comment comment={comment} key={comment.id} />
-            ))}
-          </ul>
+      <div className='flex-grow overflow-y-hidden relative'>
+        <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded'>
+          {comments.length > 0 && (
+            <div className='p-2'>
+              <div>Comments</div>
+              <ul className='divide-y-2'>
+                {comments.map(comment => (
+                  <Comment comment={comment} key={comment.id} />
+                ))}
+              </ul>
+            </div>
+          )}
+          <MainCard>
+            <TextInput todoId={activeTodo.activeTodo.id} />
+          </MainCard>
         </div>
-      )}
-      <MainCard>
-        <TextInput todoId={todo.id} />
-      </MainCard>
+      </div>
     </div>
   )
 }
@@ -103,7 +115,7 @@ const TextInput = ({ todoId }) => {
           text,
           todoId
         }
-        let mutation = addComment({
+        addComment({
           variables: {
             comment
           },
@@ -112,11 +124,7 @@ const TextInput = ({ todoId }) => {
             addComment: { ...comment, id: '', createdAt: 'Just now' }
           }
         })
-        toast.promise(mutation, {
-          loading: 'Loading',
-          success: data => `Successfully added comment`,
-          error: err => `This just happened: ${err.toString()}`
-        })
+
         resetForm()
       }}
     >
@@ -159,7 +167,7 @@ const Comment = ({ comment }) => (
       <div className='text-xs text-gray-500'>{comment.createdAt}</div>
     </div>
 
-    <div className='text-gray-500 text-lg'>{comment.text}</div>
+    <div className='text-gray-500 text-base'>{comment.text}</div>
   </li>
 )
 

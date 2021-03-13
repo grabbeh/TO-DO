@@ -10,6 +10,7 @@ import {
   Subheader
 } from '../../../../../components/index'
 import { Menu } from '../../../../../components/icons/index'
+import { activeCategoryVar, activeTodoVar } from '../../../../../lib/withApollo'
 import {
   AllTodos as ALLTODOS_QUERY,
   UpdateTodo as UPDATE_TODO,
@@ -22,8 +23,6 @@ const TodoPage = () => {
   const router = useRouter()
   const { id, todoId } = router.query
   const [updateTodo] = useMutation(UPDATE_TODO)
-  const [activeTodo, setActiveTodo] = useState()
-  const [activeTodoList, setActiveTodoList] = useState()
   const [showSideBar, setShowSideBar] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [
@@ -46,11 +45,15 @@ const TodoPage = () => {
 
   useEffect(() => {
     if (todosData) {
-      setActiveTodoList(todosData.todoList.name)
+      activeCategoryVar(todosData.todoList.name)
     }
   }, [todosData])
+
   useEffect(() => {
     if (commentsData) {
+      console.log('Called')
+      console.log(commentsData)
+      activeTodoVar(commentsData.todo)
       setShowComments(true)
     }
   }, [commentsData])
@@ -61,38 +64,39 @@ const TodoPage = () => {
         <Pane maxSize='35%' initialSize='20%' minSize='15%'>
           <TodoLists
             setShowSideBar={setShowSideBar}
-            setActiveTodoList={setActiveTodoList}
             showSideBar={showSideBar}
             getTodos={getTodos}
-            activeTodoList={activeTodoList}
           />
         </Pane>
         <Pane maxWidth='85%' minSize='25%'>
-          <div className='min-h-screen'>
-            <div
-              className='cursor-pointer h-6 w-6 inline-block md:hidden'
-              onClick={() => {
-                setShowSideBar(!showSideBar)
-              }}
-            >
-              <Menu />
+          <div className='flex flex-col h-screen'>
+            <div className='flex-grow-0'>
+              <div
+                className='cursor-pointer h-6 w-6 inline-block md:hidden'
+                onClick={() => {
+                  setShowSideBar(!showSideBar)
+                }}
+              >
+                <Menu />
+              </div>
+              <div className='p-3 border-b'>
+                <Subheader>{activeCategoryVar()}</Subheader>
+              </div>
             </div>
             {todosLoading || !todosData ? (
               <Loading />
             ) : (
-              <div>
-                <div className='px-3 my-2'>
-                  <Subheader>{activeTodoList}</Subheader>
+              <div className='flex-grow overflow-y-hidden relative'>
+                <div className='absolute inset-0 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded overflow-y-auto'>
+                  <TodoList
+                    setShowComments={setShowComments}
+                    fetchMore={fetchMore}
+                    loading={todosLoading}
+                    getComments={getComments}
+                    updateTodo={updateTodo}
+                    todos={todosData.allTodos}
+                  />
                 </div>
-                <TodoList
-                  setShowComments={setShowComments}
-                  fetchMore={fetchMore}
-                  loading={todosLoading}
-                  setActiveTodo={setActiveTodo}
-                  getComments={getComments}
-                  updateTodo={updateTodo}
-                  todos={todosData.allTodos}
-                />
               </div>
             )}
           </div>
@@ -102,12 +106,11 @@ const TodoPage = () => {
             <Loading />
           </div>
         )}
-        {commentsData && (
+        {commentsData && showComments && (
           <Pane initialSize='25%'>
             <Comments
               showComments={showComments}
               setShowComments={setShowComments}
-              todo={commentsData.todo}
               comments={commentsData.todo.comments}
             />
           </Pane>

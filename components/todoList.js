@@ -7,6 +7,7 @@ import {
   Loading,
   Button
 } from './index'
+import { activeTodoVar } from '../lib/withApollo'
 import Link from 'next/link'
 import { Comments, User } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
@@ -17,7 +18,7 @@ const TodoList = ({
   todos,
   title,
   updateTodo,
-  setActiveTodo,
+
   getComments,
   fetchMore,
   loading,
@@ -26,7 +27,7 @@ const TodoList = ({
   return (
     <div>
       {title && <Subheader>{title}</Subheader>}
-      <ul className='border-t-2 border-b-2 divide-y-2 mb-3'>
+      <ul className='border-b-2 divide-y-2 mb-3'>
         {todos.map(todo => (
           <Todo
             setShowComments={setShowComments}
@@ -34,7 +35,6 @@ const TodoList = ({
             getComments={getComments}
             updateTodo={updateTodo}
             todo={todo}
-            setActiveTodo={setActiveTodo}
           />
         ))}
       </ul>
@@ -52,7 +52,7 @@ const TodoList = ({
   )
 }
 
-const Todo = ({ todo, setShowComments, getComments, setActiveTodo }) => {
+const Todo = ({ todo, setShowComments, getComments }) => {
   const router = useRouter()
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
@@ -179,7 +179,7 @@ const Todo = ({ todo, setShowComments, getComments, setActiveTodo }) => {
                   <div
                     onClick={() => {
                       getComments({ variables: { id: todo.id } })
-                      setActiveTodo(todo)
+                      activeTodoVar(todo)
                       setShowComments(true)
                       router.push(
                         `/todos/${todo.todoListId}/comments/${todo.id}`,
