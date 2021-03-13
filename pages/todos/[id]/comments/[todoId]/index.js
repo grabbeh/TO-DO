@@ -51,8 +51,6 @@ const TodoPage = () => {
 
   useEffect(() => {
     if (commentsData) {
-      console.log('Called')
-      console.log(commentsData)
       activeTodoVar(commentsData.todo)
       setShowComments(true)
     }

@@ -14,7 +14,6 @@ const CommentInput = ({ comments, showComments, setShowComments }) => {
   const router = useRouter()
   const { id } = router.query
   const { data: activeTodo } = useQuery(ACTIVE_TODO)
-  console.log(activeTodo)
 
   return (
     <div
