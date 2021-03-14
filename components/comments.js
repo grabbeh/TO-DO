@@ -13,7 +13,9 @@ import { useRouter } from 'next/router'
 const CommentInput = ({ comments, showComments, setShowComments }) => {
   const router = useRouter()
   const { id } = router.query
-  const { data: activeTodo } = useQuery(ACTIVE_TODO)
+  const {
+    data: { activeTodo }
+  } = useQuery(ACTIVE_TODO)
 
   return (
     <div
@@ -23,10 +25,8 @@ const CommentInput = ({ comments, showComments, setShowComments }) => {
     >
       <div className='bg-white w-full flex-grow-0 border-b flex justify-between'>
         <div className='mb-1 pl-2'>
-          <div className='text-sm text-gray-500'>
-            {activeTodo.activeTodo.todoListName}
-          </div>
-          <Subheader>{activeTodo.activeTodo.text} </Subheader>
+          <div className='text-sm text-gray-500'>{activeTodo.todoListName}</div>
+          <Subheader>{activeTodo.text} </Subheader>
         </div>
 
         <div
@@ -54,7 +54,7 @@ const CommentInput = ({ comments, showComments, setShowComments }) => {
             </div>
           )}
           <MainCard>
-            <TextInput todoId={activeTodo.activeTodo.id} />
+            <TextInput todoId={activeTodo.id} />
           </MainCard>
         </div>
       </div>
