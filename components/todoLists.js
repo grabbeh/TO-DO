@@ -21,7 +21,9 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   if (error) return 'Error'
-  const { data: activeCategory } = useQuery(ACTIVE_CATEGORY)
+  const {
+    data: { activeCategory }
+  } = useQuery(ACTIVE_CATEGORY)
 
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
@@ -100,7 +102,7 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
               }}
             >
               <span
-                className={`${activeCategoryVar() === 'Pinned' &&
+                className={`${activeCategory === 'Pinned' &&
                   'font-bold'} cursor-pointer flex  text-md hover:text-white text-gray-200`}
               >
                 Pinned
@@ -109,7 +111,7 @@ const TodoLists = ({ getTodos, showSideBar, setShowSideBar }) => {
             {data.todoLists.map(todoList => (
               <TodoList
                 key={todoList.id}
-                activeCategory={activeCategoryVar}
+                activeCategory={activeCategory}
                 setShowSideBar={setShowSideBar}
                 getTodos={getTodos}
                 todoList={todoList}
