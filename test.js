@@ -17,7 +17,7 @@ import {
   ActiveSideBar as ACTIVE_SIDEBAR
 } from '../queries/index'
 
-const TodoLists = () => {
+const TodoLists = ({ getTodos }) => {
   const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   if (error) return 'Error'
@@ -61,9 +61,12 @@ const TodoLists = () => {
               className={`${activeCategory === 'Oldest' &&
                 'font-bold'} cursor-pointer py-1 px-1 hover:bg-purple-800`}
               onClick={() => {
+                getTodos({ variables: { oldest: true } })
                 activeSideBarVar(false)
                 activeCategoryVar('Oldest')
-                router.push(`/category/oldest`)
+                router.push(`/`, undefined, {
+                  shallow: true
+                })
               }}
             >
               <span
@@ -76,9 +79,12 @@ const TodoLists = () => {
             <div
               className='cursor-pointer py-1 px-1 hover:bg-purple-800'
               onClick={() => {
+                getTodos({ variables: { newest: true } })
                 activeSideBarVar(false)
                 activeCategoryVar('Newest')
-                router.push(`/category/newest`)
+                router.push(`/`, undefined, {
+                  shallow: true
+                })
               }}
             >
               <span
@@ -91,9 +97,12 @@ const TodoLists = () => {
             <div
               className='cursor-pointer py-1 px-1 hover:bg-purple-800'
               onClick={() => {
+                getTodos({ variables: { pinned: true } })
                 activeSideBarVar(false)
                 activeCategoryVar('Pinned')
-                router.push(`/category/pinned`)
+                router.push(`/`, undefined, {
+                  shallow: true
+                })
               }}
             >
               <span
@@ -107,6 +116,7 @@ const TodoLists = () => {
               <TodoList
                 key={todoList.id}
                 activeCategory={activeCategory}
+                getTodos={getTodos}
                 todoList={todoList}
               />
             ))}
@@ -129,9 +139,8 @@ const TodoLists = () => {
   )
 }
 
-const TodoList = ({ todoList, activeCategory }) => {
+const TodoList = ({ todoList, activeCategory, getTodos }) => {
   const router = useRouter()
-  console.log(router)
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const openModal = () => {
@@ -151,9 +160,12 @@ const TodoList = ({ todoList, activeCategory }) => {
           <div className='flex justify-between'>
             <span
               onClick={() => {
+                getTodos({ variables: { id: todoList.id } })
                 activeSideBarVar(false)
                 activeCategoryVar(todoList.name)
-                router.push(`/todos/${todoList.id}`)
+                router.push(`/todos/${todoList.id}`, undefined, {
+                  shallow: true
+                })
               }}
               className={`${activeCategory === todoList.name && 'font-bold'}
                   cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md hover:text-white text-gray-200`}

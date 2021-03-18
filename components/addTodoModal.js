@@ -26,8 +26,6 @@ const TextInput = ({ parentId, closeModal }) => {
             return value + 1
           },
           allTodos (existingTodos = []) {
-            console.log('allTodos value')
-            console.log(existingTodos)
             const newTodoRef = cache.writeFragment({
               data: addTodo,
               fragment: gql`

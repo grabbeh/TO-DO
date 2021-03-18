@@ -7,35 +7,19 @@ import {
   Loading,
   Button
 } from './index'
-import { activeTodoVar } from '../lib/withApollo'
+import { activeCommentsBarVar, activeTodoVar } from '../lib/withApollo'
 import Link from 'next/link'
 import { Comments, User } from './icons/index'
 import { UpdateTodo as UPDATE_TODO } from '../queries/index'
-import activateToast from '../utils/toast'
 import { useRouter } from 'next/router'
 
-const TodoList = ({
-  todos,
-  title,
-  updateTodo,
-
-  getComments,
-  fetchMore,
-  loading,
-  setShowComments
-}) => {
+const TodoList = ({ todos, title, fetchMore, loading }) => {
   return (
     <div>
       {title && <Subheader>{title}</Subheader>}
       <ul className='border-b-2 divide-y-2 mb-3'>
         {todos.map(todo => (
-          <Todo
-            setShowComments={setShowComments}
-            key={todo.id}
-            getComments={getComments}
-            updateTodo={updateTodo}
-            todo={todo}
-          />
+          <Todo key={todo.id} todo={todo} />
         ))}
       </ul>
       <div className='mb-5 pl-3'>
@@ -52,8 +36,9 @@ const TodoList = ({
   )
 }
 
-const Todo = ({ todo, setShowComments, getComments }) => {
+const Todo = ({ todo }) => {
   const router = useRouter()
+  let existingUrl = router.asPath
   const [updateCompletionStatus] = useMutation(UPDATE_TODO, {
     update (cache, { data: { updateTodo } }) {
       let ref = { __ref: `Todo:${todo.id}` }
@@ -124,7 +109,7 @@ const Todo = ({ todo, setShowComments, getComments }) => {
               type='checkbox'
               checked={todo.status === 'COMPLETED'}
               onChange={() => {
-                let mutation = updateCompletionStatus({
+                updateCompletionStatus({
                   variables: {
                     todo: {
                       ...todo,
@@ -139,7 +124,6 @@ const Todo = ({ todo, setShowComments, getComments }) => {
                     }
                   }
                 })
-                activateToast(mutation, 'Todo updated')
               }}
               className='mr-3 cursor-pointer form-checkbox h-5 w-5 border-2 hover:form-checkbox border-gray-300 rounded-md checked:color-green-500 checked:bg-blue-600 checked:border-transparent focus:outline-none'
             />
@@ -178,16 +162,9 @@ const Todo = ({ todo, setShowComments, getComments }) => {
                 <div className='cursor-pointer'>
                   <div
                     onClick={() => {
-                      getComments({ variables: { id: todo.id } })
                       activeTodoVar(todo)
-                      setShowComments(true)
-                      router.push(
-                        `/todos/${todo.todoListId}/comments/${todo.id}`,
-                        undefined,
-                        {
-                          shallow: true
-                        }
-                      )
+                      activeCommentsBarVar(true)
+                      router.push(`${existingUrl}/comments/${todo.id}`)
                     }}
                     className='flex hover:text-blue-800 text-blue-500'
                   >

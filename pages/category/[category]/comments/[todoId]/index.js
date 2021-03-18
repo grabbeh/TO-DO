@@ -21,13 +21,15 @@ import { useRouter } from 'next/router'
 
 const TodoPage = () => {
   const router = useRouter()
-  const { id, todoId } = router.query
+  const { category, todoId } = router.query
+  let variables = {}
+  variables[category] = true
   const {
     loading: todosLoading,
     error: todosError,
     data: todosData,
     fetchMore
-  } = useQuery(ALLTODOS_QUERY, { variables: { id } })
+  } = useQuery(ALLTODOS_QUERY, { variables })
 
   const {
     loading: commentsLoading,
@@ -37,7 +39,7 @@ const TodoPage = () => {
 
   useEffect(() => {
     if (todosData) {
-      activeCategoryVar(todosData.todoList.name)
+      activeCategoryVar(category)
     }
   }, [todosData])
 

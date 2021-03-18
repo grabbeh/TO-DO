@@ -10,10 +10,14 @@ import TodoList from './TodoList'
 import AllTodos from './allTodos'
 import ActiveCategory from './ActiveCategory'
 import ActiveTodo from './ActiveTodo'
+import ActiveSideBar from './ActiveSideBar'
+import ActiveCommentsBar from './ActiveCommentsBar'
 
 export {
   ActiveCategory,
+  ActiveSideBar,
   ActiveTodo,
+  ActiveCommentsBar,
   AddTodo,
   AddTodoList,
   AddComment,

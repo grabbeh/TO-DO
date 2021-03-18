@@ -56,7 +56,6 @@ const EditRow = ({ todoList }) => {
 }
 
 const DeleteRow = ({ todoList }) => {
-  console.log(todoList)
   const [updateTodoList] = useMutation(UPDATE_TODOLIST)
   return (
     <div

@@ -51,7 +51,6 @@ const TextInput = ({ closeModal }) => {
         name: string().required('Please provide name')
       })}
       onSubmit={(values, { setErrors, resetForm }) => {
-        console.log(values)
         setErrors({
           name: false
         })

@@ -30,8 +30,10 @@ import SearchForm from './searchForm'
 import PinTodo from './pinTodo'
 import PinnedTodos from './pinnedTodos'
 import Comments from './comments'
+import MainPanel from './mainPanel'
 
 export {
+  MainPanel,
   PinTodo,
   Comments,
   PinnedTodos,

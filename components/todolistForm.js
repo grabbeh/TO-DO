@@ -2,13 +2,11 @@ import { Form } from 'formik'
 import { Input, Button } from '../components/index'
 
 const TodolistForm = ({ setFieldValue, handleChange, values, errors }) => {
-  console.log(values)
   return (
     <Form>
       <Input
         style={{ boxSizing: 'border-box' }}
         onChange={e => {
-          console.log(e.target.value)
           let val = e.target.value.replace(/\W+/g, '-').toLowerCase()
           setFieldValue('name', val)
         }}
