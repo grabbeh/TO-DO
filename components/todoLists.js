@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import Modal from 'react-modal'
-import { activeCategoryVar, activeSideBarVar } from '../lib/withApollo'
+import { activeSideBarVar } from '../lib/withApollo'
 import {
   Button,
   TodoListOptionsBox,
@@ -24,11 +24,12 @@ const TodoLists = () => {
   const {
     data: { activeCategory }
   } = useQuery(ACTIVE_CATEGORY)
-
+  /*
   const {
     data: { activeSideBar }
   } = useQuery(ACTIVE_SIDEBAR)
-
+*/
+  let activeSideBar = true
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -62,7 +63,6 @@ const TodoLists = () => {
                 'font-bold'} cursor-pointer py-1 px-1 hover:bg-purple-800`}
               onClick={() => {
                 activeSideBarVar(false)
-                activeCategoryVar('Oldest')
                 router.push(`/category/oldest`)
               }}
             >
@@ -77,7 +77,7 @@ const TodoLists = () => {
               className='cursor-pointer py-1 px-1 hover:bg-purple-800'
               onClick={() => {
                 activeSideBarVar(false)
-                activeCategoryVar('Newest')
+
                 router.push(`/category/newest`)
               }}
             >
@@ -92,7 +92,6 @@ const TodoLists = () => {
               className='cursor-pointer py-1 px-1 hover:bg-purple-800'
               onClick={() => {
                 activeSideBarVar(false)
-                activeCategoryVar('Pinned')
                 router.push(`/category/pinned`)
               }}
             >
@@ -131,7 +130,6 @@ const TodoLists = () => {
 
 const TodoList = ({ todoList, activeCategory }) => {
   const router = useRouter()
-  console.log(router)
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const openModal = () => {
@@ -152,7 +150,7 @@ const TodoList = ({ todoList, activeCategory }) => {
             <span
               onClick={() => {
                 activeSideBarVar(false)
-                activeCategoryVar(todoList.name)
+
                 router.push(`/todos/${todoList.id}`)
               }}
               className={`${activeCategory === todoList.name && 'font-bold'}
