@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import Modal from 'react-modal'
-import { activeSideBarVar } from '../lib/withApollo'
+import { activeCategoryVar, activeSideBarVar } from '../lib/withApollo'
 import {
   Button,
   TodoListOptionsBox,
@@ -18,18 +18,17 @@ import {
 } from '../queries/index'
 
 const TodoLists = () => {
-  const { loading, error, data } = useQuery(TODO_LISTS_QUERY)
+  const router = useRouter()
+  const { loading, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
-  if (error) return 'Error'
+
   const {
     data: { activeCategory }
   } = useQuery(ACTIVE_CATEGORY)
-  /*
+
   const {
     data: { activeSideBar }
   } = useQuery(ACTIVE_SIDEBAR)
-*/
-  let activeSideBar = true
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -38,15 +37,14 @@ const TodoLists = () => {
   const closeModal = () => {
     setModalIsOpen(false)
   }
-  const router = useRouter()
 
   return (
     <div
       className={`${
         activeSideBar ? 'inline-block' : 'hidden'
-      }  mr-8 md:mr-0 w-full  md:flex md:flex-col h-screen flex-none top-0 bg-purple-900`}
+      }  mr-8 md:mr-0 w-full  md:flex md:flex-col h-screen flex-none top-0 bg-purple-800`}
     >
-      <div className='bg-purple-900 flex-grow-0 px-2 border-b flex justify-between'>
+      <div className=' flex-grow-0 px-2 border-b flex justify-between'>
         <h1 className='text-white text-xl my-3'>Lists</h1>
         <div
           className='h-8 w-8 cursor-pointer hover:text-white text-gray-200 md:hidden'
@@ -59,33 +57,31 @@ const TodoLists = () => {
         <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded'>
           <ul className='px-2 pb-2'>
             <div
-              className={`${activeCategory === 'Oldest' &&
-                'font-bold'} cursor-pointer py-1 px-1 hover:bg-purple-800`}
+              className='cursor-pointer py-1 px-1 hover:bg-purple-800'
               onClick={() => {
                 activeSideBarVar(false)
                 router.push(`/category/oldest`)
               }}
             >
               <span
-                className={`${activeCategory === 'Oldest' &&
-                  'font-bold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
+                className={`${activeCategory === 'oldest' &&
+                  'font-semibold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
               >
-                Oldest
+                oldest
               </span>
             </div>
             <div
               className='cursor-pointer py-1 px-1 hover:bg-purple-800'
               onClick={() => {
                 activeSideBarVar(false)
-
                 router.push(`/category/newest`)
               }}
             >
               <span
-                className={`${activeCategory === 'Newest' &&
-                  'font-bold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
+                className={`${activeCategory === 'newest' &&
+                  'font-semibold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
               >
-                Newest
+                newest
               </span>
             </div>
             <div
@@ -96,10 +92,10 @@ const TodoLists = () => {
               }}
             >
               <span
-                className={`${activeCategory === 'Pinned' &&
-                  'font-bold'} cursor-pointer flex  text-md hover:text-white text-gray-200`}
+                className={`${activeCategory === 'pinned' &&
+                  'font-semibold'} cursor-pointer flex  text-md hover:text-white text-gray-200`}
               >
-                Pinned
+                pinned
               </span>
             </div>
             {data.todoLists.map(todoList => (
@@ -153,12 +149,12 @@ const TodoList = ({ todoList, activeCategory }) => {
 
                 router.push(`/todos/${todoList.id}`)
               }}
-              className={`${activeCategory === todoList.name && 'font-bold'}
+              className={`${activeCategory === todoList.name && 'font-semibold'}
                   cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md hover:text-white text-gray-200`}
             >
               # {todoList.name}
             </span>
-            <div className='flex'>
+            <div className='relative flex'>
               <div
                 className='cursor-pointer mt-1 h-5 w-5 hover:text-white text-gray-300'
                 onClick={openModal}

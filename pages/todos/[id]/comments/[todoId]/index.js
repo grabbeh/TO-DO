@@ -64,16 +64,10 @@ const TodoPage = () => {
             fetchMore={fetchMore}
           />
         </Pane>
-        {commentsLoading && (
-          <div className='w-1/4'>
-            <Loading />
-          </div>
-        )}
-        {commentsData && (
-          <Pane initialSize='25%'>
-            <Comments todo={commentsData.todo} />
-          </Pane>
-        )}
+
+        <Pane initialSize='25%'>
+          {commentsData ? <Comments todo={commentsData.todo} /> : <Loading />}
+        </Pane>
       </SplitPane>
     </div>
   )

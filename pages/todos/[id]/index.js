@@ -10,18 +10,15 @@ import { useRouter } from 'next/router'
 const TodoPage = () => {
   const router = useRouter()
   const { id } = router.query
-  const {
-    loading: todosLoading,
-    error: todosError,
-    data: todosData,
-    fetchMore
-  } = useQuery(ALLTODOS_QUERY, { variables: { id } })
+  const { loading, data, fetchMore } = useQuery(ALLTODOS_QUERY, {
+    variables: { id }
+  })
 
   useEffect(() => {
-    if (todosData) {
-      activeCategoryVar(todosData.todoList.name)
+    if (data) {
+      activeCategoryVar(data.todoList.name)
     }
-  }, [todosData])
+  }, [data])
 
   return (
     <SplitPane split='vertical'>
@@ -30,8 +27,8 @@ const TodoPage = () => {
       </Pane>
       <Pane maxWidth='85%' minSize='25%'>
         <MainPanel
-          todosLoading={todosLoading}
-          todosData={todosData}
+          todosLoading={loading}
+          todosData={data}
           fetchMore={fetchMore}
         />
       </Pane>
