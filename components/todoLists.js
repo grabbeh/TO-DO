@@ -19,8 +19,6 @@ import {
 } from '../queries/index'
 
 const TodoLists = ({ activeCategory }) => {
-  console.log(activeCategory)
-  const router = useRouter()
   const { loading, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
   /*

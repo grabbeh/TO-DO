@@ -22,18 +22,10 @@ import { useRouter } from 'next/router'
 const TodoPage = () => {
   const router = useRouter()
   const { id, todoId } = router.query
-  const {
-    loading: todosLoading,
-    error: todosError,
-    data: todosData,
-    fetchMore
-  } = useQuery(ALLTODOS_QUERY, { variables: { id } })
-
-  const {
-    loading: commentsLoading,
-    error: commentsError,
-    data: commentsData
-  } = useQuery(TODO_NOTES_QUERY, { variables: { id: todoId } })
+  const todosResult = useQuery(ALLTODOS_QUERY, { variables: { id } })
+  const commentsResult = useQuery(TODO_NOTES_QUERY, {
+    variables: { id: todoId }
+  })
 
   useEffect(() => {
     activeCommentsBarVar(true)
@@ -43,18 +35,20 @@ const TodoPage = () => {
     <div>
       <SplitPane split='vertical'>
         <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-          {data && <TodoLists activeCategory={data.todoList.name} />}
+          {todosResult.data && (
+            <TodoLists activeCategory={todosResult.data.todoList.name} />
+          )}
         </Pane>
         <Pane maxWidth='85%' minSize='25%'>
-          <MainPanel
-            todosLoading={todosLoading}
-            todosData={todosData}
-            fetchMore={fetchMore}
-          />
+          <MainPanel result={result} />
         </Pane>
 
         <Pane initialSize='25%'>
-          {commentsData ? <Comments todo={commentsData.todo} /> : <Loading />}
+          {commentsResult.data ? (
+            <Comments todo={commentsResult.data.todo} />
+          ) : (
+            <Loading />
+          )}
         </Pane>
       </SplitPane>
     </div>

@@ -12,13 +12,7 @@ const TodoPage = () => {
   const { category } = router.query
   let variables = {}
   variables[category] = true
-  const { loading, error, data, fetchMore } = useQuery(ALLTODOS_QUERY, {
-    variables
-  })
-
-  useEffect(() => {
-    activeCategoryVar(category)
-  })
+  const result = useQuery(ALLTODOS_QUERY, { variables })
 
   return (
     <SplitPane split='vertical'>
@@ -26,12 +20,7 @@ const TodoPage = () => {
         <TodoLists activeCategory={category} />
       </Pane>
       <Pane maxWidth='85%' minSize='25%'>
-        <MainPanel
-          category={category}
-          todosLoading={loading}
-          todosData={data}
-          fetchMore={fetchMore}
-        />
+        <MainPanel result={result} category={category} />
       </Pane>
     </SplitPane>
   )

@@ -24,30 +24,10 @@ const TodoPage = () => {
   const { category, todoId } = router.query
   let variables = {}
   variables[category] = true
-  const {
-    loading: todosLoading,
-    error: todosError,
-    data: todosData,
-    fetchMore
-  } = useQuery(ALLTODOS_QUERY, { variables })
-
-  const {
-    loading: commentsLoading,
-    error: commentsError,
-    data: commentsData
-  } = useQuery(TODO_NOTES_QUERY, { variables: { id: todoId } })
-
-  useEffect(() => {
-    if (todosData) {
-      activeCategoryVar(category)
-    }
-  }, [todosData])
-
-  useEffect(() => {
-    if (commentsData) {
-      activeTodoVar(commentsData.todo)
-    }
-  }, [commentsData])
+  const todosResult = useQuery(ALLTODOS_QUERY, { variables })
+  const commentsResult = useQuery(TODO_NOTES_QUERY, {
+    variables: { id: todoId }
+  })
 
   useEffect(() => {
     activeCommentsBarVar(true)
@@ -60,20 +40,16 @@ const TodoPage = () => {
           <TodoLists activeCategory={category} />
         </Pane>
         <Pane maxWidth='85%' minSize='25%'>
-          <MainPanel
-            todosLoading={todosLoading}
-            todosData={todosData}
-            fetchMore={fetchMore}
-          />
+          <MainPanel result={todosResult} />
         </Pane>
-        {commentsLoading && (
+        {commentsResult.loading && (
           <div className='w-1/4'>
             <Loading />
           </div>
         )}
-        {commentsData && (
+        {commentsResult.data && (
           <Pane initialSize='25%'>
-            <Comments todo={commentsData.todo} />
+            <Comments todo={commentsResult.data.todo} />
           </Pane>
         )}
       </SplitPane>

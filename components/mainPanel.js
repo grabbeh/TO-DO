@@ -2,7 +2,7 @@ import { Loading, TodoList, Subheader } from './index'
 import { Menu } from './icons/index'
 import { activeSideBarVar } from '../lib/withApollo'
 
-const MainPanel = ({ todosLoading, todosData, category, fetchMore }) => (
+const MainPanel = ({ category, result }) => (
   <div className='flex flex-col h-screen'>
     <div className='flex-grow-0'>
       <div
@@ -14,20 +14,20 @@ const MainPanel = ({ todosLoading, todosData, category, fetchMore }) => (
         <Menu />
       </div>
       <div className='p-3 border-b'>
-        {todosData && (
-          <Subheader>{category || todosData.todoList.name}</Subheader>
+        {result.data && (
+          <Subheader>{category || result.data.todoList.name}</Subheader>
         )}
       </div>
     </div>
-    {todosLoading || !todosData ? (
+    {result.loading || !result.data ? (
       <Loading />
     ) : (
       <div className='flex-grow overflow-y-hidden relative'>
         <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded'>
           <TodoList
-            fetchMore={fetchMore}
-            loading={todosLoading}
-            todos={todosData.allTodos}
+            fetchMore={result.fetchMore}
+            loading={result.loading}
+            todos={result.data.allTodos}
           />
         </div>
       </div>
