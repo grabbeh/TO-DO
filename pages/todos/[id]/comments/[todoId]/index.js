@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import { useEffect } from 'react'
 import SplitPane from 'react-split-pane'
 import Pane from 'react-split-pane/lib/Pane'
@@ -38,12 +38,10 @@ const TodoPage = () => {
     <div>
       <SplitPane split='vertical'>
         <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-          {todosResult.data && (
-            <TodoLists activeCategory={todosResult.data.todoList.name} />
-          )}
+          {todosResult.data && <TodoLists />}
         </Pane>
         <Pane maxWidth='85%' minSize='25%'>
-          <MainPanel result={result} />
+          <MainPanel result={todosResult} />
         </Pane>
 
         <Pane initialSize='25%'>

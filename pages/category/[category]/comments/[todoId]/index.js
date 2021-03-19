@@ -40,20 +40,15 @@ const TodoPage = () => {
     <div>
       <SplitPane split='vertical'>
         <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-          <TodoLists activeCategory={category} />
+          <TodoLists />
         </Pane>
         <Pane maxWidth='85%' minSize='25%'>
           <MainPanel result={todosResult} />
         </Pane>
-        {commentsResult.loading && (
-          <div className='w-1/4'>
-            <Loading />
-          </div>
-        )}
-        {commentsResult.data && (
-          <Pane initialSize='25%'>
-            <Comments todo={commentsResult.data.todo} />
-          </Pane>
+        {commentsResult.data ? (
+          <Comments todo={commentsResult.data.todo} />
+        ) : (
+          <Loading />
         )}
       </SplitPane>
     </div>

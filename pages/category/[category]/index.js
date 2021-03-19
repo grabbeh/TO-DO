@@ -21,10 +21,10 @@ const TodoPage = () => {
   return (
     <SplitPane split='vertical'>
       <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-        <TodoLists activeCategory={category} />
+        <TodoLists />
       </Pane>
       <Pane maxWidth='85%' minSize='25%'>
-        <MainPanel result={result} category={category} />
+        <MainPanel result={result} />
       </Pane>
     </SplitPane>
   )
