@@ -27,6 +27,7 @@ const TodoPage = () => {
       </Pane>
       <Pane maxWidth='85%' minSize='25%'>
         <MainPanel
+          category={category}
           todosLoading={loading}
           todosData={data}
           fetchMore={fetchMore}
