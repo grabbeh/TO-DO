@@ -3,6 +3,7 @@ import { useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import Modal from 'react-modal'
 import { activeCategoryVar, activeSideBarVar } from '../lib/withApollo'
+import Link from 'next/link'
 import {
   Button,
   TodoListOptionsBox,
@@ -56,48 +57,21 @@ const TodoLists = () => {
       <div className='h-full flex-grow overflow-y-hidden relative'>
         <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded'>
           <ul className='px-2 pb-2'>
-            <div
-              className='cursor-pointer py-1 px-1 hover:bg-purple-800'
-              onClick={() => {
-                activeSideBarVar(false)
-                router.push(`/category/oldest`)
-              }}
-            >
-              <span
-                className={`${activeCategory === 'oldest' &&
-                  'font-semibold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
-              >
-                oldest
-              </span>
-            </div>
-            <div
-              className='cursor-pointer py-1 px-1 hover:bg-purple-800'
-              onClick={() => {
-                activeSideBarVar(false)
-                router.push(`/category/newest`)
-              }}
-            >
-              <span
-                className={`${activeCategory === 'newest' &&
-                  'font-semibold'} cursor-pointer flex text-md hover:text-white text-gray-200`}
-              >
-                newest
-              </span>
-            </div>
-            <div
-              className='cursor-pointer py-1 px-1 hover:bg-purple-800'
-              onClick={() => {
-                activeSideBarVar(false)
-                router.push(`/category/pinned`)
-              }}
-            >
-              <span
-                className={`${activeCategory === 'pinned' &&
-                  'font-semibold'} cursor-pointer flex  text-md hover:text-white text-gray-200`}
-              >
-                pinned
-              </span>
-            </div>
+            <ListLink
+              activeCategory={activeCategory}
+              text='oldest'
+              url='/category/oldest'
+            />
+            <ListLink
+              activeCategory={activeCategory}
+              text='newest'
+              url='/category/newest'
+            />
+            <ListLink
+              activeCategory={activeCategory}
+              text='pinned'
+              url='/category/pinned'
+            />
             {data.todoLists.map(todoList => (
               <TodoList
                 key={todoList.id}
@@ -124,6 +98,17 @@ const TodoLists = () => {
   )
 }
 
+const ListLink = ({ url, text, activeCategory }) => (
+  <li
+    className={`${activeCategory === text && 'font-semibold'}
+   my-2 cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md hover:text-white text-gray-200`}
+  >
+    <Link href={url}>
+      <a>{text}</a>
+    </Link>
+  </li>
+)
+
 const TodoList = ({ todoList, activeCategory }) => {
   const router = useRouter()
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -145,8 +130,6 @@ const TodoList = ({ todoList, activeCategory }) => {
           <div className='flex justify-between'>
             <span
               onClick={() => {
-                activeSideBarVar(false)
-
                 router.push(`/todos/${todoList.id}`)
               }}
               className={`${activeCategory === todoList.name && 'font-semibold'}
