@@ -25,11 +25,11 @@ const TodoLists = () => {
 
   const {
     data: { activeCategory }
-  } = useQuery(ACTIVE_CATEGORY)
+  } = useQuery(ACTIVE_CATEGORY, { fetchPolicy: 'cache-only' })
 
   const {
     data: { activeSideBar }
-  } = useQuery(ACTIVE_SIDEBAR)
+  } = useQuery(ACTIVE_SIDEBAR, { fetchPolicy: 'cache-only' })
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
