@@ -21,9 +21,11 @@ const CommentInput = ({ todo }) => {
   let existingUrl = router.asPath
   let nonCommentsUrl = removeComments(existingUrl)
   const { id } = router.query
+  /*
   const {
     data: { activeCommentsBar }
-  } = useQuery(ACTIVE_COMMENTS_BAR)
+  } = useQuery(ACTIVE_COMMENTS_BAR, { fetchPolicy: 'cache-only' })*/
+  let activeCommentsBar = true
 
   return (
     <div
@@ -51,7 +53,7 @@ const CommentInput = ({ todo }) => {
           {todo.comments.length > 0 && (
             <div className='p-2'>
               <div>Comments</div>
-              <ul className='divide-y-2'>
+              <ul className='divide-y'>
                 {todo.comments.map(comment => (
                   <Comment comment={comment} key={comment.id} />
                 ))}

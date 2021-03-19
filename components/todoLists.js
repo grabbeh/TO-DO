@@ -18,18 +18,17 @@ import {
   ActiveSideBar as ACTIVE_SIDEBAR
 } from '../queries/index'
 
-const TodoLists = ({ activeCategory }) => {
+const TodoLists = () => {
   const { loading, data } = useQuery(TODO_LISTS_QUERY)
-  if (loading || !data) return <Loading />
-  /*
+
   const {
     data: { activeCategory }
   } = useQuery(ACTIVE_CATEGORY, { fetchPolicy: 'cache-only' })
 
   const {
     data: { activeSideBar }
-  } = useQuery(ACTIVE_SIDEBAR, { fetchPolicy: 'cache-only' })*/
-  let activeSideBar = true
+  } = useQuery(ACTIVE_SIDEBAR, { fetchPolicy: 'cache-only' })
+
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)
@@ -39,6 +38,7 @@ const TodoLists = ({ activeCategory }) => {
     setModalIsOpen(false)
   }
 
+  if (loading || !data) return <Loading />
   return (
     <div
       className={`${
@@ -81,7 +81,13 @@ const TodoLists = ({ activeCategory }) => {
             ))}
           </ul>
           <div className='mt-3 ml-3'>
-            <Button onClick={openModal}>New todolist</Button>
+            <Button
+              onClick={() => {
+                openModal()
+              }}
+            >
+              New todolist
+            </Button>
             <Modal
               className='bg-white outline-none bottom-0 left-0 absolute rounded-t-lg border-2 px-2'
               isOpen={modalIsOpen}
@@ -140,7 +146,9 @@ const TodoList = ({ todoList, activeCategory }) => {
             <div className='relative flex'>
               <div
                 className='cursor-pointer mt-1 h-5 w-5 hover:text-white text-gray-300'
-                onClick={openModal}
+                onClick={() => {
+                  openModal()
+                }}
               >
                 <Plus />
               </div>

@@ -14,7 +14,6 @@ import {
 } from '../../../../../queries/index'
 import withApollo, {
   activeCategoryVar,
-  activeTodoVar,
   activeCommentsBarVar
 } from '../../../../../lib/withApollo'
 import { useRouter } from 'next/router'
@@ -31,6 +30,10 @@ const TodoPage = () => {
 
   useEffect(() => {
     activeCommentsBarVar(true)
+  })
+
+  useEffect(() => {
+    activeCategoryVar(category)
   })
 
   return (

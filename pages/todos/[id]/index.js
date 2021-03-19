@@ -11,6 +11,9 @@ const TodoPage = () => {
   const router = useRouter()
   const { id } = router.query
   const result = useQuery(ALLTODOS_QUERY, { variables: { id } })
+  useEffect(() => {
+    if (result.data) activeCategoryVar(result.data.todoList.name)
+  })
   return (
     <SplitPane split='vertical'>
       <Pane maxSize='35%' initialSize='20%' minSize='15%'>

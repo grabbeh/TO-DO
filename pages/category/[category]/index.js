@@ -14,6 +14,10 @@ const TodoPage = () => {
   variables[category] = true
   const result = useQuery(ALLTODOS_QUERY, { variables })
 
+  useEffect(() => {
+    activeCategoryVar(category)
+  })
+
   return (
     <SplitPane split='vertical'>
       <Pane maxSize='35%' initialSize='20%' minSize='15%'>
