@@ -18,18 +18,20 @@ import {
   ActiveSideBar as ACTIVE_SIDEBAR
 } from '../queries/index'
 
-const TodoLists = () => {
+const TodoLists = ({ activeCategory }) => {
+  console.log(activeCategory)
   const router = useRouter()
   const { loading, data } = useQuery(TODO_LISTS_QUERY)
   if (loading || !data) return <Loading />
-
+  /*
   const {
     data: { activeCategory }
   } = useQuery(ACTIVE_CATEGORY, { fetchPolicy: 'cache-only' })
 
   const {
     data: { activeSideBar }
-  } = useQuery(ACTIVE_SIDEBAR, { fetchPolicy: 'cache-only' })
+  } = useQuery(ACTIVE_SIDEBAR, { fetchPolicy: 'cache-only' })*/
+  let activeSideBar = true
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const openModal = () => {
     setModalIsOpen(true)

@@ -14,16 +14,10 @@ const TodoPage = () => {
     variables: { id }
   })
 
-  useEffect(() => {
-    if (data) {
-      activeCategoryVar(data.todoList.name)
-    }
-  }, [data])
-
   return (
     <SplitPane split='vertical'>
       <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-        <TodoLists />
+        <TodoLists activeCategory={data?.todoList.name} />
       </Pane>
       <Pane maxWidth='85%' minSize='25%'>
         <MainPanel

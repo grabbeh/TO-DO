@@ -36,18 +36,6 @@ const TodoPage = () => {
   } = useQuery(TODO_NOTES_QUERY, { variables: { id: todoId } })
 
   useEffect(() => {
-    if (todosData) {
-      activeCategoryVar(todosData.todoList.name)
-    }
-  }, [todosData])
-
-  useEffect(() => {
-    if (commentsData) {
-      activeTodoVar(commentsData.todo)
-    }
-  }, [commentsData])
-
-  useEffect(() => {
     activeCommentsBarVar(true)
   })
 
@@ -55,7 +43,7 @@ const TodoPage = () => {
     <div>
       <SplitPane split='vertical'>
         <Pane maxSize='35%' initialSize='20%' minSize='15%'>
-          <TodoLists />
+          <TodoLists activeCategory={todosData.todoList.name} />
         </Pane>
         <Pane maxWidth='85%' minSize='25%'>
           <MainPanel
