@@ -28,7 +28,7 @@ const MainPanel = ({ result }) => {
         <Loading />
       ) : (
         <div className='flex-grow overflow-y-hidden relative'>
-          <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded'>
+          <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-200 scrollbar-thumb-rounded'>
             <TodoList
               fetchMore={result.fetchMore}
               loading={result.loading}

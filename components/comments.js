@@ -20,12 +20,10 @@ const CommentInput = ({ todo }) => {
   const router = useRouter()
   let existingUrl = router.asPath
   let nonCommentsUrl = removeComments(existingUrl)
-  const { id } = router.query
-  /*
+
   const {
     data: { activeCommentsBar }
-  } = useQuery(ACTIVE_COMMENTS_BAR, { fetchPolicy: 'cache-only' })*/
-  let activeCommentsBar = true
+  } = useQuery(ACTIVE_COMMENTS_BAR, { fetchPolicy: 'cache-only' })
 
   return (
     <div
@@ -49,9 +47,9 @@ const CommentInput = ({ todo }) => {
         </div>
       </div>
       <div className='flex-grow overflow-y-hidden relative'>
-        <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 scrollbar-thumb-rounded'>
+        <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-200 scrollbar-thumb-rounded'>
           {todo.comments.length > 0 && (
-            <div className='p-2'>
+            <div className='py-2 pl-2 pr-4'>
               <div>Comments</div>
               <ul className='divide-y'>
                 {todo.comments.map(comment => (
@@ -60,9 +58,11 @@ const CommentInput = ({ todo }) => {
               </ul>
             </div>
           )}
-          <MainCard>
-            <TextInput todoId={todo.id} />
-          </MainCard>
+          <div className='mb-4'>
+            <MainCard>
+              <TextInput todoId={todo.id} />
+            </MainCard>
+          </div>
         </div>
       </div>
     </div>

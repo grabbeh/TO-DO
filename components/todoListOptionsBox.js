@@ -13,9 +13,9 @@ const TodoListOptionsBox = ({ todoList }) => {
     setIsOpen(false)
   }
   return (
-    <div className='mt-1 relative'>
+    <div className='mt-1'>
       <div onClick={openModal}>
-        <div className='flex cursor-pointer hover:text-white text-gray-300'>
+        <div className='flex cursor-pointer hover:text-black text-gray-800'>
           <div className='h-5 w-5'>
             <VerticalDots />
           </div>

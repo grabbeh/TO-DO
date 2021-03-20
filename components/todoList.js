@@ -36,6 +36,23 @@ const TodoList = ({ todos, title, fetchMore, loading }) => {
   )
 }
 
+const returnUrl = (existing, todoId) => {
+  let newUrl
+  if (existing.indexOf('comments') == -1) {
+    newUrl = `${existing}/comments/${todoId}`
+  } else {
+    let removed = removeComments(existing)
+    newUrl = `${removed}comments/${todoId}`
+  }
+  return newUrl
+}
+
+const removeComments = url => {
+  let index = url.indexOf('comments')
+  let updated = url.slice(0, index)
+  return updated
+}
+
 const Todo = ({ todo }) => {
   const router = useRouter()
   let existingUrl = router.asPath
@@ -164,7 +181,7 @@ const Todo = ({ todo }) => {
                     onClick={() => {
                       activeTodoVar(todo)
                       activeCommentsBarVar(true)
-                      router.push(`${existingUrl}/comments/${todo.id}`)
+                      router.push(returnUrl(existingUrl, todo.id))
                     }}
                     className='flex hover:text-blue-800 text-blue-500'
                   >
