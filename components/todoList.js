@@ -109,7 +109,7 @@ const Todo = ({ todo }) => {
       <div className='flex justify-between'>
         <Link href={`/todos/${encodeURIComponent(todo.todoListId)}`}>
           <a>
-            <div className='ml-8 text-sm text-gray-400'>
+            <div className='hover:underline ml-8 text-sm text-gray-400'>
               {todo.todoListName}
             </div>
           </a>
@@ -152,15 +152,17 @@ const Todo = ({ todo }) => {
               <span
                 className={`${
                   todo.status === 'COMPLETED' ? 'line-through' : ''
-                } flex font-semibold text-gray-900 text-lg`}
+                } flex font-bold text-lg`}
               >
                 {todo.text}
               </span>
               <div className='flex'>
-                <div className='text-gray-500 mr-1 mt-1 h-4 w-4'>
+                <div className='text-blue-500 mr-1 mt-1 h-4 w-4'>
                   <User />
                 </div>
-                <div className='text-gray-500 text-base'>{todo.contact}</div>
+                <div className='font-semibold text-blue-500 text-base'>
+                  {todo.contact}
+                </div>
               </div>
             </div>
             <div>

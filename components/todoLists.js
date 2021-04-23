@@ -19,8 +19,9 @@ import {
 } from '../queries/index'
 
 const TodoLists = () => {
+  const router = useRouter()
+  let existingUrl = router.asPath
   const { loading, data } = useQuery(TODO_LISTS_QUERY)
-
   const {
     data: { activeCategory }
   } = useQuery(ACTIVE_CATEGORY, { fetchPolicy: 'cache-only' })
@@ -43,10 +44,13 @@ const TodoLists = () => {
     <div
       className={`${
         activeSideBar ? 'inline-block' : 'hidden'
-      }  mr-8 md:mr-0 w-full md:flex md:flex-col h-screen flex-none top-0 bg-red-400`}
+      }  mr-8 md:mr-0 w-full md:flex md:flex-col h-screen flex-none top-0`}
     >
-      <div className=' flex-grow-0 px-2 border-b flex justify-between'>
-        <h1 className='text-xl font-semibold my-3'>Lists</h1>
+      <div
+        id='test'
+        className=' flex-grow-0 px-2 border-b flex justify-between'
+      >
+        <h1 className='text-xl text-black font-semibold my-3'>Lists</h1>
         <div
           className='h-8 w-8 cursor-pointer  md:hidden'
           onClick={() => activeSideBarVar(false)}
@@ -54,23 +58,23 @@ const TodoLists = () => {
           <Cross />
         </div>
       </div>
-      <div className='h-full flex-grow overflow-y-hidden relative'>
+      <div className='text-black h-full flex-grow overflow-y-hidden relative'>
         <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-200 scrollbar-thumb-rounded'>
           <ul className='mr-2 pb-2'>
             <ListLink
               activeCategory={activeCategory}
               text='oldest'
-              url='/category/oldest'
+              url={returnUrl(existingUrl, null, 'oldest')}
             />
             <ListLink
               activeCategory={activeCategory}
               text='newest'
-              url='/category/newest'
+              url={returnUrl(existingUrl, null, 'newest')}
             />
             <ListLink
               activeCategory={activeCategory}
               text='pinned'
-              url='/category/pinned'
+              url={returnUrl(existingUrl, null, 'pinned')}
             />
             {data.todoLists.map(todoList => (
               <TodoList
@@ -89,7 +93,7 @@ const TodoLists = () => {
               New todolist
             </Button>
             <Modal
-              className='bg-white outline-none bottom-0 left-0 absolute rounded-t-lg border-2 px-2'
+              className='bg-white outline-none relative rounded-t-lg border-2 px-2'
               isOpen={modalIsOpen}
               onRequestClose={closeModal}
               contentLabel='Example Modal'
@@ -106,8 +110,8 @@ const TodoLists = () => {
 
 const ListLink = ({ url, text, activeCategory }) => (
   <li
-    className={`${activeCategory === text && 'bg-red-500'}
-   py-1 pl-1 hover:bg-red-500 cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md`}
+    className={`${activeCategory === text && 'bg-yellow-300'}
+   py-1 pl-1 hover:bg-yellow-300 cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md`}
   >
     <Link href={url}>
       <a>{text}</a>
@@ -115,8 +119,32 @@ const ListLink = ({ url, text, activeCategory }) => (
   </li>
 )
 
+const returnUrl = (existing, todoListId, category) => {
+  let newUrl
+  if (existing.indexOf('comments') == -1) {
+    if (!category) {
+      newUrl = `/todos/${todoListId}`
+    } else newUrl = `/category/${category}`
+  } else {
+    let commentPath = comments(existing)
+    if (!category) {
+      newUrl = `/todos/${todoListId}/${commentPath}`
+    } else {
+      newUrl = `/category/${category}/${commentPath}`
+    }
+  }
+  return newUrl
+}
+
+const comments = url => {
+  let index = url.indexOf('comments')
+  let updated = url.slice(index)
+  return updated
+}
+
 const TodoList = ({ todoList, activeCategory }) => {
   const router = useRouter()
+  let existingUrl = router.asPath
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
   const openModal = () => {
@@ -131,13 +159,13 @@ const TodoList = ({ todoList, activeCategory }) => {
       {!todoList.deleted && (
         <li
           className={`${activeCategory === todoList.name &&
-            'bg-red-500'} cursor-pointer py-1 px-1 hover:bg-red-500`}
+            'bg-yellow-300'} cursor-pointer py-1 px-1 hover:bg-yellow-300`}
           key={todoList.id}
         >
           <div className='flex justify-between'>
             <span
               onClick={() => {
-                router.push(`/todos/${todoList.id}`)
+                router.push(returnUrl(existingUrl, todoList.id))
               }}
               className='cursor-pointer overflow-hidden whitespace-nowrap overflow-ellipsis text-md '
             >
@@ -154,7 +182,7 @@ const TodoList = ({ todoList, activeCategory }) => {
               </div>
               <Modal
                 closeTimeoutMS={500}
-                className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
+                className='bg-white outline-none inset-x-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
                 contentLabel='Example Modal'

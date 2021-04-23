@@ -22,13 +22,17 @@ const OptionsBox = ({ todo }) => {
         </div>
       </div>
       <Modal
-        className='bg-white outline-none inset-x-0 bottom-0 m-auto absolute w-full rounded-t-lg lg:w-2/5 border-2 px-2'
+        className='bg-white outline-none inset-0 rounded-t-lg border-2 px-2'
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel='Example Modal'
         closeTimeoutMS={500}
       >
-        <TodoOptionsModal closeModal={closeModal} todo={todo} />
+        <TodoOptionsModal
+          className='inset-0'
+          closeModal={closeModal}
+          todo={todo}
+        />
       </Modal>
     </div>
   )

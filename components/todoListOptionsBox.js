@@ -13,16 +13,17 @@ const TodoListOptionsBox = ({ todoList }) => {
     setIsOpen(false)
   }
   return (
-    <div className='mt-1'>
+    <div id='test' className='mt-1'>
       <div onClick={openModal}>
-        <div className='flex cursor-pointer hover:text-black text-gray-800'>
+        <div className='flex cursor-pointer'>
           <div className='h-5 w-5'>
             <VerticalDots />
           </div>
         </div>
       </div>
       <Modal
-        className='bg-white outline-none rounded-t-lg border-2 px-2'
+        // parentSelector={() => document.querySelector('test')}
+        className='bg-white relative outline-none rounded-t-lg border-2 px-2'
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel='Example Modal'

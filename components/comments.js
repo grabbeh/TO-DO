@@ -29,9 +29,9 @@ const CommentInput = ({ todo }) => {
     <div
       className={`${
         activeCommentsBar ? 'inline-block' : 'hidden'
-      }  bg-white border-l w-full md:flex md:flex-col h-screen flex-none top-0`}
+      } bg-gray-100 border-l w-full md:flex md:flex-col h-screen flex-none top-0`}
     >
-      <div className='bg-white w-full flex-grow-0 border-b flex justify-between'>
+      <div className='w-full flex-grow-0 border-b flex justify-between'>
         <div className='mb-1 pl-2'>
           <div className='text-sm text-gray-500'>{todo.todoListName}</div>
           <Subheader>{todo.text}</Subheader>
@@ -50,7 +50,6 @@ const CommentInput = ({ todo }) => {
         <div className='absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-200 scrollbar-thumb-rounded'>
           {todo.comments.length > 0 && (
             <div className='py-2 pl-2 pr-4'>
-              <div>Comments</div>
               <ul className='divide-y'>
                 {todo.comments.map(comment => (
                   <Comment comment={comment} key={comment.id} />
@@ -58,7 +57,7 @@ const CommentInput = ({ todo }) => {
               </ul>
             </div>
           )}
-          <div className='mb-4'>
+          <div className='my-4'>
             <MainCard>
               <TextInput todoId={todo.id} />
             </MainCard>
@@ -173,7 +172,7 @@ const Comment = ({ comment }) => (
       <div className='text-xs text-gray-500'>{comment.createdAt}</div>
     </div>
 
-    <div className='text-gray-500 text-base'>{comment.text}</div>
+    <div className='text-gray-900 text-base'>{comment.text}</div>
   </li>
 )
 
