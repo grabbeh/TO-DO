@@ -17,7 +17,7 @@ const TodoList = ({ todos, title, fetchMore, loading }) => {
   return (
     <div>
       {title && <Subheader>{title}</Subheader>}
-      <ul className='border-b divide-y mb-3'>
+      <ul className='m-3'>
         {todos.map(todo => (
           <Todo key={todo.id} todo={todo} />
         ))}

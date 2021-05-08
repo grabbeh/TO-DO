@@ -1,5 +1,9 @@
 const CardListItem = ({ children, className }) => (
-  <li className={`${className} hover:bg-gray-100 pl-2 pr-4`}>{children}</li>
+  <li
+    className={`${className} rounded-lg hover:bg-gray-100 border pl-2 my-3 pr-4`}
+  >
+    {children}
+  </li>
 )
 
 export default CardListItem
